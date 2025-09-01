@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "groups") // Group 예약어로 인한 변경
 public class Group extends BaseEntity {
 
     @Id
@@ -30,6 +31,10 @@ public class Group extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SafetyTag safetyTag;
 
+    /***
+     * UserId만 받아오기 VS Group에 아예 User 객체를 받기
+     *
+     */
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "leaderUserId", nullable = false)
 //    private User leader;
