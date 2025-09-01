@@ -1,4 +1,4 @@
-package com.kakaotechcampus.team16be.group.domain;
+package com.kakaotechcampus.team16be.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

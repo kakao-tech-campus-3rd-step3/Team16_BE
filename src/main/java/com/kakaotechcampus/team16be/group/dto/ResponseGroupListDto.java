@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.group.dto;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record ResponseGroupListDto(
@@ -24,10 +23,8 @@ public record ResponseGroupListDto(
     }
 
     public static List<ResponseGroupListDto> from(List<Group> groups) {
-        List<ResponseGroupListDto> result = new ArrayList<>();
-        for (Group group : groups) {
-            result.add(from(group));
-        }
-        return result;
+        return groups.stream()
+                .map(ResponseGroupListDto::from)
+                .toList();
     }
 }

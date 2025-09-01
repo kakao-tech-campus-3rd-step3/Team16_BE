@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.group.domain;
 
+import com.kakaotechcampus.team16be.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
