@@ -52,9 +52,15 @@ public class Group extends BaseEntity {
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
 
-        if (updatedCapacity <= 0) {
+
+        if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
+            throw new GroupException(ErrorCode.GROUP_NO_INPUT);
+        }
+
+        if (updatedCapacity != null && updatedCapacity <= 0) {
             throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
         }
+
 
         if (updatedName != null) {
             this.name = updatedName;
