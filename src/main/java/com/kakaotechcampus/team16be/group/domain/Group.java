@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,17 +20,17 @@ public class Group extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String intro;
 
     private String coverImageUrl;
 
     private String category;
 
-    @Min(0)
+    @Min(1)
     private Integer capacity;
 
     @NotNull
@@ -60,7 +61,6 @@ public class Group extends BaseEntity {
         if (updatedCapacity != null && updatedCapacity <= 0) {
             throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
         }
-
 
         if (updatedName != null) {
             this.name = updatedName;
