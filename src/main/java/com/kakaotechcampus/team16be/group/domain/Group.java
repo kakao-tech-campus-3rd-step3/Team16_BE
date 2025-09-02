@@ -4,7 +4,6 @@ import com.kakaotechcampus.team16be.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +18,6 @@ public class Group extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Size(min=4)
     private String name;
 
     @NotNull
@@ -34,14 +32,37 @@ public class Group extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private SafetyTag safetyTag;
+    private SafetyTag safetyTag = SafetyTag.안전;
 
-    /***
-     * UserId만 받아오기 VS Group에 아예 User 객체를 받기
-     *
-     */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "leaderUserId", nullable = false)
-//    private User leader;
+    //    @ManyToOne(fetch = FetchType.LAZY)
+    //    @JoinColumn(name = "leaderUserId", nullable = false)
+    //    private User leader;
+
+    public Group(String name, String intro, Integer capacity) {
+        this.name = name;
+        this.intro = intro;
+        this.capacity = capacity;
+    }
+
+    protected Group() {
+
+    }
+
+    public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
+
+        if (updatedName != null) {
+            this.name = updatedName;
+        }
+        if (updatedIntro != null) {
+            this.intro = updatedIntro;
+        }
+        if (updatedCapacity != null) {
+            this.capacity = updatedCapacity;
+        }
+
+        return this;
+    }
+
+
 
 }
