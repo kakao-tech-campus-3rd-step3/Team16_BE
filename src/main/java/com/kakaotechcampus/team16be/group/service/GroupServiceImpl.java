@@ -57,6 +57,7 @@ public class GroupServiceImpl implements GroupService {
         String updatedName = updateGroupDto.name();
         String updatedIntro = updateGroupDto.intro();
         Integer updatedCapacity = updateGroupDto.capacity();
+
         Group updatedGroup = targetGroup.update(updatedName, updatedIntro, updatedCapacity);
 
         return groupRepository.save(updatedGroup);

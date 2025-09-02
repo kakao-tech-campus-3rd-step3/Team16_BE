@@ -1,6 +1,8 @@
 package com.kakaotechcampus.team16be.group.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
+import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -50,15 +52,17 @@ public class Group extends BaseEntity {
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
 
+        if (updatedCapacity <= 0) {
+            throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
+        }
+
         if (updatedName != null) {
             this.name = updatedName;
         }
         if (updatedIntro != null) {
             this.intro = updatedIntro;
         }
-        if (updatedCapacity != null) {
-            this.capacity = updatedCapacity;
-        }
+        this.capacity = updatedCapacity;
 
         return this;
     }
