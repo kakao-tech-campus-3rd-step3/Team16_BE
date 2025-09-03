@@ -13,7 +13,12 @@ public record ResponseGroupListDto(
 ) {
 
     public static ResponseGroupListDto from(Group group) {
-        return new ResponseGroupListDto(group.getId(), group.getName(), group.getIntro(), group.getSafetyTag().name(), group.getCoverImageUrl());
+        return new ResponseGroupListDto(
+                group.getId(),
+                group.getName(),
+                group.getIntro(),
+                group.getSafetyTag().name(),
+                group.getCoverImageUrl());
     }
 
     public static List<ResponseGroupListDto> from(List<Group> groups) {

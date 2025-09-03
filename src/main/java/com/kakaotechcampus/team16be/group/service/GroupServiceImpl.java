@@ -6,8 +6,8 @@ import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,8 +31,10 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.save(createdGroup);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Group> getAllGroups() {
+
         List<Group> findGroups = groupRepository.findAll();
 
         if (findGroups.isEmpty()) {
@@ -51,16 +53,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public Group updateGroup(Long id, UpdateGroupDto updateGroupDto) {
-        Group targetGroup = findGroupById(id);
+    public Group updateGroup(Long groupId, UpdateGroupDto updateGroupDto) {
+        Group targetGroup = findGroupById(groupId);
 
         String updatedName = updateGroupDto.name();
         String updatedIntro = updateGroupDto.intro();
         Integer updatedCapacity = updateGroupDto.capacity();
 
-        Group updatedGroup = targetGroup.update(updatedName, updatedIntro, updatedCapacity);
+        return targetGroup.update(updatedName, updatedIntro, updatedCapacity);
 
-        return groupRepository.save(updatedGroup);
 
     }
 
