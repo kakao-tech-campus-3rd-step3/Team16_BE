@@ -16,7 +16,7 @@ public class User extends BaseEntity {
     @Column(name = "kakao_id", unique = true, nullable = false, length = 64)
     private String kakaoId;
 
-    @Column(name = "nickname", unique = true, nullable = false, length = 40)
+    @Column(name = "nickname", unique = true, length = 40)
     private String nickname;
 
     @Column(name = "profile_image_url", length = 512)
@@ -35,4 +35,12 @@ public class User extends BaseEntity {
 
     @Column(name = "score")
     private Long score;
+
+    protected User() {}
+
+    public User(String kakaoId) {
+        this.kakaoId = kakaoId;
+        this.role = Role.user; // 기본 권한
+        this.verificationStatus = VerificationStatus.unverified; // 기본 인증 상태
+    }
 }
