@@ -40,7 +40,7 @@ public class User extends BaseEntity {
 
     public User(String kakaoId) {
         this.kakaoId = kakaoId;
-        this.role = Role.user; // 기본 권한
-        this.verificationStatus = VerificationStatus.unverified; // 기본 인증 상태
+        this.role = Role.USER; // 기본 권한
+        this.verificationStatus = VerificationStatus.UNVERIFIED; // 기본 인증 상태
     }
 }
