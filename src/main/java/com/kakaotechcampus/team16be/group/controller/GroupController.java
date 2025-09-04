@@ -2,14 +2,16 @@ package com.kakaotechcampus.team16be.group.controller;
 
 
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.dto.*;
+import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
+import com.kakaotechcampus.team16be.group.dto.ResponseGroupDto;
+import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
+import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,12 +53,5 @@ public class GroupController {
         groupService.updateGroup(id, updateGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
-    }
-
-    @PostMapping("{groupId}/cover-image")
-    public ResponseEntity<ResponseGroupDto> uploadGroupImage(@PathVariable("groupId") Long groupId, @RequestParam("image") UploadGroupImageDto uploadGroupImageDto) throws IOException {
-        groupService.uploadGroupImage(groupId, uploadGroupImageDto);
-
-        return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "이미지가 성공적으로 업로드 되었습니다."));
     }
 }

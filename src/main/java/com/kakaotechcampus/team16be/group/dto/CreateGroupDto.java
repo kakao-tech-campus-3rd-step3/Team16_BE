@@ -10,6 +10,7 @@ public record CreateGroupDto(
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$", message = "특수문자를 사용할 수 없습니다.")
         String name,
 
+
         @NotBlank
         String intro,
 
@@ -17,5 +18,5 @@ public record CreateGroupDto(
         @Min(value = 1, message = "모임 최소 인원 수는 1명입니다.")
         Integer capacity
 ) {
-    
+
 }

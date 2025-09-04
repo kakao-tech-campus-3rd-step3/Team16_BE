@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.group.exception;
 
 import lombok.Getter;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -12,8 +11,7 @@ public enum ErrorCode {
     WRONG_GROUP_CAPACITY(HttpStatus.BAD_REQUEST, "GROUP-003", "모임 최소 인원 수는 1명입니다."),
     GROUP_NO_INPUT(HttpStatus.BAD_REQUEST, "GROUP-004", "입력 값이 존재하지 않습니다."),
     GROUP_CANNOT_FOUND(HttpStatus.NOT_FOUND,"GROUP-005","모임이 존재하지 않습니다."),
-    GROUP_NO_AUTHORITY(HttpStatus.FORBIDDEN, "GROUP-006", "해당 권한이 없습니다."),
-    GROUP_IMAGE_ISNULL(HttpStatus.NOT_FOUND, "Group-007", "이미지 업로드에 문제가 발생했습니다.");
+    GROUP_NO_AUTHORITY(HttpStatus.FORBIDDEN, "GROUP-006", "해당 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String code;
