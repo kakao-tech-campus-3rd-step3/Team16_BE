@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class GroundRule {
+public class GroundRule extends BaseEntity{
 
   @Id
   private Long groupId;
@@ -30,22 +30,14 @@ public class GroundRule {
   @Column(columnDefinition = "TEXT")
   private String content;
 
-  @CreatedDate
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
-
-  @LastModifiedDate
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
   protected GroundRule() {}
 
   public static GroundRule create(Group group, String content){
-    GroundRule r = new GroundRule();
-    r.group = group;
-    r.groupId = group.getId();
-    r.changeContent(content);
-    return r;
+    GroundRule groundRule = new GroundRule();
+    groundRule.group = group;
+    groundRule.groupId = group.getId();
+    groundRule.changeContent(content);
+    return groundRule;
   }
 
   public void changeContent(String newContent) {

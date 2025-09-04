@@ -12,18 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class GroundRuleServiceImpl implements GroundRuleService{
 
   private final GroundRuleRepository groundRuleRepository;
-  private final GroupRepository groupRepository; //후에 코드 병합 후 이용
+  private final GroupService groupService; //후에 코드 병합 후 이용
 
-  public GroundRuleServiceImpl(GroundRuleRepository groundRuleRepository, GroupRepository groupRepository) {
+  public GroundRuleServiceImpl(GroundRuleRepository groundRuleRepository, GroupService groupService) {
     this.groundRuleRepository = groundRuleRepository;
-    this.groupRepository = groupRepository;
+    this.groupService = groupService;
   }
 
   @Override// 모임 코드와 연동 예정
   @Transactional
   public GroundRuleResponseDto saveGroupGroundRule(Long groupId,
       GroundRuleRequestDto groundRuleRequestDto) {
-    Group group = groupRepository.findById(groupId)
+    Group group = groupService.findById(groupId)
         .orElseThrow(() -> new IllegalArgumentException("Group not Found: " + groupId));
 
     GroundRule groundRule = groundRuleRepository.findById(groupId)
@@ -39,7 +39,7 @@ public class GroundRuleServiceImpl implements GroundRuleService{
 
   @Override
   public GroundRuleResponseDto getGroupGroundRule(Long groupId) {
-    Group group = groupRepository.findById(groupId)
+    Group group = groupService.findById(groupId)
         .orElseThrow(() -> new IllegalArgumentException("Group not Found: " + groupId));
 
     return groundRuleRepository.findById(groupId)
