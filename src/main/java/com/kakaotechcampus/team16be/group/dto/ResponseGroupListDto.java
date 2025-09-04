@@ -18,8 +18,7 @@ public record ResponseGroupListDto(
                 group.getName(),
                 group.getIntro(),
                 group.getSafetyTag().name(),
-                group.getCoverImageUrl()
-        );
+                group.getCoverImageUrl());
     }
 
     public static List<ResponseGroupListDto> from(List<Group> groups) {

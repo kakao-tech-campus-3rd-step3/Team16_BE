@@ -1,10 +1,12 @@
 package com.kakaotechcampus.team16be.group.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
+import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,30 +20,59 @@ public class Group extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min=4)
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String intro;
 
     private String coverImageUrl;
 
     private String category;
 
-    @Min(0)
+    @Min(1)
     private Integer capacity;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private SafetyTag safetyTag;
+    private SafetyTag safetyTag = SafetyTag.안전;
 
-    /***
-     * UserId만 받아오기 VS Group에 아예 User 객체를 받기
-     *
-     */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "leaderUserId", nullable = false)
-//    private User leader;
+    //    @ManyToOne(fetch = FetchType.LAZY)
+    //    @JoinColumn(name = "leaderUserId", nullable = false)
+    //    private User leader;
+
+    public Group(String name, String intro, Integer capacity) {
+        this.name = name;
+        this.intro = intro;
+        this.capacity = capacity;
+    }
+
+    protected Group() {
+
+    }
+
+    public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
+
+
+        if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
+            throw new GroupException(ErrorCode.GROUP_NO_INPUT);
+        }
+
+        if (updatedCapacity != null && updatedCapacity <= 0) {
+            throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
+        }
+
+        if (updatedName != null) {
+            this.name = updatedName;
+        }
+        if (updatedIntro != null) {
+            this.intro = updatedIntro;
+        }
+        this.capacity = updatedCapacity;
+
+        return this;
+    }
+
+
 
 }
