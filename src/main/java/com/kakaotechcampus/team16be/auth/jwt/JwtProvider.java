@@ -42,6 +42,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))
                 .claim("kakaoId", user.getKakaoId())
+                .claim("role", user.getRole().name())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
