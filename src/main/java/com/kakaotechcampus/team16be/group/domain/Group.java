@@ -35,7 +35,7 @@ public class Group extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private SafetyTag safetyTag = SafetyTag.안전;
+    private SafetyTag safetyTag = SafetyTag.SAFE;
 
     //    @ManyToOne(fetch = FetchType.LAZY)
     //    @JoinColumn(name = "leaderUserId", nullable = false)

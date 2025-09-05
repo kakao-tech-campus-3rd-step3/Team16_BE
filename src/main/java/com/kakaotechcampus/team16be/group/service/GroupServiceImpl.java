@@ -70,6 +70,7 @@ public class GroupServiceImpl implements GroupService {
 
     }
 
+    @Override
     public Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(ErrorCode.GROUP_CANNOT_FOUND));
     }
