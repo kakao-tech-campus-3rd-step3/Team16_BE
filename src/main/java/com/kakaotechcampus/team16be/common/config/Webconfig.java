@@ -1,11 +1,25 @@
 package com.kakaotechcampus.team16be.common.config;
 
+import com.kakaotechcampus.team16be.common.interceptor.LoginCheckInterceptor;
+import com.kakaotechcampus.team16be.common.resolver.LoginUserArgumentResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class Webconfig implements WebMvcConfigurer {
+
+    private final LoginUserArgumentResolver loginUserArgumentResolver;
+    private final LoginCheckInterceptor loginCheckInterceptor;
+
+    public Webconfig(LoginUserArgumentResolver loginUserArgumentResolver, LoginCheckInterceptor loginCheckInterceptor) {
+        this.loginUserArgumentResolver = loginUserArgumentResolver;
+        this.loginCheckInterceptor = loginCheckInterceptor;
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -15,5 +29,20 @@ public class Webconfig implements WebMvcConfigurer {
                 .allowCredentials(false) // jwt이기 때문에 비허용
                 .allowedHeaders("*") // 모든 헤더 허용
                 .maxAge(3600); // preflight 요청 캐시 시간
+    }
+
+    // Interceptor 등록
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginCheckInterceptor)
+                .addPathPatterns("/api/**") // JWT 적용할 경로
+                .excludePathPatterns("/api/auth/**"); //인가 부분은 제외
+
+    }
+
+    // ArgumentResolver 등록
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(loginUserArgumentResolver);
     }
 }
