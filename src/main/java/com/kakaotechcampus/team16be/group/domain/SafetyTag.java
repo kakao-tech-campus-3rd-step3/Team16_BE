@@ -1,5 +1,7 @@
 package com.kakaotechcampus.team16be.group.domain;
 
 public enum SafetyTag {
-    위험,안전, 주의,
+    DANGER,//위험
+    SAFE,//안전
+    CAUTION;//주의
 }
