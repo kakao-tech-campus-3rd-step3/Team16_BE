@@ -19,6 +19,11 @@ public class Team16BeApplication {
         System.setProperty("KAKAO_CLIENT_ID", dotenv.get("KAKAO_CLIENT_ID"));
         System.setProperty("KAKAO_REDIRECT_URI", dotenv.get("KAKAO_REDIRECT_URI"));
 
+        System.setProperty("AWS_ACCESS_KEY_ID", dotenv.get("AWS_ACCESS_KEY_ID"));
+        System.setProperty("AWS_SECRET_ACCESS_KEY", dotenv.get("AWS_SECRET_ACCESS_KEY"));
+        System.setProperty("AWS_REGION", dotenv.get("AWS_REGION"));
+        System.setProperty("AWS_S3_BUCKET", dotenv.get("AWS_S3_BUCKET"));
+
         SpringApplication.run(Team16BeApplication.class, args);
     }
 
