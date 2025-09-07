@@ -94,4 +94,10 @@ public class Group extends BaseEntity {
         return DEFAULT_COVER_IMAGE_URL;
     }
 
+    public void checkLeader(User user) {
+        if (!(this.leader == user)) {
+            throw new GroupException(ErrorCode.WRONG_GROUP_LEADER);
+        }
+
+    }
 }

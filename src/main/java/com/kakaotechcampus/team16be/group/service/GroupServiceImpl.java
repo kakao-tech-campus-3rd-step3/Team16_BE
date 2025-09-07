@@ -79,9 +79,16 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public Group updateGroup(Long groupId, UpdateGroupDto updateGroupDto) {
+    public Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
         String oldImgUrl = targetGroup.getCoverImageUrl();
+
+        /***
+         * User user = userService.findById(userId);
+         */
+        User user = new User("id");
+
+        targetGroup.checkLeader(user);
 
         String updatedName = updateGroupDto.name();
         String updatedIntro = updateGroupDto.intro();

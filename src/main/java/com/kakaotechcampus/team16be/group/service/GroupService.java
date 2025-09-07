@@ -12,7 +12,7 @@ public interface GroupService {
 
     void deleteGroup(Long groupId);
 
-    Group updateGroup(Long id, UpdateGroupDto updateGroupDto);
+    Group updateGroup(Long userId,Long groupId, UpdateGroupDto updateGroupDto);
 
     Group findGroupById(Long groupId);
 
