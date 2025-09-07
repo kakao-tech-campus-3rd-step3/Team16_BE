@@ -24,6 +24,7 @@ import java.util.UUID;
 @Slf4j
 public class S3UploadPresignedUrlService {
 
+    private static final String DEFAULT_COVER_IMAGE_URL = "https://your-s3-bucket/defaults/group_default.png";
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -81,5 +82,12 @@ public class S3UploadPresignedUrlService {
         } catch (SdkClientException e) {
             throw e;
         }
+    }
+
+    public String getPublicUrl(String key) {
+        if (key == null) {
+            return DEFAULT_COVER_IMAGE_URL;
+        }
+        return amazonS3Client.getUrl(bucket, key).toString();
     }
 }

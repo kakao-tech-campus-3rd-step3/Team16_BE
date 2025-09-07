@@ -2,9 +2,7 @@ package com.kakaotechcampus.team16be.group.dto;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 
-import java.util.List;
-
-public record ResponseGroupListDto(
+public record ResponseSingleGroupDto(
         Long groupId,
         String name,
         String intro,
@@ -12,13 +10,12 @@ public record ResponseGroupListDto(
         String coverImageUrl
 ) {
 
-    public static ResponseGroupListDto from(Group group, String coverImageUrl) {
-        return new ResponseGroupListDto(
+    public static ResponseSingleGroupDto from(Group group, String coverImageUrl) {
+        return new ResponseSingleGroupDto(
                 group.getId(),
                 group.getName(),
                 group.getIntro(),
                 group.getSafetyTag().name(),
                 coverImageUrl);
     }
-
 }

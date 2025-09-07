@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -36,21 +37,28 @@ public class Group extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private SafetyTag safetyTag = SafetyTag.SAFE;
+    private final SafetyTag safetyTag = SafetyTag.SAFE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaderUserId", nullable = false)
     private User leader;
 
-    public Group(String name, String intro, Integer capacity) {
+    @Builder
+    protected Group(User user, String name, String intro, Integer capacity) {
+        this.leader = user;
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
     }
 
-    protected Group() {
+    public Group() {
 
     }
+
+    public static Group createGroup(User user, String name, String intro, Integer capacity) {
+        return new Group(user, name, intro, capacity);
+    }
+
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
 

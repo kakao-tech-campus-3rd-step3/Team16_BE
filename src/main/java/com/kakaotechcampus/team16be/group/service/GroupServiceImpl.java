@@ -2,36 +2,46 @@ package com.kakaotechcampus.team16be.group.service;
 
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
-import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
+import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
+import com.kakaotechcampus.team16be.user.domain.User;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
+    /***
+     * 추후 UserService 구현 후 추가 예정
+     */
+    //private final UserService userService;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
-    public GroupServiceImpl(GroupRepository groupRepository, S3UploadPresignedUrlService s3UploadPresignedUrlService) {
-        this.groupRepository = groupRepository;
-        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
-    }
 
     @Transactional
     @Override
-    public Group createGroup(CreateGroupDto createGroupDto) {
+    public Group createGroup(Long userId, CreateGroupDto createGroupDto) {
         String groupName = createGroupDto.name();
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        Group createdGroup = new Group(groupName, groupIntro, groupCapacity);
+        /***
+         * 추후 추가 예정
+         */
+        // User user = userService.findById(userId);
+
+        //임시 User 추가
+        User user = new User("id");
+        Group createdGroup = Group.createGroup(user,groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
             throw new GroupException(ErrorCode.GROUP_NAME_DUPLICATE);
@@ -42,7 +52,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Group> getAllGroups() {
+    public List<ResponseGroupListDto> getAllGroups() {
 
         List<Group> findGroups = groupRepository.findAll();
 
@@ -50,9 +60,16 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupException(ErrorCode.GROUP_CANNOT_FOUND);
         }
 
-        return findGroups;
+        return findGroups.stream()
+                .map(group -> {
+                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(group.getCoverImageUrl());
+                    return ResponseGroupListDto.from(group, fullUrl);
+                }).toList();
     }
 
+    /***
+     * 관리자전용 삭제 or 그룹장전용 삭제?
+     */
     @Transactional
     @Override
     public void deleteGroup(Long groupId) {
@@ -87,6 +104,16 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(ErrorCode.GROUP_CANNOT_FOUND));
+    }
+
+    @Override
+    public ResponseSingleGroupDto getGroup(Long groupId) {
+        Group targetGroup = findGroupById(groupId);
+
+        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
+
+        return ResponseSingleGroupDto.from(targetGroup, fullUrl);
+
     }
 
     public boolean existGroupName(String groupName) {

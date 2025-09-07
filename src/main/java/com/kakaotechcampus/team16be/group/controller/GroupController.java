@@ -1,11 +1,9 @@
 package com.kakaotechcampus.team16be.group.controller;
 
 
+import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
-import com.kakaotechcampus.team16be.group.dto.ResponseGroupDto;
-import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
-import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
+import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,32 +23,36 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseGroupDto> createGroup(@Valid @RequestBody CreateGroupDto createGroupDto) {
-        groupService.createGroup(createGroupDto);
+    public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) {
+        groupService.createGroup(userId,createGroupDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
     }
 
     @GetMapping
     public ResponseEntity<List<ResponseGroupListDto>> getAllGroups() {
-        List<Group> groupList = groupService.getAllGroups();
 
-        List<ResponseGroupListDto> result = ResponseGroupListDto.from(groupList);
+        List<ResponseGroupListDto> result = groupService.getAllGroups();
 
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseGroupDto> deleteGroup(@PathVariable("id") Long id) {
+    @GetMapping("/{groupId}")
+    public ResponseEntity<ResponseSingleGroupDto> getGroup(@PathVariable("groupId") Long groupId) {
+        return ResponseEntity.ok(groupService.getGroup(groupId));
+    }
 
-        groupService.deleteGroup(id);
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<ResponseGroupDto> deleteGroup(@PathVariable("groupId") Long groupId) {
+
+        groupService.deleteGroup(groupId);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "모임이 성공적으로 삭제되었습니다."));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseGroupDto> updateGroup(@PathVariable("id") Long id, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
-        groupService.updateGroup(id, updateGroupDto);
+    @PutMapping("/{groupId}")
+    public ResponseEntity<ResponseGroupDto> updateGroup(@PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
+        groupService.updateGroup(groupId, updateGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
     }
