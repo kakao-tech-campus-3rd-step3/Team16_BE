@@ -8,21 +8,17 @@ import com.kakaotechcampus.team16be.auth.jwt.JwtProvider;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class KakaoAuthService {
 
     private final KakaoAuthClient kakaoAuthClient;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-
-    public KakaoAuthService(KakaoAuthClient kakaoAuthClient, UserRepository userRepository, JwtProvider jwtProvider) {
-        this.kakaoAuthClient = kakaoAuthClient;
-        this.userRepository = userRepository;
-        this.jwtProvider = jwtProvider;
-    }
 
     @Transactional
     public KakaoLoginResponse loginWithCode(String code, HttpServletRequest request) {

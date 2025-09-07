@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.groundrule;
 import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleRequestDto;
 import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleResponseDto;
 import com.kakaotechcampus.team16be.groundrule.service.GroundRuleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/groups")
+@RequiredArgsConstructor
 public class GroundRuleController {
 
   private final GroundRuleService groundRuleService;
-
-  public GroundRuleController(GroundRuleService groundRuleService) {
-    this.groundRuleService = groundRuleService;
-  }
 
   @PostMapping("/{groupId}/rule") //jpa를 통해 create/update 동시처리.
   public ResponseEntity<GroundRuleResponseDto> addGroupGroundRule(

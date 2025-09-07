@@ -72,14 +72,8 @@ public class S3UploadPresignedUrlService {
         return expiration;
     }
 
-    public void deleteImage(String key) {
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, key);
-        try {
-            amazonS3Client.deleteObject(deleteObjectRequest);
-        } catch (AmazonServiceException e) {
-            throw e;
-        } catch (SdkClientException e) {
-            throw e;
-        }
+    public void deleteImage(String fileName) {
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
+        amazonS3Client.deleteObject(deleteObjectRequest);
     }
 }
