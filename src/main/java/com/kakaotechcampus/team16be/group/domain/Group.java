@@ -10,13 +10,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @Entity
 @Table(name = "groups") // Group 예약어로 인한 변경
 public class Group extends BaseEntity {
 
-    private static final String DEFAULT_COVER_IMAGE_URL = "https://your-s3-bucket/defaults/group_default.png";
+    @Value("${cloud.aws.s3.default-image-url}")
+    private String defaultCoverImageUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,14 +86,14 @@ public class Group extends BaseEntity {
 
     public void changeCoverImage(String newImageUrl) {
         if (newImageUrl == null || newImageUrl.isEmpty()) {
-            this.coverImageUrl = DEFAULT_COVER_IMAGE_URL;
+            this.coverImageUrl = defaultCoverImageUrl;
         } else {
             this.coverImageUrl = newImageUrl;
         }
     }
 
     public String returnDefaultImgUrl() {
-        return DEFAULT_COVER_IMAGE_URL;
+        return defaultCoverImageUrl;
     }
 
     public void checkLeader(User user) {
