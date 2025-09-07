@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.group.service;
 
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
@@ -10,14 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
-    public GroupServiceImpl(GroupRepository groupRepository) {
+    public GroupServiceImpl(GroupRepository groupRepository, S3UploadPresignedUrlService s3UploadPresignedUrlService) {
         this.groupRepository = groupRepository;
+        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
     }
 
     @Transactional
@@ -60,13 +64,23 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group updateGroup(Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
+        String oldImgUrl = targetGroup.getCoverImageUrl();
 
         String updatedName = updateGroupDto.name();
         String updatedIntro = updateGroupDto.intro();
         Integer updatedCapacity = updateGroupDto.capacity();
+        targetGroup.update(updatedName, updatedIntro, updatedCapacity);
 
-        return targetGroup.update(updatedName, updatedIntro, updatedCapacity);
+        String updatedImgUrl = updateGroupDto.coverImageUrl();
+        targetGroup.changeCoverImage(updatedImgUrl);
 
+        boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
+        boolean isOldImageDefault = (oldImgUrl == null || oldImgUrl.equals(targetGroup.returnDefaultImgUrl()));
+
+        if (isImageChanged && !isOldImageDefault) {
+            s3UploadPresignedUrlService.deleteImage(oldImgUrl);
+        }
+        return targetGroup;
 
     }
 

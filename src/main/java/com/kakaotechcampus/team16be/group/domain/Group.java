@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.group.domain;
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
+import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,8 @@ import lombok.Getter;
 @Entity
 @Table(name = "groups") // Group 예약어로 인한 변경
 public class Group extends BaseEntity {
+
+    private static final String DEFAULT_COVER_IMAGE_URL = "https://your-s3-bucket/defaults/group_default.png";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +38,9 @@ public class Group extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SafetyTag safetyTag = SafetyTag.SAFE;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-    //    @JoinColumn(name = "leaderUserId", nullable = false)
-    //    private User leader;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leaderUserId", nullable = false)
+    private User leader;
 
     public Group(String name, String intro, Integer capacity) {
         this.name = name;
@@ -50,7 +53,6 @@ public class Group extends BaseEntity {
     }
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
-
 
         if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
             throw new GroupException(ErrorCode.GROUP_NO_INPUT);
@@ -66,11 +68,22 @@ public class Group extends BaseEntity {
         if (updatedIntro != null) {
             this.intro = updatedIntro;
         }
-        this.capacity = updatedCapacity;
-
+        if (updatedCapacity != null) {
+            this.capacity = updatedCapacity;
+        }
         return this;
     }
 
+    public void changeCoverImage(String newImageUrl) {
+        if (newImageUrl == null || newImageUrl.isEmpty()) {
+            this.coverImageUrl = DEFAULT_COVER_IMAGE_URL;
+        } else {
+            this.coverImageUrl = newImageUrl;
+        }
+    }
 
+    public String returnDefaultImgUrl() {
+        return DEFAULT_COVER_IMAGE_URL;
+    }
 
 }
