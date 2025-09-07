@@ -10,7 +10,6 @@ import lombok.Getter;
 public class GroundRule extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long groupId;
 
   @OneToOne(fetch = FetchType.LAZY) //그룹 당 그라운드 룰 1개.
