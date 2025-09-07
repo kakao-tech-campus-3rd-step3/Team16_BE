@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.common.config;
 
 import com.kakaotechcampus.team16be.common.interceptor.LoginCheckInterceptor;
 import com.kakaotechcampus.team16be.common.resolver.LoginUserArgumentResolver;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,15 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class Webconfig implements WebMvcConfigurer {
 
     private final LoginUserArgumentResolver loginUserArgumentResolver;
     private final LoginCheckInterceptor loginCheckInterceptor;
-
-    public Webconfig(LoginUserArgumentResolver loginUserArgumentResolver, LoginCheckInterceptor loginCheckInterceptor) {
-        this.loginUserArgumentResolver = loginUserArgumentResolver;
-        this.loginCheckInterceptor = loginCheckInterceptor;
-    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.auth.dto.KakaoTokenResponse;
 import com.kakaotechcampus.team16be.auth.dto.KakaoUserInfoResponse;
 import com.kakaotechcampus.team16be.auth.exception.KakaoErrorCode;
 import com.kakaotechcampus.team16be.auth.exception.KakaoException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +16,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@RequiredArgsConstructor
 public class KakaoAuthClient {
 
     // 카카오 API URL 상수
@@ -24,12 +26,6 @@ public class KakaoAuthClient {
 
     private final KakaoProperties kakaoProperties;
     private final RestTemplate restTemplate;
-
-    // 생성자 주입
-    public KakaoAuthClient(KakaoProperties kakaoProperties, RestTemplate restTemplate) {
-        this.kakaoProperties = kakaoProperties;
-        this.restTemplate = restTemplate;
-    }
 
     /**
      * 인가 코드(code)를 사용하여 카카오에서 Access Token 요청
