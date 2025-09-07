@@ -2,12 +2,14 @@ package com.kakaotechcampus.team16be.group.service;
 
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.dto.*;
+import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
+import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
+import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
+import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,7 @@ public class GroupServiceImpl implements GroupService {
 
         //임시 User 추가
         User user = new User("id");
-        Group createdGroup = Group.createGroup(user,groupName, groupIntro, groupCapacity);
+        Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
             throw new GroupException(ErrorCode.GROUP_NAME_DUPLICATE);
@@ -86,7 +88,7 @@ public class GroupServiceImpl implements GroupService {
         /***
          * User user = userService.findById(userId);
          */
-        User user = new User("id");
+        User user = new User("id"); // 임시 User 추가
 
         targetGroup.checkLeader(user);
 

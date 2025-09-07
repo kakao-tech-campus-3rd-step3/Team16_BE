@@ -2,8 +2,6 @@ package com.kakaotechcampus.team16be.group.dto;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 
-import java.util.List;
-
 public record ResponseGroupListDto(
         Long groupId,
         String name,

@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.group.controller;
 
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
-import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import jakarta.validation.Valid;
@@ -24,7 +23,7 @@ public class GroupController {
 
     @PostMapping
     public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) {
-        groupService.createGroup(userId,createGroupDto);
+        groupService.createGroup(userId, createGroupDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
     }
@@ -52,7 +51,7 @@ public class GroupController {
 
     @PutMapping("/{groupId}")
     public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser Long userId, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
-        groupService.updateGroup(userId,groupId, updateGroupDto);
+        groupService.updateGroup(userId, groupId, updateGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
     }
