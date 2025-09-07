@@ -4,10 +4,8 @@ import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class GroundRule extends BaseEntity {
 
