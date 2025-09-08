@@ -4,15 +4,12 @@ import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class GroundRule extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long groupId;
 
   @OneToOne(fetch = FetchType.LAZY) //그룹 당 그라운드 룰 1개.

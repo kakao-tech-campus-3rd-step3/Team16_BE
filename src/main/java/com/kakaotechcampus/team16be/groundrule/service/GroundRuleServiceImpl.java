@@ -6,20 +6,17 @@ import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleRequestDto;
 import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleResponseDto;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class GroundRuleServiceImpl implements GroundRuleService{
 
   private final GroundRuleRepository groundRuleRepository;
   private final GroupService groupService; //후에 코드 병합 후 이용
-
-  public GroundRuleServiceImpl(GroundRuleRepository groundRuleRepository, GroupService groupService) {
-    this.groundRuleRepository = groundRuleRepository;
-    this.groupService = groupService;
-  }
 
   @Override// 모임 코드와 연동 예정
   @Transactional
