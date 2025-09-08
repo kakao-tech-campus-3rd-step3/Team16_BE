@@ -48,4 +48,7 @@ public class User extends BaseEntity {
         this.studentIdImageUrl = fileName;
     }
 
+    public void updateVerificationStatusPending() {
+        this.verificationStatus = VerificationStatus.PENDING;
+    }
 }

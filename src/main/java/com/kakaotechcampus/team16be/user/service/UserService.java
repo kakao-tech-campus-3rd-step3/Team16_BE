@@ -23,6 +23,7 @@ public class UserService {
 
         if (request.type() == ImageUploadType.VERIFICATION) {
             user.updateStudentIdImageUrl(request.fileName());
+            user.updateVerificationStatusPending();
         }
 
         userRepository.save(user);
