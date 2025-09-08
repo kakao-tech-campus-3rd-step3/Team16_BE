@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.auth.controller;
 
 import com.kakaotechcampus.team16be.auth.dto.KakaoLoginResponse;
+import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.auth.service.KakaoAuthService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
@@ -40,5 +41,13 @@ public class AuthController {
     ) {
         userService.updateStudentIdImage(userId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/student-verification/status")
+    public ResponseEntity<StudentVerificationStatusResponse> getVerificationStatus(
+            @LoginUser Long userId
+    ) {
+        StudentVerificationStatusResponse response = userService.getVerificationStatus(userId);
+        return ResponseEntity.ok(response);
     }
 }

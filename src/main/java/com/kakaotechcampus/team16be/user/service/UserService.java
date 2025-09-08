@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.user.service;
 
+import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -27,5 +28,16 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public StudentVerificationStatusResponse getVerificationStatus(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        return StudentVerificationStatusResponse.of(
+                true,
+                user.getVerificationStatus(),
+                null
+        );
     }
 }
