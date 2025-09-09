@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.auth.service.KakaoAuthService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,18 +37,18 @@ public class AuthController {
 
     @PutMapping("/student-verification")
     public ResponseEntity<Void> updateStudentIdImage(
-            @LoginUser Long userId,
+            @LoginUser User user,
             @RequestBody UpdateStudentIdImageRequest request
     ) {
-        userService.updateStudentIdImage(userId, request);
+        userService.updateStudentIdImage(user.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/student-verification/status")
     public ResponseEntity<StudentVerificationStatusResponse> getVerificationStatus(
-            @LoginUser Long userId
+            @LoginUser User user
     ) {
-        StudentVerificationStatusResponse response = userService.getVerificationStatus(userId);
+        StudentVerificationStatusResponse response = userService.getVerificationStatus(user.getId());
         return ResponseEntity.ok(response);
     }
 }
