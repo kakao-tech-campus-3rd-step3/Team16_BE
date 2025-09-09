@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.user.service;
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
     @Transactional
     public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
@@ -39,5 +41,11 @@ public class UserService {
                 user.getVerificationStatus(),
                 null
         );
+    }
+
+    @Transactional(readOnly = true)
+    public String getStudentIdImageUrl(User user) {
+        String fileName = user.getStudentIdImageUrl();
+        return s3UploadPresignedUrlService.getPublicUrl(fileName);
     }
 }
