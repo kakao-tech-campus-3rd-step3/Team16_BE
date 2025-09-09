@@ -80,10 +80,10 @@ public class S3UploadPresignedUrlService {
         amazonS3Client.deleteObject(deleteObjectRequest);
     }
 
-    public String getPublicUrl(String key) {
-        if (key == null) {
+    public String getPublicUrl(String fileName) {
+        if (fileName == null) {
             return defaultCoverImageUrl;
         }
-        return amazonS3Client.getUrl(bucket, key).toString();
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 }

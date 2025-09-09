@@ -23,7 +23,7 @@ public class GroupController {
     public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) {
         groupService.createGroup(userId, createGroupDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
+        return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
     }
 
     @GetMapping
