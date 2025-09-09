@@ -51,4 +51,8 @@ public class User extends BaseEntity {
     public void updateVerificationStatusPending() {
         this.verificationStatus = VerificationStatus.PENDING;
     }
+
+    public void updateProfileImageUrl(String fileName) {
+        this.profileImageUrl = fileName;
+    }
 }
