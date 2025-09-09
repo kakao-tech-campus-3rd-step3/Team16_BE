@@ -52,4 +52,12 @@ public class UserController {
         return ResponseEntity.ok(new UserProfileImageResponse(imageUrl));
     }
 
+    @DeleteMapping("/profile-image")
+    public ResponseEntity<Void> deleteProfileImage(
+            @LoginUser User user
+    ) {
+        userService.deleteProfileImage(user.getId());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
