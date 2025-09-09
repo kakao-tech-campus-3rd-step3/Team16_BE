@@ -10,7 +10,6 @@ public enum KakaoErrorCode {
     TOKEN_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 토큰 요청에 실패했습니다."),
     USER_INFO_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 사용자 정보 요청에 실패했습니다."),
     CONNECTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 서버와의 연결에 실패했습니다."),
-    LOGOUT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 로그아웃에 실패했습니다."),
 
     // 503 SERVICE_UNAVAILABLE
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "카카오 서비스가 일시적으로 불가능합니다. 잠시 후 다시 시도해주세요.");

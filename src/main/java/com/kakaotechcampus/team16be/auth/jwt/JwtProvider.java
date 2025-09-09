@@ -21,6 +21,9 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.access-token-expiration}")
+    private int accessTokenExpiration;
+
     private SecretKey secretKey;
 
     @PostConstruct
@@ -32,12 +35,11 @@ public class JwtProvider {
     /**
      * JWT 토큰 생성
      * @param user 토큰에 담을 User 정보
-     * @param expiresIn 토큰 만료 시간(초)
      * @return JWT 문자열
      */
-    public String createToken(User user, int expiresIn) {
+    public String createToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiresIn * 1000L);
+        Date expiryDate = new Date(now.getTime() + accessTokenExpiration  * 1000L);
 
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))
