@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GroupReviewServiceImpl implements GroupReviewService {
+public class GroupReviewServiceImpl implements ReviewService {
 
     private final GroupReviewRepository groupReviewRepository;
 
