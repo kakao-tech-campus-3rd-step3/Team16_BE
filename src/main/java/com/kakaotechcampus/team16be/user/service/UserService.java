@@ -48,4 +48,44 @@ public class UserService {
         String fileName = user.getStudentIdImageUrl();
         return s3UploadPresignedUrlService.getPublicUrl(fileName);
     }
+
+    @Transactional
+    public void createProfileImage(Long userId, String fileName) {
+        User user = getUser(userId);
+
+        if (user.getProfileImageUrl() != null) {
+            throw new UserException(UserErrorCode.PROFILE_IMAGE_ALREADY_EXISTS);
+        }
+
+        user.updateProfileImageUrl(fileName);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long userId, String fileName) {
+        User user = getUser(userId);
+
+        if (user.getProfileImageUrl() == null) {
+            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
+        }
+
+        user.updateProfileImageUrl(fileName);
+        userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public String getProfileImage(Long userId) {
+        User user = getUser(userId);
+
+        if (user.getProfileImageUrl() == null) {
+            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
+        }
+
+        return s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
 }
