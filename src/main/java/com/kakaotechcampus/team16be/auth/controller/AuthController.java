@@ -1,14 +1,14 @@
 package com.kakaotechcampus.team16be.auth.controller;
 
 import com.kakaotechcampus.team16be.auth.dto.KakaoLoginResponse;
+import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.auth.service.KakaoAuthService;
+import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final KakaoAuthService kakaoAuthService;
+    private final UserService userService;
 
     @PostMapping("/kakao-login")
     public ResponseEntity<KakaoLoginResponse> kakaoLogin(
@@ -29,6 +30,15 @@ public class AuthController {
     @PostMapping("/kakao-logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         kakaoAuthService.logout(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/student-verification")
+    public ResponseEntity<Void> updateStudentIdImage(
+            @LoginUser Long userId,
+            @RequestBody UpdateStudentIdImageRequest request
+    ) {
+        userService.updateStudentIdImage(userId, request);
         return ResponseEntity.ok().build();
     }
 }
