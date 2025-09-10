@@ -49,7 +49,7 @@ public class GroundRuleServiceImpl implements GroundRuleService {
     }
 
     GroundRule groundRule = groundRuleRepository.findByGroupId(groupId)
-                                                .orElseThrow(() -> new IllegalArgumentException("그라운드 룰이 존재하지 않습니다."));
+                                                .orElseThrow(() -> new RuntimeException("그라운드 룰이 존재하지 않습니다."));
 
     groundRule.changeContent(groundRuleRequestDto.content());
     return toDto(groundRule);
