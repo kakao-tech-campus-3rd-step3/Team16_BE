@@ -5,6 +5,8 @@ import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
+import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
@@ -89,9 +91,27 @@ public class UserService {
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
 
+    @Transactional
     public void deleteProfileImage(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
         user.updateProfileImageUrl(null);
+    }
+
+    @Transactional
+    public void createNickname(User user, UserNicknameRequest request) {
+        user.updateNickname(request.nickname());
+        userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserNicknameResponse getNickname(User user) {
+        return UserNicknameResponse.from(user.getNickname());
+    }
+
+    @Transactional
+    public void updateNickname(User user, UserNicknameRequest request) {
+        user.updateNickname(request.nickname());
+        userRepository.save(user);
     }
 }
