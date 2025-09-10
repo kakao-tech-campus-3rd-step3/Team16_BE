@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -24,10 +25,23 @@ public class GroupReview extends BaseEntity {
     private Group group;
 
     @NotBlank
-    private String contents;
+    private String content;
 
     protected GroupReview() {
     }
 
+    @Builder
+    public GroupReview(User user, Group group, String content) {
+        this.user = user;
+        this.group = group;
+        this.content = content;
+    }
 
+    public static GroupReview createReview(User user, Group targetGroup, String content) {
+        return GroupReview.builder().
+                user(user).
+                group(targetGroup).
+                content(content).
+                build();
+    }
 }

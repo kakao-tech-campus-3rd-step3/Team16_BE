@@ -1,4 +1,4 @@
-package com.kakaotechcampus.team16be.review.groupReview.dto;
+package com.kakaotechcampus.team16be.review.common;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
