@@ -12,12 +12,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDto, GroupReview>  {
 
     private final GroupReviewRepository groupReviewRepository;
     private final GroupService groupService;
+//    private final UserService userService;
 
 
     @Transactional
@@ -32,5 +35,12 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
 
         return groupReviewRepository.save(createdGroupReview);
 
+    }
+
+    @Override
+    public List<GroupReview> getAllReviews(User user,Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+
+        return groupReviewRepository.findAllByGroup(targetGroup);
     }
 }
