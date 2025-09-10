@@ -24,6 +24,9 @@ import java.util.UUID;
 @Slf4j
 public class S3UploadPresignedUrlService {
 
+    @Value("${cloud.aws.s3.default-image-url}")
+    private String defaultCoverImageUrl;
+
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -75,5 +78,12 @@ public class S3UploadPresignedUrlService {
     public void deleteImage(String fileName) {
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(deleteObjectRequest);
+    }
+
+    public String getPublicUrl(String fileName) {
+        if (fileName == null) {
+            return defaultCoverImageUrl;
+        }
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 }

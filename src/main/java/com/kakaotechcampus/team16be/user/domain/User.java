@@ -43,4 +43,16 @@ public class User extends BaseEntity {
         this.role = Role.USER; // 기본 권한
         this.verificationStatus = VerificationStatus.UNVERIFIED; // 기본 인증 상태
     }
+
+    public void updateStudentIdImageUrl(String fileName) {
+        this.studentIdImageUrl = fileName;
+    }
+
+    public void updateVerificationStatusPending() {
+        this.verificationStatus = VerificationStatus.PENDING;
+    }
+
+    public void updateProfileImageUrl(String fileName) {
+        this.profileImageUrl = fileName;
+    }
 }
