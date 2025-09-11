@@ -8,6 +8,7 @@ import com.kakaotechcampus.team16be.review.groupReview.dto.ResponseGroupReviewLi
 import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/groups/reviews")
-@RequiredArgsConstructor
 public class GroupReviewController {
 
     private final ReviewService reviewService;
+
+    public GroupReviewController(@Qualifier("groupReviewServiceImpl") ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     @PostMapping
     public ResponseEntity<ResponseReviewDto> createGroupReview(@LoginUser User user, @RequestBody CreateGroupReviewDto createGroupReviewDto) {

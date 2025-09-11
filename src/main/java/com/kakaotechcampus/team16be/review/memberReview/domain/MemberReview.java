@@ -15,11 +15,11 @@ public class MemberReview {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id", nullable = false) // 컬럼 이름 변경
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewee_id", nullable = false) // 컬럼 이름 변경
+    @JoinColumn(name = "reviewee_id", nullable = false)
     private User reviewee;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,5 +42,15 @@ public class MemberReview {
     }
 
     protected MemberReview() {
+    }
+
+    public static MemberReview create(User reviewer, User reviewee, Group targetGroup, String content,Evaluation evaluation) {
+        return MemberReview.builder().
+                reviewee(reviewee).
+                reviewer(reviewer).
+                group(targetGroup).
+                content(content).
+                evaluation(evaluation).
+                build();
     }
 }
