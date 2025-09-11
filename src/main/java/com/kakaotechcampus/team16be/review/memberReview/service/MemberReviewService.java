@@ -11,13 +11,11 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
-import com.kakaotechcampus.team16be.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +43,7 @@ public class MemberReviewService implements ReviewService<CreateMemberReviewDto,
         return memberReviewRepository.save(memberReview);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MemberReview> getAllReviews(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);

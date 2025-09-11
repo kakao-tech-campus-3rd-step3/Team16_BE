@@ -7,7 +7,6 @@ import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
 import com.kakaotechcampus.team16be.review.memberReview.dto.CreateMemberReviewDto;
 import com.kakaotechcampus.team16be.review.memberReview.dto.ResponseMemberReviewListDto;
 import com.kakaotechcampus.team16be.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

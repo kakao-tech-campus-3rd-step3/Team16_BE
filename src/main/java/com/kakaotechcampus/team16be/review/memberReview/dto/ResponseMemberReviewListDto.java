@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.review.memberReview.dto;
 
 import com.kakaotechcampus.team16be.review.memberReview.domain.Evaluation;
 import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
+
 import java.util.List;
 
 public record ResponseMemberReviewListDto(

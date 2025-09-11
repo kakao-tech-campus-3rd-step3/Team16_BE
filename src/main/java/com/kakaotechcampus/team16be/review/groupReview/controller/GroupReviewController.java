@@ -2,17 +2,15 @@ package com.kakaotechcampus.team16be.review.groupReview.controller;
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.review.common.dto.ResponseReviewDto;
+import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
 import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
 import com.kakaotechcampus.team16be.review.groupReview.dto.ResponseGroupReviewListDto;
-import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 

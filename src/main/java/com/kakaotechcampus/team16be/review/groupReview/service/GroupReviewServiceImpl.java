@@ -7,9 +7,9 @@ import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
 import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
 import com.kakaotechcampus.team16be.review.groupReview.repository.GroupReviewRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GroupReview> getAllReviews(User user,Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
         /***
