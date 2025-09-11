@@ -31,18 +31,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public Group createGroup(Long userId, CreateGroupDto createGroupDto) {
+    public Group createGroup(User user, CreateGroupDto createGroupDto) {
         String groupName = createGroupDto.name();
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        /***
-         * 추후 추가 예정
-         */
-        // User user = userService.findById(userId);
-
-        //임시 User 추가
-        User user = new User("id");
         Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
@@ -81,14 +74,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto) {
+    public Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
         String oldImgUrl = targetGroup.getCoverImageUrl();
-
-        /***
-         * User user = userService.findById(userId);
-         */
-        User user = new User("id"); // 임시 User 추가
 
         targetGroup.checkLeader(user);
 

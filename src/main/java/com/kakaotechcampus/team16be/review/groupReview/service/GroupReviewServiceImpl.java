@@ -2,8 +2,7 @@ package com.kakaotechcampus.team16be.review.groupReview.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
-import com.kakaotechcampus.team16be.review.common.ResponseReviewDto;
-import com.kakaotechcampus.team16be.review.common.ReviewCreateDto;
+import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
 import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
 import com.kakaotechcampus.team16be.review.groupReview.repository.GroupReviewRepository;
@@ -16,11 +15,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDto, GroupReview>  {
+public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDto, GroupReview> {
 
     private final GroupReviewRepository groupReviewRepository;
     private final GroupService groupService;
-//    private final UserService userService;
+
 
 
     @Transactional
@@ -40,7 +39,9 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
     @Override
     public List<GroupReview> getAllReviews(User user,Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
-
+        /***
+         * 추후에 GroupMember 도메인 추가 시, 해당 유저 탈퇴 여부와 그룹 등을 연관지어서 유효성 검사 추가 예정입니다!
+         */
         return groupReviewRepository.findAllByGroup(targetGroup);
     }
 }

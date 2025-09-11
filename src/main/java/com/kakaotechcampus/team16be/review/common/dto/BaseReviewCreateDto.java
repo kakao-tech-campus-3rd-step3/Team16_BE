@@ -1,4 +1,4 @@
-package com.kakaotechcampus.team16be.review.common;
+package com.kakaotechcampus.team16be.review.common.dto;
 
 import lombok.Getter;
 

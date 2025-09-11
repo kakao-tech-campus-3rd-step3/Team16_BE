@@ -1,7 +1,6 @@
-package com.kakaotechcampus.team16be.review.groupReview.service;
+package com.kakaotechcampus.team16be.review.common.service;
 
-import com.kakaotechcampus.team16be.review.common.ReviewCreateDto;
-import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
+import com.kakaotechcampus.team16be.review.common.dto.ReviewCreateDto;
 import com.kakaotechcampus.team16be.user.domain.User;
 
 import java.util.List;

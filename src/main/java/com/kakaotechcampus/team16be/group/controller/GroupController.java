@@ -4,6 +4,7 @@ package com.kakaotechcampus.team16be.group.controller;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) {
-        groupService.createGroup(userId, createGroupDto);
+    public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser User user, @Valid @RequestBody CreateGroupDto createGroupDto) {
+        groupService.createGroup(user, createGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
     }
@@ -48,8 +49,8 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser Long userId, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
-        groupService.updateGroup(userId, groupId, updateGroupDto);
+    public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
+        groupService.updateGroup(user, groupId, updateGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
     }
