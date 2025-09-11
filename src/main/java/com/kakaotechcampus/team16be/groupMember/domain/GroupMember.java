@@ -84,7 +84,7 @@ public class GroupMember extends BaseEntity {
 
     }
 
-    public void rejoin() throws GroupMemberException {
+    public void join() throws GroupMemberException {
         if (this.status == LEFT) {
             this.status = ACTIVE;
         }
@@ -93,7 +93,8 @@ public class GroupMember extends BaseEntity {
         }
         if (this.status == GroupMemberStatus.BANNED) {
             throw new GroupMemberException(MEMBER_HAS_BANNED);
-        }
+        }else
+            this.status = ACTIVE;
     }
 
     public void leaveGroup() {

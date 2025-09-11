@@ -32,13 +32,18 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
+        checkGroupLeader(group,user.getId());
 
-        GroupMember existMember= findByGroupAndUser(group, user);
+        Optional<GroupMember> existingMember = groupMemberRepository.findByGroupAndUser(group, user);
 
-        if (checkJoinGroup(existMember, group, user.getId())) {
-            return groupMemberRepository.save(GroupMember.create(group, user));
-        }else
-            throw new GroupMemberException(ErrorCode.FAILED_TO_JOIN_GROUP);
+        if (existingMember.isPresent()) {
+            GroupMember member = existingMember.get();
+            member.join();
+            return member;
+        } else {
+            GroupMember newMember = GroupMember.create(group, user);
+            return groupMemberRepository.save(newMember);
+        }
 
     }
 
@@ -47,15 +52,10 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 .orElseThrow(() -> new GroupMemberException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
     }
 
-    private boolean checkJoinGroup(GroupMember existMember, Group group, Long userId) {
+    private void checkGroupLeader(Group group, Long userId) {
         if (group.getLeader().getId().equals(userId)) {
             throw new GroupMemberException(ErrorCode.LEADER_CANNOT_JOIN);
         }
-        if (existMember != null) {
-            existMember.rejoin();
-            return true;
-        }
-        return false;
     }
 
 
