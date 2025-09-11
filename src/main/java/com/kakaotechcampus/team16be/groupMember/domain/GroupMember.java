@@ -2,18 +2,22 @@ package com.kakaotechcampus.team16be.groupMember.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.groupMember.exception.ErrorCode;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import java.time.LocalDateTime;
+
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
+import static com.kakaotechcampus.team16be.groupMember.exception.ErrorCode.*;
 
 @Entity
 @Getter
@@ -57,5 +61,48 @@ public class GroupMember extends BaseEntity {
 
     protected GroupMember() {
 
+    }
+
+    public static GroupMember create(Group group, User user) {
+
+        return GroupMember.builder().
+                group(group).
+                user(user).
+                role(MEMBER).
+                status(ACTIVE).
+                build();
+    }
+
+    public static void checkLeftGroup(GroupMember member) {
+        if (member.getRole() == GroupRole.LEADER) {
+            throw new GroupMemberException(LEADER_CANNOT_LEAVE);
+        }
+
+        if (member.getStatus() == LEFT) {
+            throw new GroupMemberException(MEMBER_ALREADY_LEFT);
+        }
+
+    }
+
+    public void rejoin() throws GroupMemberException {
+        if (this.status == LEFT) {
+            this.status = ACTIVE;
+        }
+        if (this.status == ACTIVE) {
+            throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
+        }
+        if (this.status == GroupMemberStatus.BANNED) {
+            throw new GroupMemberException(MEMBER_HAS_BANNED);
+        }
+    }
+
+    public void leaveGroup() {
+        this.status = LEFT;
+        this.leftAt = LocalDateTime.now();
+    }
+
+    public void bannedGroup() {
+        this.status = BANNED;
+        this.leftAt = LocalDateTime.now();
     }
 }
