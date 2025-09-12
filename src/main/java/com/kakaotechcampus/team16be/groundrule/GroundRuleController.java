@@ -6,7 +6,14 @@ import com.kakaotechcampus.team16be.groundrule.service.GroundRuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -15,21 +22,29 @@ public class GroundRuleController {
 
   private final GroundRuleService groundRuleService;
 
-  @PostMapping("/{groupId}/rule") //jpa를 통해 create/update 동시처리.
-  public ResponseEntity<GroundRuleResponseDto> addGroupGroundRule(
+  @PostMapping("/{groupId}/rule")
+  public ResponseEntity<GroundRuleResponseDto> addGroundRule(
       @PathVariable Long groupId,
-      @RequestBody GroundRuleRequestDto groundRuleRequestDto){
-    return ResponseEntity.status(HttpStatus.CREATED).body(groundRuleService.saveGroupGroundRule(groupId, groundRuleRequestDto));
+      @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+                         .body(groundRuleService.saveGroundRule(groupId, groundRuleRequestDto));
+  }
+
+  @PutMapping("/{groupId}/rule")
+  public ResponseEntity<GroundRuleResponseDto> updateGroundRule(
+      @PathVariable Long groupId,
+      @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
+    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, groundRuleRequestDto));
   }
 
   @GetMapping("/{groupId}/rule")
-  public ResponseEntity<GroundRuleResponseDto> getGroupGroundRule(@PathVariable Long groupId){
-    return ResponseEntity.status(HttpStatus.OK).body(groundRuleService.getGroupGroundRule(groupId));
+  public ResponseEntity<GroundRuleResponseDto> getGroundRule(@PathVariable Long groupId) {
+    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId));
   }
 
   @DeleteMapping("/{groupId}/rule")
-  public ResponseEntity<Void> deleteGroupGroundRule(@PathVariable Long groupId){
-    groundRuleService.deleteGroupGroundRule(groupId);
+  public ResponseEntity<Void> deleteGroundRule(@PathVariable Long groupId) {
+    groundRuleService.deleteGroundRule(groupId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
