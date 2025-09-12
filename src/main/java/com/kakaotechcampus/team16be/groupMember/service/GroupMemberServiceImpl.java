@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.groupMember.service;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
 import com.kakaotechcampus.team16be.groupMember.exception.ErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
@@ -50,6 +51,15 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public GroupMember findByGroupAndUser(Group group, User user) {
         return groupMemberRepository.findByGroupAndUser(group, user)
                 .orElseThrow(() -> new GroupMemberException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean checkMemberHasLeft(Group targetGroup, User user) {
+
+        return groupMemberRepository.findByGroupAndUser(targetGroup, user)
+                .map(member -> member.getStatus() == GroupMemberStatus.LEFT)
+                .orElse(false);
     }
 
     private void checkGroupLeader(Group group, Long userId) {

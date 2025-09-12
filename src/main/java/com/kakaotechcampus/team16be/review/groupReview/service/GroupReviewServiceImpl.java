@@ -1,7 +1,11 @@
 package com.kakaotechcampus.team16be.review.groupReview.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
 import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
@@ -19,6 +23,7 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
 
     private final GroupReviewRepository groupReviewRepository;
     private final GroupService groupService;
+    private final GroupMemberService groupMemberService;
 
 
 
@@ -26,13 +31,16 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
     @Override
     public GroupReview createReview(User user, CreateGroupReviewDto createGroupReviewDto) {
         Group targetGroup = groupService.findGroupById(createGroupReviewDto.getGroupId());
-        /***
-         * 아직 GroupMember를 구현을 못해서,, 일단 임시로 넣겠습니다!
-         */
-        // groupMemberService.isExistByUserAndGroup(user, targetGroup);
-        GroupReview createdGroupReview = GroupReview.createReview(user, targetGroup, createGroupReviewDto.getContent());
 
-        return groupReviewRepository.save(createdGroupReview);
+        groupMemberService.findByGroupAndUser(targetGroup, user);
+
+        boolean checkMemberLeft = groupMemberService.checkMemberHasLeft(targetGroup,user);
+
+        if (checkMemberLeft) {
+            return groupReviewRepository.save(GroupReview.createReview(user, targetGroup, createGroupReviewDto.getContent()));
+        }
+        else
+            throw new RuntimeException();
 
     }
 
@@ -40,9 +48,7 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
     @Transactional(readOnly = true)
     public List<GroupReview> getAllReviews(User user,Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
-        /***
-         * 추후에 GroupMember 도메인 추가 시, 해당 유저 탈퇴 여부와 그룹 등을 연관지어서 유효성 검사 추가 예정입니다!
-         */
+
         return groupReviewRepository.findAllByGroup(targetGroup);
     }
 }
