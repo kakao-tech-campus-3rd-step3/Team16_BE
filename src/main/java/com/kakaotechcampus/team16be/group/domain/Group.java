@@ -39,47 +39,30 @@ public class Group extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private SafetyTag safetyTag = SafetyTag.SAFE;
 
-    public Group(String name, String intro, Integer capacity) {
-    private final SafetyTag safetyTag = SafetyTag.SAFE;
+    private final SafetyTag safetyTagFinal = SafetyTag.SAFE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaderUserId", nullable = false)
     private User leader;
 
+    protected Group() {
+    }
+
     @Builder
-    protected Group(User user, String name, String intro, Integer capacity) {
+    public Group(User user, String name, String intro, Integer capacity) {
         this.leader = user;
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
     }
 
-    public Group() {
-
-    }
-
-    @Builder
-    public Group(Long id, String name, String intro, String coverImageUrl, String category, Integer capacity, SafetyTag safetyTag) {
-        this.id = id;
-        this.name = name;
-        this.intro = intro;
-        this.coverImageUrl = coverImageUrl;
-        this.category = category;
-        this.capacity = capacity;
-        this.safetyTag = safetyTag;
-    }
-
-    public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
     public static Group createGroup(User user, String name, String intro, Integer capacity) {
         return new Group(user, name, intro, capacity);
     }
 
-
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
-
         if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
             throw new GroupException(ErrorCode.GROUP_NO_INPUT);
         }
@@ -92,10 +75,6 @@ public class Group extends BaseEntity {
         if (updatedIntro != null) {
             this.intro = updatedIntro;
         }
-        this.capacity = updatedCapacity;
-        return this;
-    }
-}
         if (updatedCapacity != null) {
             this.capacity = updatedCapacity;
         }
@@ -118,6 +97,5 @@ public class Group extends BaseEntity {
         if (!(this.leader == user)) {
             throw new GroupException(ErrorCode.WRONG_GROUP_LEADER);
         }
-
     }
 }
