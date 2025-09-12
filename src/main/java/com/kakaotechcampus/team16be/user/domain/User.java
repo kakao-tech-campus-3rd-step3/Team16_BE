@@ -56,7 +56,7 @@ public class User extends BaseEntity {
         this.studentIdImageUrl = studentIdImageUrl;
         this.score = score;
     }
-}
+
     public void updateStudentIdImageUrl(String fileName) {
         this.studentIdImageUrl = fileName;
     }
