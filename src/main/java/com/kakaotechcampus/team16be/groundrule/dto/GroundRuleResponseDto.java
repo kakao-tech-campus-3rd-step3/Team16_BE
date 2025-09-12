@@ -5,4 +5,8 @@ public record GroundRuleResponseDto(
     String createdAt,
     String updatedAt
 ) {
+
+  public static GroundRuleResponseDto empty(){
+    return new GroundRuleResponseDto("", null, null);
+  }
 }

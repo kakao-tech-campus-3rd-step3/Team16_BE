@@ -33,7 +33,10 @@ public class Webconfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/api/**") // JWT 적용할 경로
-                .excludePathPatterns("/api/auth/**"); //인가 부분은 제외
+                .excludePathPatterns(
+                        "/api/auth/kakao-login",
+                        "/api/auth/kakao-logout"
+                ); //로그인 로그아웃은 제외
 
     }
 

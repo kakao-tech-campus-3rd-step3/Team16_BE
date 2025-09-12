@@ -10,22 +10,21 @@ import lombok.Getter;
 public class GroundRule extends BaseEntity {
 
   @Id
-  private Long groupId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @OneToOne(fetch = FetchType.LAZY) //그룹 당 그라운드 룰 1개.
-  @MapsId
-  @JoinColumn(name = "group_id")
-  private Group group; //후에 코드 통합 시 모임 도메인 받아오기.
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "group_id", nullable = false)
+  private Group group;
 
   @Column(columnDefinition = "TEXT")
   private String content;
 
   protected GroundRule() {}
 
-  public static GroundRule create(Group group, String content){
+  public static GroundRule create(Group group, String content) {
     GroundRule groundRule = new GroundRule();
     groundRule.group = group;
-    groundRule.groupId = group.getId();
     groundRule.changeContent(content);
     return groundRule;
   }
@@ -34,5 +33,3 @@ public class GroundRule extends BaseEntity {
     this.content = newContent;
   }
 }
-
-

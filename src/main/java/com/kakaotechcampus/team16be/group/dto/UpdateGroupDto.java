@@ -12,7 +12,10 @@ public record UpdateGroupDto(
         String intro,
 
         @Min(value = 1, message = "모임 최소 인원 수는 1명입니다.")
-        Integer capacity
+        Integer capacity,
+
+        String coverImageUrl
+
 ) {
 
 }

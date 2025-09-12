@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.user.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
@@ -40,7 +41,35 @@ public class User extends BaseEntity {
 
     public User(String kakaoId) {
         this.kakaoId = kakaoId;
-        this.role = Role.USER; // 기본 권한
-        this.verificationStatus = VerificationStatus.UNVERIFIED; // 기본 인증 상태
+        this.role = Role.USER;
+        this.verificationStatus = VerificationStatus.UNVERIFIED;
+    }
+
+    @Builder
+    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl, Long score) {
+        this.id = id;
+        this.kakaoId = kakaoId;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.role = role;
+        this.verificationStatus = verificationStatus;
+        this.studentIdImageUrl = studentIdImageUrl;
+        this.score = score;
+    }
+
+    public void updateStudentIdImageUrl(String fileName) {
+        this.studentIdImageUrl = fileName;
+    }
+
+    public void updateVerificationStatusPending() {
+        this.verificationStatus = VerificationStatus.PENDING;
+    }
+
+    public void updateProfileImageUrl(String fileName) {
+        this.profileImageUrl = fileName;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

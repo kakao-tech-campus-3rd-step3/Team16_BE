@@ -4,6 +4,7 @@ import com.kakaotechcampus.team16be.aws.dto.ImageUrlDto;
 import com.kakaotechcampus.team16be.aws.dto.IssuePresignedUrlRequest;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -20,11 +21,11 @@ public class ImageController {
 
     @PostMapping("/presigned")
     public ResponseEntity<ImageUrlDto> createPresignedUrl(
-            @LoginUser Long userId,
+            @LoginUser User user,
             @RequestBody IssuePresignedUrlRequest request
     ) {
         ImageUrlDto imageUrlDto = s3UploadPresignedUrlService.execute(
-                userId, request.fileExtension(), request.type());
+                user.getId(), request.fileExtension(), request.type());
         return ResponseEntity.ok(imageUrlDto);
     }
 
