@@ -57,3 +57,19 @@ public class User extends BaseEntity {
         this.score = score;
     }
 }
+    public void updateStudentIdImageUrl(String fileName) {
+        this.studentIdImageUrl = fileName;
+    }
+
+    public void updateVerificationStatusPending() {
+        this.verificationStatus = VerificationStatus.PENDING;
+    }
+
+    public void updateProfileImageUrl(String fileName) {
+        this.profileImageUrl = fileName;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+}
