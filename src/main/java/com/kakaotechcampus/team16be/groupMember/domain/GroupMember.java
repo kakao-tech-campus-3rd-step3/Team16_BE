@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.groupMember.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.groupMember.exception.ErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
@@ -63,7 +62,7 @@ public class GroupMember extends BaseEntity {
 
     }
 
-    public static GroupMember create(Group group, User user) {
+    public static GroupMember join(Group group, User user) {
 
         return GroupMember.builder().
                 group(group).
@@ -82,6 +81,14 @@ public class GroupMember extends BaseEntity {
             throw new GroupMemberException(MEMBER_ALREADY_LEFT);
         }
 
+    }
+
+    public static GroupMember create(Group createdGroup, User user) {
+        return GroupMember.builder().
+                group(createdGroup).
+                user(user).role(LEADER).
+                status(ACTIVE).
+                build();
     }
 
     public void join() throws GroupMemberException {
@@ -103,6 +110,9 @@ public class GroupMember extends BaseEntity {
     }
 
     public void bannedGroup() {
+        if (this.status == BANNED) {
+            throw new GroupMemberException(MEMBER_ALREADY_BANNED);
+        }
         this.status = BANNED;
         this.leftAt = LocalDateTime.now();
     }

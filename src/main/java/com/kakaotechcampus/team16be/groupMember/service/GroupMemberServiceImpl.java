@@ -8,9 +8,6 @@ import com.kakaotechcampus.team16be.groupMember.exception.ErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
-import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
-import com.kakaotechcampus.team16be.user.exception.UserException;
-import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,21 +26,22 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 
     @Transactional
-    public GroupMember joinGroup(Long groupId, Long userId) {
+    public GroupMember joinGroup(Long groupId, Long joinerId ,Long leaderId) {
         Group group = groupService.findGroupById(groupId);
 
-        User user = userService.findById(userId);
-
+        User user = userService.findById(leaderId);
         checkGroupLeader(group,user.getId());
 
-        Optional<GroupMember> existingMember = groupMemberRepository.findByGroupAndUser(group, user);
+        User joiner = userService.findById(joinerId);
+
+        Optional<GroupMember> existingMember = groupMemberRepository.findByGroupAndUser(group, joiner);
 
         if (existingMember.isPresent()) {
             GroupMember member = existingMember.get();
             member.join();
             return member;
         } else {
-            GroupMember newMember = GroupMember.create(group, user);
+            GroupMember newMember = GroupMember.join(group, joiner);
             return groupMemberRepository.save(newMember);
         }
 
@@ -63,15 +61,22 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 .orElse(false);
     }
 
+    @Override
+    public void createGroup(Group createdGroup, User user) {
+
+        GroupMember groupMember = GroupMember.create(createdGroup, user);
+        groupMemberRepository.save(groupMember);
+    }
+
     private void checkGroupLeader(Group group, Long userId) {
-        if (group.getLeader().getId().equals(userId)) {
+        if (!group.getLeader().getId().equals(userId)) {
             throw new GroupMemberException(ErrorCode.LEADER_CANNOT_JOIN);
         }
     }
 
 
     @Transactional
-    public void leaveGroup(Long groupId, Long userId) {
+    public GroupMember leaveGroup(Long groupId, Long userId) {
         Group group = groupService.findGroupById(groupId);
 
         User user = userService.findById(userId);
@@ -82,10 +87,12 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 
         member.leaveGroup();
+
+        return member;
     }
 
     @Transactional
-    public void bannedGroup(Long groupId, Long userId, User leaderUser) {
+    public GroupMember bannedGroup(Long groupId, Long userId, User leaderUser) {
         Group group = groupService.findGroupById(groupId);
 
         group.checkLeader(leaderUser);
@@ -95,6 +102,8 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         GroupMember member = findByGroupAndUser(group, bannedUser);
 
         member.bannedGroup();
+
+        return member;
 
     }
 }
