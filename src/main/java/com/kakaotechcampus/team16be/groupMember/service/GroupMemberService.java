@@ -9,7 +9,7 @@ public interface GroupMemberService {
 
     void leaveGroup(Long groupId, Long userId);
 
-    void bannedGroup(Long groupId, Long userId);
+    void bannedGroup(Long groupId, Long userId, User leader);
 
     GroupMember findByGroupAndUser(Group group, User user);
 

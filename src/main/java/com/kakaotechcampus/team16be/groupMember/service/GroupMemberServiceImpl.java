@@ -11,6 +11,7 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +25,14 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
-    private final UserRepository userRepository;
+    private final UserService userService;
+
 
     @Transactional
     public GroupMember joinGroup(Long groupId, Long userId) {
         Group group = groupService.findGroupById(groupId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        User user = userService.findById(userId);
 
         checkGroupLeader(group,user.getId());
 
@@ -73,8 +74,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public void leaveGroup(Long groupId, Long userId) {
         Group group = groupService.findGroupById(groupId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        User user = userService.findById(userId);
 
         GroupMember member = findByGroupAndUser(group, user);
 
@@ -85,13 +85,14 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Transactional
-    public void bannedGroup(Long groupId, Long userId) {
+    public void bannedGroup(Long groupId, Long userId, User leaderUser) {
         Group group = groupService.findGroupById(groupId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        group.checkLeader(leaderUser);
 
-        GroupMember member = findByGroupAndUser(group, user);
+        User bannedUser = userService.findById(userId);
+
+        GroupMember member = findByGroupAndUser(group, bannedUser);
 
         member.bannedGroup();
 
