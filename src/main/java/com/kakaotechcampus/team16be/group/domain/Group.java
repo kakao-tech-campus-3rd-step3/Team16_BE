@@ -12,9 +12,9 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
-@Getter
 @Entity
-@Table(name = "groups") // Group 예약어로 인한 변경
+@Getter
+@Table(name = "groups")
 public class Group extends BaseEntity {
 
     @Value("${cloud.aws.s3.default-image-url}")
@@ -39,39 +39,36 @@ public class Group extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private final SafetyTag safetyTag = SafetyTag.SAFE;
+    private SafetyTag safetyTag = SafetyTag.SAFE;
+
+    private final SafetyTag safetyTagFinal = SafetyTag.SAFE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaderUserId", nullable = false)
     private User leader;
 
+    protected Group() {
+    }
+
     @Builder
-    protected Group(User user, String name, String intro, Integer capacity) {
+    public Group(User user, String name, String intro, Integer capacity) {
         this.leader = user;
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
     }
 
-    public Group() {
-
-    }
-
     public static Group createGroup(User user, String name, String intro, Integer capacity) {
         return new Group(user, name, intro, capacity);
     }
 
-
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
-
         if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
             throw new GroupException(ErrorCode.GROUP_NO_INPUT);
         }
-
         if (updatedCapacity != null && updatedCapacity <= 0) {
             throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
         }
-
         if (updatedName != null) {
             this.name = updatedName;
         }
@@ -100,6 +97,5 @@ public class Group extends BaseEntity {
         if (!(this.leader == user)) {
             throw new GroupException(ErrorCode.WRONG_GROUP_LEADER);
         }
-
     }
 }
