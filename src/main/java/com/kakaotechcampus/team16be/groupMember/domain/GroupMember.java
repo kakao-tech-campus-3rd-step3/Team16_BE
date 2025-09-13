@@ -116,4 +116,12 @@ public class GroupMember extends BaseEntity {
         this.status = BANNED;
         this.leftAt = LocalDateTime.now();
     }
+
+    public void checkUserInGroup(User user) {
+        if (!this.user.getId().equals(user.getId())) {
+            throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
+        }
+
+    }
+
 }
