@@ -9,45 +9,48 @@ import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.ErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
-@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    /***
-     * 추후 UserService 구현 후 추가 예정
-     */
-    //private final UserService userService;
+    private final GroupMemberService groupMemberService;
+    private final UserService userService;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+
+    public GroupServiceImpl(GroupRepository groupRepository, @Lazy GroupMemberService groupMemberService, UserService userService, S3UploadPresignedUrlService s3UploadPresignedUrlService) {
+        this.groupRepository = groupRepository;
+        this.groupMemberService = groupMemberService;
+        this.userService = userService;
+        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
+    }
 
 
     @Transactional
     @Override
-    public Group createGroup(Long userId, CreateGroupDto createGroupDto) {
+    public Group createGroup(User user, CreateGroupDto createGroupDto) {
         String groupName = createGroupDto.name();
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        /***
-         * 추후 추가 예정
-         */
-        // User user = userService.findById(userId);
-
-        //임시 User 추가
-        User user = new User("id");
         Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
             throw new GroupException(ErrorCode.GROUP_NAME_DUPLICATE);
         }
+
+        groupMemberService.createGroup(createdGroup, user);
 
         return groupRepository.save(createdGroup);
     }
@@ -81,14 +84,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto) {
+    public Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
         String oldImgUrl = targetGroup.getCoverImageUrl();
-
-        /***
-         * User user = userService.findById(userId);
-         */
-        User user = new User("id"); // 임시 User 추가
 
         targetGroup.checkLeader(user);
 
