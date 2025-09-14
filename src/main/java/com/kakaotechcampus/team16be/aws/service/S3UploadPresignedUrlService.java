@@ -79,14 +79,14 @@ public class S3UploadPresignedUrlService {
 
     public String getPublicUrl(String fileName) {
         if (fileName == null) {
-            return defaultCoverImageUrl;
+            return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     public String getSecureUrl(String fileName) {
         if (fileName == null) {
-            return defaultCoverImageUrl;
+            return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
         }
 
         Date expiration = new Date();
