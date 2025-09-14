@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.auth.dto.StudentIdImageResponse;
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.auth.service.KakaoAuthService;
+import com.kakaotechcampus.team16be.common.annotation.AdminOnly;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
@@ -45,6 +46,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @AdminOnly
     @GetMapping("/student-verification")
     public ResponseEntity<StudentIdImageResponse> getStudentIdImage(
             @LoginUser User user
