@@ -4,11 +4,14 @@ import com.kakaotechcampus.team16be.groundrule.GroundRule;
 import com.kakaotechcampus.team16be.groundrule.GroundRuleRepository;
 import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleRequestDto;
 import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleResponseDto;
+import com.kakaotechcampus.team16be.groundrule.exception.GroundRuleErrorCode;
+import com.kakaotechcampus.team16be.groundrule.exception.GroundRuleException;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import java.nio.file.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,6 @@ public class GroundRuleServiceImpl implements GroundRuleService {
 
   private final GroundRuleRepository groundRuleRepository;
   private final GroupService groupService;
-  private final GroupRepository groupRepository;
 
   @Override
   @Transactional
@@ -33,39 +35,42 @@ public class GroundRuleServiceImpl implements GroundRuleService {
   }
 
   @Override
-  public GroundRuleResponseDto getGroundRule(Long groupId) {
-    Group group = groupService.findGroupById(groupId);
+  public GroundRuleResponseDto getGroundRule(Long groupId, Long ruleId) {
+    GroundRule groundRule = groundRuleRepository.findById(ruleId)
+        .orElseThrow(() -> new GroundRuleException(GroundRuleErrorCode.RULE_NOT_FOUND));
 
-    return groundRuleRepository.findById(groupId)
-                               .map(this::toDto)
-                               .orElse(GroundRuleResponseDto.empty());
+    groundRule.validateAccess(groupId);
+    return toDto(groundRule);
   }
 
   @Override
   @Transactional
-  public GroundRuleResponseDto updateGroundRule(Long groupId, GroundRuleRequestDto groundRuleRequestDto) {
-    if (!groupRepository.existsById(groupId)) {
-      throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);
-    }
+  public GroundRuleResponseDto updateGroundRule(Long groupId, Long ruleId, GroundRuleRequestDto groundRuleRequestDto) {
+    GroundRule groundRule = groundRuleRepository.findById(ruleId)
+                                                .orElseThrow(() -> new GroundRuleException(GroundRuleErrorCode.RULE_NOT_FOUND));
 
-    GroundRule groundRule = groundRuleRepository.findByGroupId(groupId)
-                                                .orElseThrow(() -> new RuntimeException("그라운드 룰이 존재하지 않습니다."));
-
+    groundRule.validateAccess(groupId);
     groundRule.changeContent(groundRuleRequestDto.content());
     return toDto(groundRule);
   }
 
   @Override
   @Transactional
-  public void deleteGroundRule(Long groupId) {
-    groundRuleRepository.deleteById(groupId);
+  public void deleteGroundRule(Long groupId, Long ruleId) {
+    GroundRule groundRule = groundRuleRepository.findById(ruleId)
+                                                .orElseThrow(() -> new GroundRuleException(GroundRuleErrorCode.RULE_NOT_FOUND));
+
+    groundRule.validateAccess(groupId);
+    groundRuleRepository.delete(groundRule);
   }
 
   private GroundRuleResponseDto toDto(GroundRule groundRule) {
     return new GroundRuleResponseDto(
         groundRule.getContent(),
-        groundRule.getCreatedAt() != null ? groundRule.getCreatedAt().toString() : null,
-        groundRule.getUpdatedAt() != null ? groundRule.getUpdatedAt().toString() : null
+        groundRule.getCreatedAt(),
+        groundRule.getUpdatedAt()
     );
   }
+
+
 }
