@@ -2,7 +2,10 @@ package com.kakaotechcampus.team16be.groundrule;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.Getter;
 
 @Entity
@@ -31,5 +34,15 @@ public class GroundRule extends BaseEntity {
 
   public void changeContent(String newContent) {
     this.content = newContent;
+  }
+
+  public boolean belongsTo(Long groupId){
+    return Objects.equals(group.getId(), groupId);
+  }
+
+  public void validateAccess(Long groupId) {
+    if (!belongsTo(groupId)) {
+      throw new GroupException(GroupErrorCode.WRONG_GROUP_ACCESS);
+    }
   }
 }
