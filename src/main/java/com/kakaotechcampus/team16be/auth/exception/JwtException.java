@@ -1,5 +1,8 @@
 package com.kakaotechcampus.team16be.auth.exception;
 
+import lombok.Getter;
+
+@Getter
 public class JwtException extends RuntimeException {
 
     private final JwtErrorCode errorCode;
@@ -8,9 +11,4 @@ public class JwtException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
-
-    public JwtErrorCode getErrorCode() {
-        return errorCode;
-    }
-
 }

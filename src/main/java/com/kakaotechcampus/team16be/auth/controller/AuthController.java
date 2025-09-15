@@ -1,14 +1,16 @@
 package com.kakaotechcampus.team16be.auth.controller;
 
 import com.kakaotechcampus.team16be.auth.dto.KakaoLoginResponse;
+import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
+import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.auth.service.KakaoAuthService;
+import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -16,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final KakaoAuthService kakaoAuthService;
+    private final UserService userService;
 
-    @PostMapping("/kakao-login")
+    @GetMapping("/kakao-login")
     public ResponseEntity<KakaoLoginResponse> kakaoLogin(
             @RequestParam("code") String code,
             HttpServletRequest request
@@ -30,5 +33,22 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         kakaoAuthService.logout(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/student-verification")
+    public ResponseEntity<Void> updateStudentIdImage(
+            @LoginUser User user,
+            @RequestBody UpdateStudentIdImageRequest request
+    ) {
+        userService.updateStudentIdImage(user.getId(), request);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/student-verification/status")
+    public ResponseEntity<StudentVerificationStatusResponse> getVerificationStatus(
+            @LoginUser User user
+    ) {
+        StudentVerificationStatusResponse response = userService.getVerificationStatus(user.getId());
+        return ResponseEntity.ok(response);
     }
 }

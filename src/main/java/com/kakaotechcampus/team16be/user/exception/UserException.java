@@ -1,5 +1,8 @@
 package com.kakaotechcampus.team16be.user.exception;
 
+import lombok.Getter;
+
+@Getter
 public class UserException extends RuntimeException {
 
     private final UserErrorCode errorCode;
@@ -7,9 +10,5 @@ public class UserException extends RuntimeException {
     public UserException(UserErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
-    }
-
-    public UserErrorCode getErrorCode() {
-        return errorCode;
     }
 }

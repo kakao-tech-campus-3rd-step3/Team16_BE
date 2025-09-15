@@ -1,9 +1,6 @@
 package com.kakaotechcampus.team16be.aws.service;
 
-
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
@@ -23,6 +20,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class S3UploadPresignedUrlService {
+
+    @Value("${cloud.aws.s3.default-image-url}")
+    private String defaultCoverImageUrl;
 
     private final AmazonS3Client amazonS3Client;
 
@@ -75,5 +75,28 @@ public class S3UploadPresignedUrlService {
     public void deleteImage(String fileName) {
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(deleteObjectRequest);
+    }
+
+    public String getPublicUrl(String fileName) {
+        if (fileName == null) {
+            return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
+        }
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+    public String getSecureUrl(String fileName) {
+        if (fileName == null) {
+            return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
+        }
+
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime() + 1000 * 60 * 60; // URL 유효 시간: 1시간
+        expiration.setTime(expTimeMillis);
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName)
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expiration);
+
+        return amazonS3Client.generatePresignedUrl(request).toString();
     }
 }

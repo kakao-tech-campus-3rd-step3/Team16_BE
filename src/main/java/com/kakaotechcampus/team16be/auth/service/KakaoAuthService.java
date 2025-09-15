@@ -38,27 +38,15 @@ public class KakaoAuthService {
                     return userRepository.save(newUser);
                 });
 
-        // 4. kakaoAccessToken을 세션에 저장
-        request.getSession().setAttribute("kakaoAccessToken", kakaoAccessToken);
-
-        // 5. JWT 발급 (만료시간은 카카오액세스토큰이랑 똑같이 설정함)
-        String accessToken = jwtProvider.createToken(user, kakaoTokenResponse.expiresIn());
+        // 5. JWT 발급
+        String accessToken = jwtProvider.createToken(user);
 
         return new KakaoLoginResponse(accessToken);
     }
 
     @Transactional
     public void logout(HttpServletRequest request) {
-        // 1. 세션에서 카카오 액세스 토큰 가져오기
-        String kakaoAccessToken = (String) request.getSession().getAttribute("kakaoAccessToken");
 
-        // 2. 카카오 서버 로그아웃 호출
-        kakaoAuthClient.kakaoLogout(kakaoAccessToken);
-
-        // 3. 세션에 저장된 카카오 액세스 토큰 제거
-        request.getSession().invalidate();
-
-        // 4. 클라이언트 JWT 삭제는 프론트에서 처리
     }
 
 }

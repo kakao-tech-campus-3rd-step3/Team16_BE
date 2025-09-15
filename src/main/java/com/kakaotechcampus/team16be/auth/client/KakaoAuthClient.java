@@ -22,14 +22,13 @@ public class KakaoAuthClient {
     // 카카오 API URL 상수
     private static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
-    private static final String KAKAO_LOGOUT_URL = "https://kapi.kakao.com/v1/user/logout";
 
     private final KakaoProperties kakaoProperties;
     private final RestTemplate restTemplate;
 
     /**
      * 인가 코드(code)를 사용하여 카카오에서 Access Token 요청
-     * @param code 프론트에서 받은 인가 코드
+     * @param code 카카오 서버로부터 받은 인가 코드
      * @return KaKaoTokenResponse 액세스 토큰 정보
      */
     public KakaoTokenResponse requestAccessToken(String code) {
@@ -126,25 +125,6 @@ public class KakaoAuthClient {
             throw new KakaoException(KakaoErrorCode.USER_INFO_REQUEST_FAILED);
         } catch (ResourceAccessException ex) {
             throw new KakaoException(KakaoErrorCode.CONNECTION_FAILED);
-        }
-    }
-
-
-    public void kakaoLogout(String accessToken) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(accessToken);
-            HttpEntity<Void> request = new HttpEntity<>(headers);
-
-            restTemplate.exchange(
-                    KAKAO_LOGOUT_URL,
-                    HttpMethod.POST,
-                    request,
-                    String.class
-            );
-        } catch (HttpClientErrorException e) {
-            // 토큰 만료나 인증 실패 등 카카오 오류를 KakaoException으로 변환
-            throw new KakaoException(KakaoErrorCode.LOGOUT_FAILED);
         }
     }
 
