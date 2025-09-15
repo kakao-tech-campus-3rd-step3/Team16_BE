@@ -21,8 +21,7 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.access-token-expiration}")
-    private int accessTokenExpiration;
+    private static final int ACCESS_TOKEN_EXPIRATION = 60 * 60 * 24 * 365;//테스트 편의를 위해 1년으로 설정
 
     private SecretKey secretKey;
 
@@ -39,7 +38,7 @@ public class JwtProvider {
      */
     public String createToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenExpiration  * 1000L);
+        Date expiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION * 1000L);
 
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))

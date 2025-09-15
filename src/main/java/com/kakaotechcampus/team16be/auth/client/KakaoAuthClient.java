@@ -28,7 +28,7 @@ public class KakaoAuthClient {
 
     /**
      * 인가 코드(code)를 사용하여 카카오에서 Access Token 요청
-     * @param code 프론트에서 받은 인가 코드
+     * @param code 카카오 서버로부터 받은 인가 코드
      * @return KaKaoTokenResponse 액세스 토큰 정보
      */
     public KakaoTokenResponse requestAccessToken(String code) {
