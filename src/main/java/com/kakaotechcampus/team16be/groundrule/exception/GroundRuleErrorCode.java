@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode {
+public enum GroundRuleErrorCode {
 
   RULE_NOT_FOUND(HttpStatus.NOT_FOUND, "RULE-001", "해당 룰이 존재하지 않습니다.");
 

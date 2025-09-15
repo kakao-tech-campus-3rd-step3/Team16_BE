@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode {
+public enum GroupErrorCode {
 
     GROUP_NAME_DUPLICATE(HttpStatus.CONFLICT, "GROUP-001", "해당 모임의 이름은 이미 존재합니다."),
     WRONG_GROUP_NAME(HttpStatus.BAD_REQUEST, "GROUP-002", "올바르지 않은 모임 이름입니다."),
