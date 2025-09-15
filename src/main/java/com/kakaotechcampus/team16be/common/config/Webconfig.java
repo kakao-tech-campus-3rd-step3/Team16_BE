@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.common.config;
 
+import com.kakaotechcampus.team16be.common.interceptor.AdminCheckInterceptor;
 import com.kakaotechcampus.team16be.common.interceptor.LoginCheckInterceptor;
 import com.kakaotechcampus.team16be.common.resolver.LoginUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class Webconfig implements WebMvcConfigurer {
 
     private final LoginUserArgumentResolver loginUserArgumentResolver;
     private final LoginCheckInterceptor loginCheckInterceptor;
+    private final AdminCheckInterceptor adminCheckInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -34,9 +36,11 @@ public class Webconfig implements WebMvcConfigurer {
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/api/**") // JWT 적용할 경로
                 .excludePathPatterns(
-                        "/api/auth/kakao-login",
-                        "/api/auth/kakao-logout"
+                        "/api/auth/kakao-login"
                 ); //로그인 로그아웃은 제외
+
+        registry.addInterceptor(adminCheckInterceptor)
+                .addPathPatterns("/api/admin/**"); // 관리자만 접근
 
     }
 
