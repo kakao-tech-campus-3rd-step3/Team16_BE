@@ -30,21 +30,28 @@ public class GroundRuleController {
                          .body(groundRuleService.saveGroundRule(groupId, groundRuleRequestDto));
   }
 
-  @PutMapping("/{groupId}/rule")
+  @PutMapping("/{groupId}/rule/{ruleId}")
   public ResponseEntity<GroundRuleResponseDto> updateGroundRule(
       @PathVariable Long groupId,
+      @PathVariable Long ruleId,
       @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
-    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, groundRuleRequestDto));
+    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, ruleId, groundRuleRequestDto));
   }
 
-  @GetMapping("/{groupId}/rule")
-  public ResponseEntity<GroundRuleResponseDto> getGroundRule(@PathVariable Long groupId) {
-    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId));
+  @GetMapping("/{groupId}/rule/{ruleId}")
+  public ResponseEntity<GroundRuleResponseDto> getGroundRule(
+      @PathVariable Long groupId,
+      @PathVariable Long ruleId
+  ) {
+    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId, ruleId));
   }
 
-  @DeleteMapping("/{groupId}/rule")
-  public ResponseEntity<Void> deleteGroundRule(@PathVariable Long groupId) {
-    groundRuleService.deleteGroundRule(groupId);
+  @DeleteMapping("/{groupId}/rule/{ruleId}")
+  public ResponseEntity<Void> deleteGroundRule(
+      @PathVariable Long groupId,
+      @PathVariable Long ruleId
+    ) {
+    groundRuleService.deleteGroundRule(groupId, ruleId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
