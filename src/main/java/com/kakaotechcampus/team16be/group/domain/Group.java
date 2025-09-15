@@ -1,7 +1,7 @@
 package com.kakaotechcampus.team16be.group.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
-import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
@@ -64,10 +64,10 @@ public class Group extends BaseEntity {
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
         if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
-            throw new GroupException(ErrorCode.GROUP_NO_INPUT);
+            throw new GroupException(GroupErrorCode.GROUP_NO_INPUT);
         }
         if (updatedCapacity != null && updatedCapacity <= 0) {
-            throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
+            throw new GroupException(GroupErrorCode.WRONG_GROUP_CAPACITY);
         }
         if (updatedName != null) {
             this.name = updatedName;
@@ -95,7 +95,7 @@ public class Group extends BaseEntity {
 
     public void checkLeader(User user) {
         if (!(this.leader == user)) {
-            throw new GroupException(ErrorCode.WRONG_GROUP_LEADER);
+            throw new GroupException(GroupErrorCode.WRONG_GROUP_LEADER);
         }
     }
 }

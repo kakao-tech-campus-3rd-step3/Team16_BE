@@ -12,7 +12,7 @@ public class AuthExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleJwtException(JwtException e) {
         return buildErrorResponse(
                 e.getErrorCode().getMessage(),
-                e.getErrorCode().getHttpStatus().value()
+                e.getErrorCode().getStatus().value()
         );
     }
 
@@ -20,7 +20,7 @@ public class AuthExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleKakaoException(KakaoException e) {
         return buildErrorResponse(
                 e.getErrorCode().getMessage(),
-                e.getErrorCode().getHttpStatus().value()
+                e.getErrorCode().getStatus().value()
         );
     }
 

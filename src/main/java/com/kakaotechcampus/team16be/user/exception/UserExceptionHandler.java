@@ -12,7 +12,7 @@ public class UserExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleUserException(UserException e) {
         return buildErrorResponse(
                 e.getErrorCode().getMessage(),
-                e.getErrorCode().getHttpStatus().value()
+                e.getErrorCode().getStatus().value()
         );
     }
 

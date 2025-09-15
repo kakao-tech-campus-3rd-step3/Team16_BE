@@ -10,8 +10,8 @@ public class GroupExceptionHandler {
 
     @ExceptionHandler(GroupException.class)
     public ResponseEntity<ResponseGroupDto> GroupExceptionHandler(GroupException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        return ResponseEntity.status(errorCode.getStatus()).body(ResponseGroupDto.error(errorCode));
+        GroupErrorCode groupErrorCode = e.getGroupErrorCode();
+        return ResponseEntity.status(groupErrorCode.getStatus()).body(ResponseGroupDto.error(groupErrorCode));
     }
 
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GroundRuleExceptionHandler {
 
-  @ExceptionHandler(GroundRuleNotFoundException.class)
-  public ResponseEntity<String> handleGroundRuleNotFound(GroundRuleNotFoundException ex){
+  @ExceptionHandler(GroundRuleException.class)
+  public ResponseEntity<String> handleGroundRuleNotFound(GroundRuleException ex){
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
   }
 }
