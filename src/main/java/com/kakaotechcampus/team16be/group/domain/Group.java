@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Table(name = "groups")
 public class Group extends BaseEntity {
 
-    @Value("${cloud.aws.s3.default-image-url}")
-    private String defaultCoverImageUrl;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,16 +53,19 @@ public class Group extends BaseEntity {
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
+        this.coverImageUrl="";
     }
 
     public static Group createGroup(User user, String name, String intro, Integer capacity) {
-        return new Group(user, name, intro, capacity);
+        return Group.builder().
+                user(user).
+                name(name).
+                intro(intro).
+                capacity(capacity).
+                build();
     }
 
     public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
-        if (updatedName == null && updatedIntro == null && updatedCapacity == null) {
-            throw new GroupException(ErrorCode.GROUP_NO_INPUT);
-        }
         if (updatedCapacity != null && updatedCapacity <= 0) {
             throw new GroupException(ErrorCode.WRONG_GROUP_CAPACITY);
         }
@@ -82,16 +82,9 @@ public class Group extends BaseEntity {
     }
 
     public void changeCoverImage(String newImageUrl) {
-        if (newImageUrl == null || newImageUrl.isEmpty()) {
-            this.coverImageUrl = defaultCoverImageUrl;
-        } else {
-            this.coverImageUrl = newImageUrl;
-        }
+        this.coverImageUrl = newImageUrl;
     }
 
-    public String returnDefaultImgUrl() {
-        return defaultCoverImageUrl;
-    }
 
     public void checkLeader(User user) {
         if (!(this.leader == user)) {

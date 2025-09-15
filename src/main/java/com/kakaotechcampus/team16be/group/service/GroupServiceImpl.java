@@ -12,8 +12,8 @@ import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +23,9 @@ import java.util.Objects;
 
 @Service
 public class GroupServiceImpl implements GroupService {
+
+    @Value("${cloud.aws.s3.default-image-url}")
+    private String defaultImageUrl;
 
     private final GroupRepository groupRepository;
     private final GroupMemberService groupMemberService;
@@ -67,7 +70,9 @@ public class GroupServiceImpl implements GroupService {
 
         return findGroups.stream()
                 .map(group -> {
-                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(group.getCoverImageUrl());
+                    String coverImageUrl = group.getCoverImageUrl();
+                    String imageUrlToUse = (coverImageUrl == null || coverImageUrl.isEmpty()) ? defaultImageUrl : coverImageUrl;
+                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(imageUrlToUse);
                     return ResponseGroupListDto.from(group, fullUrl);
                 }).toList();
     }
@@ -99,9 +104,8 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        boolean isOldImageDefault = (oldImgUrl == null || oldImgUrl.equals(targetGroup.returnDefaultImgUrl()));
 
-        if (isImageChanged && !isOldImageDefault) {
+        if (isImageChanged && oldImgUrl != null) {
             s3UploadPresignedUrlService.deleteImage(oldImgUrl);
         }
         return targetGroup;
@@ -116,9 +120,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseSingleGroupDto getGroup(Long groupId) {
         Group targetGroup = findGroupById(groupId);
-
-        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
-
+        String fullUrl;
+        if (targetGroup.getCoverImageUrl().isEmpty()) {
+            fullUrl = s3UploadPresignedUrlService.getPublicUrl(defaultImageUrl);
+        }else {
+            fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
+        }
         return ResponseSingleGroupDto.from(targetGroup, fullUrl);
 
     }
