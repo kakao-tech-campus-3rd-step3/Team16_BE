@@ -15,7 +15,8 @@ public enum GroupErrorCode {
     GROUP_NO_INPUT(HttpStatus.BAD_REQUEST, "GROUP-004", "입력 값이 존재하지 않습니다."),
     GROUP_CANNOT_FOUND(HttpStatus.NOT_FOUND, "GROUP-005", "모임이 존재하지 않습니다."),
     GROUP_NO_AUTHORITY(HttpStatus.FORBIDDEN, "GROUP-006", "해당 권한이 없습니다."),
-    GROUP_NO_FILENAME(HttpStatus.BAD_REQUEST, "GROUP-007", "해당 파일이 없습니다.");
+    GROUP_NO_FILENAME(HttpStatus.BAD_REQUEST, "GROUP-007", "해당 파일이 없습니다."),
+    WRONG_GROUP_ACCESS(HttpStatus.FORBIDDEN, "GROUP-009", "잘못된 그룹 접근입니다.");
 
 
     private final HttpStatus status;
