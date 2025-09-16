@@ -26,10 +26,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        if (request.type() == ImageUploadType.VERIFICATION) {
-            user.updateStudentIdImageUrl(request.fileName());
-            user.updateVerificationStatusPending();
-        }
+        user.updateStudentIdImageUrl(request.fileName());
+        user.updateVerificationStatusPending();
 
         userRepository.save(user);
     }
