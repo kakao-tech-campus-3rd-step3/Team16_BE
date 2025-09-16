@@ -14,7 +14,7 @@ public interface GroupService {
 
     List<ResponseGroupListDto> getAllGroups();
 
-    void deleteGroup(Long groupId);
+    void deleteGroup(User user,Long groupId);
 
     Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto);
 

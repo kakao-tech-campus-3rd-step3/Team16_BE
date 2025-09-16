@@ -70,8 +70,12 @@ public class GroupServiceImpl implements GroupService {
      */
     @Transactional
     @Override
-    public void deleteGroup(Long groupId) {
-        findGroupById(groupId);
+    public void deleteGroup(User user, Long groupId) {
+        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        Group targetGroup = findGroupById(groupId);
+        targetGroup.checkLeader(leader);
+
         groupRepository.deleteById(groupId);
     }
 

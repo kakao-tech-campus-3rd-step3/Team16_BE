@@ -42,9 +42,9 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> deleteGroup(@@PathVariable("groupId") Long groupId) {
+    public ResponseEntity<ResponseGroupDto> deleteGroup(@LoginUser User user,@PathVariable("groupId") Long groupId) {
 
-        groupService.deleteGroup(groupId);
+        groupService.deleteGroup(user,groupId);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "모임이 성공적으로 삭제되었습니다."));
     }
