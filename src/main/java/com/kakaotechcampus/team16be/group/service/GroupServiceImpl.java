@@ -10,6 +10,10 @@ import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
+import com.kakaotechcampus.team16be.user.exception.UserException;
+import com.kakaotechcampus.team16be.user.repository.UserRepository;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,28 +26,20 @@ import java.util.Objects;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    /***
-     * 추후 UserService 구현 후 추가 예정
-     */
-    //private final UserService userService;
+    private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
 
     @Transactional
     @Override
-    public Group createGroup(Long userId, CreateGroupDto createGroupDto) {
+    public Group createGroup(User user, CreateGroupDto createGroupDto) {
         String groupName = createGroupDto.name();
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        /***
-         * 추후 추가 예정
-         */
-        // User user = userService.findById(userId);
+        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        //임시 User 추가
-        User user = new User("id");
-        Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
+        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
             throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);

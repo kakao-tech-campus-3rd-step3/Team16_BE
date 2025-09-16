@@ -2,8 +2,10 @@ package com.kakaotechcampus.team16be.group.controller;
 
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,10 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser Long userId, @Valid @RequestBody CreateGroupDto createGroupDto) {
-        groupService.createGroup(userId, createGroupDto);
+    public ResponseEntity<ResponseCreateGroupDto> createGroup(@LoginUser User user, @Valid @RequestBody CreateGroupDto createGroupDto) {
+        Group group = groupService.createGroup(user, createGroupDto);
 
-        return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
+        return ResponseEntity.ok(ResponseCreateGroupDto.from(group));
     }
 
     @GetMapping
@@ -40,7 +42,7 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> deleteGroup(@PathVariable("groupId") Long groupId) {
+    public ResponseEntity<ResponseGroupDto> deleteGroup(@@PathVariable("groupId") Long groupId) {
 
         groupService.deleteGroup(groupId);
 
