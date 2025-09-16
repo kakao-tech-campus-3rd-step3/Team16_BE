@@ -7,6 +7,8 @@ import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
 import com.kakaotechcampus.team16be.user.dto.UserProfileImageResponse;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Tag(name = "유저 관련 API", description = "마이페이지 등에 쓰이는 유저 관련 API들")
 public class UserController {
 
     private final UserService userService;
 
-    /**
-     * 프로필 이미지 설정 (최초 등록)
-     */
+    @Operation(summary = "프로필 이미지 등록", description = "사용자의 프로필 이미지를 최초 등록합니다.")
     @PostMapping("/profile-image")
     public ResponseEntity<Void> createProfileImage(
             @LoginUser User user,
@@ -31,9 +32,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    /**
-     * 프로필 이미지 변경
-     */
+    @Operation(summary = "프로필 이미지 변경", description = "사용자의 기존 프로필 이미지를 새 이미지로 변경합니다.")
     @PutMapping("/profile-image")
     public ResponseEntity<Void> updateProfileImage(
             @LoginUser User user,
@@ -43,9 +42,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    /**
-     * 프로필 이미지 조회
-     */
+    @Operation(summary = "프로필 이미지 조회", description = "사용자의 현재 프로필 이미지를 조회합니다.")
     @GetMapping("/profile-image")
     public ResponseEntity<UserProfileImageResponse> getProfileImage(
             @LoginUser User user
@@ -54,9 +51,7 @@ public class UserController {
         return ResponseEntity.ok(new UserProfileImageResponse(imageUrl));
     }
 
-    /**
-     * 프로필 이미지 삭제
-     */
+    @Operation(summary = "프로필 이미지 삭제", description = "사용자의 프로필 이미지를 삭제합니다.")
     @DeleteMapping("/profile-image")
     public ResponseEntity<Void> deleteProfileImage(
             @LoginUser User user
@@ -65,7 +60,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    /** 닉네임 최초 등록 */
+    @Operation(summary = "닉네임 등록", description = "사용자의 닉네임을 최초 등록합니다.")
     @PostMapping("/nickname")
     public ResponseEntity<String> createNickname(
             @LoginUser User user,
@@ -75,7 +70,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body("닉네임이 설정되었습니다.");
     }
 
-    /** 닉네임 조회 */
+    @Operation(summary = "닉네임 조회", description = "사용자의 현재 닉네임을 조회합니다.")
     @GetMapping("/nickname")
     public ResponseEntity<UserNicknameResponse> getNickname(
             @LoginUser User user
@@ -84,7 +79,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /** 닉네임 수정 */
+    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 변경합니다.")
     @PutMapping("/nickname")
     public ResponseEntity<String> updateNickname(
             @LoginUser User user,
