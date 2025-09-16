@@ -37,6 +37,9 @@ public class Group extends BaseEntity {
     @Min(1)
     private Integer capacity;
 
+    @Min(1)
+    private Integer currentCapacity = 1;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private SafetyTag safetyTag = SafetyTag.SAFE;

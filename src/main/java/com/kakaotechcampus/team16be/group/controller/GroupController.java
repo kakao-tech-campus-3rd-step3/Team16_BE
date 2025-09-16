@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.group.controller;
 
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.*;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -21,9 +22,9 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<ResponseGroupDto> createGroup(@LoginUser User user, @Valid @RequestBody CreateGroupDto createGroupDto) {
-        groupService.createGroup(user.getId(), createGroupDto);
-        return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.CREATED, "모임이 생성되었습니다."));
+    public ResponseEntity<ResponseCreateGroupDto> createGroup(@LoginUser User user, @Valid @RequestBody CreateGroupDto createGroupDto) {
+        Group group = groupService.createGroup(user, createGroupDto);
+        return ResponseEntity.ok(ResponseCreateGroupDto.from(group));
     }
 
     @GetMapping
@@ -38,14 +39,14 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> deleteGroup(@PathVariable("groupId") Long groupId) {
-        groupService.deleteGroup(groupId);
+    public ResponseEntity<ResponseGroupDto> deleteGroup(@LoginUser User user,@PathVariable("groupId") Long groupId) {
+        groupService.deleteGroup(user,groupId);
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "모임이 성공적으로 삭제되었습니다."));
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
-        groupService.updateGroup(user.getId(), groupId, updateGroupDto);
-        return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
+    public ResponseEntity<ResponseUpdateGroupDto> updateGroup(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
+        Group group = groupService.updateGroup(user, groupId, updateGroupDto);
+        return ResponseEntity.ok(ResponseUpdateGroupDto.from(group));
     }
 }
