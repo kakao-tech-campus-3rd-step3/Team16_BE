@@ -50,8 +50,8 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser Long userId, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
-        groupService.updateGroup(userId, groupId, updateGroupDto);
+    public ResponseEntity<ResponseGroupDto> updateGroup(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
+        groupService.updateGroup(user, groupId, updateGroupDto);
 
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "성공적으로 수정되었습니다."));
     }

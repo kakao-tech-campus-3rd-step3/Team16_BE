@@ -16,7 +16,7 @@ public interface GroupService {
 
     void deleteGroup(User user,Long groupId);
 
-    Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto);
+    Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto);
 
     Group findGroupById(Long groupId);
 
