@@ -9,35 +9,25 @@ import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
-import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
+import com.kakaotechcampus.team16be.user.exception.UserException;
+import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import com.kakaotechcampus.team16be.user.service.UserService;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 
-    @Value("${cloud.aws.s3.default-image-url}")
-    private String defaultImageUrl;
-
     private final GroupRepository groupRepository;
-    private final GroupMemberService groupMemberService;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
-
-    public GroupServiceImpl(GroupRepository groupRepository, @Lazy GroupMemberService groupMemberService, UserService userService, S3UploadPresignedUrlService s3UploadPresignedUrlService) {
-        this.groupRepository = groupRepository;
-        this.groupMemberService = groupMemberService;
-        this.userService = userService;
-        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
-    }
 
 
     @Transactional
@@ -47,13 +37,13 @@ public class GroupServiceImpl implements GroupService {
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
+        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
             throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);
         }
-
-        groupMemberService.createGroup(createdGroup, user);
 
         return groupRepository.save(createdGroup);
     }
@@ -70,9 +60,7 @@ public class GroupServiceImpl implements GroupService {
 
         return findGroups.stream()
                 .map(group -> {
-                    String coverImageUrl = group.getCoverImageUrl();
-                    String imageUrlToUse = (coverImageUrl == null || coverImageUrl.isEmpty()) ? defaultImageUrl : coverImageUrl;
-                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(imageUrlToUse);
+                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(group.getCoverImageUrl());
                     return ResponseGroupListDto.from(group, fullUrl);
                 }).toList();
     }
@@ -82,8 +70,12 @@ public class GroupServiceImpl implements GroupService {
      */
     @Transactional
     @Override
-    public void deleteGroup(Long groupId) {
-        findGroupById(groupId);
+    public void deleteGroup(User user, Long groupId) {
+        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        Group targetGroup = findGroupById(groupId);
+        targetGroup.checkLeader(leader);
+
         groupRepository.deleteById(groupId);
     }
 
@@ -93,7 +85,9 @@ public class GroupServiceImpl implements GroupService {
         Group targetGroup = findGroupById(groupId);
         String oldImgUrl = targetGroup.getCoverImageUrl();
 
-        targetGroup.checkLeader(user);
+        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        targetGroup.checkLeader(leader);
 
         String updatedName = updateGroupDto.name();
         String updatedIntro = updateGroupDto.intro();
@@ -104,8 +98,9 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
+        boolean isOldImageDefault = (oldImgUrl == null || oldImgUrl.equals(targetGroup.returnDefaultImgUrl()));
 
-        if (isImageChanged && oldImgUrl != null) {
+        if (isImageChanged && !isOldImageDefault) {
             s3UploadPresignedUrlService.deleteImage(oldImgUrl);
         }
         return targetGroup;
@@ -120,12 +115,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseSingleGroupDto getGroup(Long groupId) {
         Group targetGroup = findGroupById(groupId);
-        String fullUrl;
-        if (targetGroup.getCoverImageUrl().isEmpty()) {
-            fullUrl = s3UploadPresignedUrlService.getPublicUrl(defaultImageUrl);
-        }else {
-            fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
-        }
+
+        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
+
         return ResponseSingleGroupDto.from(targetGroup, fullUrl);
 
     }
