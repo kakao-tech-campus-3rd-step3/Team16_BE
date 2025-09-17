@@ -1,8 +1,6 @@
 package com.kakaotechcampus.team16be.report.controller;
 
-import com.kakaotechcampus.team16be.common.annotation.AdminOnly;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
-import com.kakaotechcampus.team16be.report.dto.ReportRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResolveRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
 import com.kakaotechcampus.team16be.report.service.ReportService;
@@ -19,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/api/admin/reports")
 @RequiredArgsConstructor
 public class AdminReportController {
 
   private final ReportService reportService;
 
   // 신고 기능의 R&U&D는 관리자만 접근할 수 있게끔 유도
-  @AdminOnly
   @PatchMapping("/{reportId}")
   public ResponseEntity<ReportResponseDto> resolveReport(
       @PathVariable Long reportId,
@@ -36,13 +33,11 @@ public class AdminReportController {
     return ResponseEntity.ok(reportService.resolveReport(reportId, adminUser, reportResolveRequestDto));
   }
 
-  @AdminOnly
   @GetMapping
   public ResponseEntity<List<ReportResponseDto>> getAllReports(@LoginUser User adminUser){
     return ResponseEntity.ok(reportService.getAllReports());
   }
 
-  @AdminOnly
   @GetMapping("/{reportId}")
   public ResponseEntity<ReportResponseDto> getReport(
       @PathVariable Long reportId,
@@ -51,7 +46,6 @@ public class AdminReportController {
     return ResponseEntity.ok(reportService.getReport(reportId));
   }
 
-  @AdminOnly
   @DeleteMapping("/{reportId}")
   public ResponseEntity<Void> deleteReport(
       @PathVariable Long reportId,

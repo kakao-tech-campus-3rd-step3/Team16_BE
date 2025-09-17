@@ -7,11 +7,10 @@ import com.kakaotechcampus.team16be.report.dto.ReportRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResolveRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
 import com.kakaotechcampus.team16be.report.domain.Report;
-import com.kakaotechcampus.team16be.report.exception.ErrorCode;
-import com.kakaotechcampus.team16be.report.exception.ReportNotFoundException;
+import com.kakaotechcampus.team16be.report.exception.ReportErrorCode;
+import com.kakaotechcampus.team16be.report.exception.ReportException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class ReportServiceImpl implements ReportService{
   @Override
   public ReportResponseDto getReport(Long reportId) {
     Report report =  reportRepository.findById(reportId)
-        .orElseThrow(() -> new ReportNotFoundException(ErrorCode.REPORT_NOT_FOUND));
+        .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
 
     return toDto(report);
   }
@@ -64,7 +63,7 @@ public class ReportServiceImpl implements ReportService{
       ReportResolveRequestDto reportResolveRequestDto) {
 
     Report report = reportRepository.findById(reportId)
-        .orElseThrow(() -> new ReportNotFoundException(ErrorCode.REPORT_NOT_FOUND));
+        .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
 
     report.resolve(adminUser, reportResolveRequestDto.reportStatus());
 
@@ -75,7 +74,7 @@ public class ReportServiceImpl implements ReportService{
   @Transactional
   public void deleteReport(Long reportId) {
     Report report = reportRepository.findById(reportId)
-        .orElseThrow(() -> new ReportNotFoundException(ErrorCode.REPORT_NOT_FOUND));
+        .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
     reportRepository.delete(report);
   }
 

@@ -48,7 +48,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public String getStudentIdImageUrl(User user) {
         String fileName = user.getStudentIdImageUrl();
-        return s3UploadPresignedUrlService.getPublicUrl(fileName);
+        return s3UploadPresignedUrlService.getSecureUrl(fileName);
     }
 
     @Transactional

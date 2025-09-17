@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class GroupException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final GroupErrorCode groupErrorCode;
 
-    public GroupException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+    public GroupException(GroupErrorCode groupErrorCode) {
+        super(groupErrorCode.getMessage());
+        this.groupErrorCode = groupErrorCode;
     }
 }

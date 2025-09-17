@@ -6,7 +6,7 @@ import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
-import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
         Group createdGroup = Group.createGroup(user, groupName, groupIntro, groupCapacity);
 
         if (existGroupName(createdGroup.getName())) {
-            throw new GroupException(ErrorCode.GROUP_NAME_DUPLICATE);
+            throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);
         }
 
         groupMemberService.createGroup(createdGroup, user);
@@ -65,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
         List<Group> findGroups = groupRepository.findAll();
 
         if (findGroups.isEmpty()) {
-            throw new GroupException(ErrorCode.GROUP_CANNOT_FOUND);
+            throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);
         }
 
         return findGroups.stream()
@@ -114,7 +114,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group findGroupById(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(ErrorCode.GROUP_CANNOT_FOUND));
+        return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
     }
 
     @Override
