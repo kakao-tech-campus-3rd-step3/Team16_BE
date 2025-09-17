@@ -68,6 +68,17 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         groupMemberRepository.save(groupMember);
     }
 
+    @Override
+    public GroupMember signGroup(User user, Long groupId) {
+        User signedUser = userService.findById(user.getId());
+        Group targetGroup = groupService.findGroupById(groupId);
+
+         GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
+
+        return groupMemberRepository.save(signMember);
+    }
+
+
     private void checkGroupLeader(Group group, Long userId) {
         if (!group.getLeader().getId().equals(userId)) {
             throw new GroupMemberException(ErrorCode.LEADER_CANNOT_JOIN);

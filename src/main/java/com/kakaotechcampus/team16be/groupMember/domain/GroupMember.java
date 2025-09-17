@@ -91,6 +91,14 @@ public class GroupMember extends BaseEntity {
                 build();
     }
 
+    public static GroupMember sign(User signedUser, Group targetGroup) {
+        return GroupMember.builder().
+                group(targetGroup).
+                user(signedUser).role(MEMBER).
+                status(PENDING).
+                build();
+    }
+
     public void join() throws GroupMemberException {
         if (this.status == LEFT) {
             this.status = ACTIVE;

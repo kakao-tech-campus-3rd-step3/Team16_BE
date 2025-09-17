@@ -16,4 +16,6 @@ public interface GroupMemberService {
     boolean checkMemberHasLeft(Group targetGroup, User user);
 
     void createGroup(Group createdGroup, User user);
+
+    GroupMember signGroup(User user, Long groupId);
 }

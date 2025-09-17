@@ -45,4 +45,11 @@ public class GroupMemberController {
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹에서 강퇴당했습니다"));
     }
+
+    @PostMapping("/sign")
+    public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
+        GroupMember groupMember = groupMemberService.signGroup(user, requestGroupMemberDto.groupId());
+
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "가입신청을 완료했습니다."));
+    }
 }
