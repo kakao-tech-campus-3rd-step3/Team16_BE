@@ -37,7 +37,7 @@ public class Webconfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**") // JWT 적용할 경로
                 .excludePathPatterns(
                         "/api/auth/kakao-login"
-                ); //로그인 로그아웃은 제외
+                );
 
         registry.addInterceptor(adminCheckInterceptor)
                 .addPathPatterns("/api/admin/**"); // 관리자만 접근
