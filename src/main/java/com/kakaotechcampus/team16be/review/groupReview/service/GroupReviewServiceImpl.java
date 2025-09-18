@@ -28,9 +28,6 @@ public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDt
     @Override
     public GroupReview createReview(User user, CreateGroupReviewDto createGroupReviewDto) {
         Group targetGroup = groupService.findGroupById(createGroupReviewDto.getGroupId());
-
-        groupMemberService.findByGroupAndUser(targetGroup, user);
-
         boolean checkMemberLeft = groupMemberService.checkMemberHasLeft(targetGroup,user);
 
         if (checkMemberLeft) {

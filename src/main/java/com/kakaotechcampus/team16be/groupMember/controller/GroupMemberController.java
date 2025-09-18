@@ -7,6 +7,8 @@ import com.kakaotechcampus.team16be.groupMember.dto.RequestGroupMemberDto;
 import com.kakaotechcampus.team16be.groupMember.dto.ResponseGroupMemberDto;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/group")
+@Tag(name = "그룹 멤버 API", description = "그룹 멤버 관련 API")
 public class GroupMemberController {
 
     private final GroupMemberService groupMemberService;
 
+    @Operation(summary = "그룹 가입 승인", description = "특정 유저를 그룹에 가입 승인합니다.")
     @PostMapping("/join")
     public ResponseEntity<ResponseGroupMemberDto> joinGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         groupMemberService.joinGroup(requestGroupMemberDto.groupId(), requestGroupMemberDto.userId(), user.getId());
@@ -31,6 +35,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "해당 유저를 그룹에 가입 승인했습니다"));
     }
 
+    @Operation(summary = "그룹 탈퇴", description = "로그인한 유저를 해당 그룹에서 탈퇴 처리합니다.")
     @PostMapping("/leave")
     public ResponseEntity<ResponseGroupMemberDto> leaveGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         GroupMember groupMember = groupMemberService.leaveGroup(requestGroupMemberDto.groupId(), user.getId());
@@ -38,6 +43,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹을 탈퇴했습니다."));
     }
 
+    @Operation(summary = "그룹 강퇴", description = "특정 유저를 그룹에서 강제로 제거합니다.")
     @PostMapping("/banned")
     public ResponseEntity<ResponseGroupMemberDto> bannedMember(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         GroupMember groupMember = groupMemberService.bannedGroup(requestGroupMemberDto.groupId(), requestGroupMemberDto.userId(), user);
@@ -46,6 +52,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹에서 강퇴당했습니다"));
     }
 
+    @Operation(summary = "그룹 가입 신청", description = "로그인한 유저가 그룹 가입 신청을 합니다.")
     @PostMapping("/sign")
     public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         GroupMember groupMember = groupMemberService.signGroup(user, requestGroupMemberDto.groupId());
