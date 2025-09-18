@@ -112,4 +112,9 @@ public class UserService {
         user.updateNickname(request.nickname());
         userRepository.save(user);
     }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
 }
