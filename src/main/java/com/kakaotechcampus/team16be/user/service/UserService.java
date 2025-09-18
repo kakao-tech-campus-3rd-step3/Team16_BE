@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final String DEFAULT_PROFILE_IMAGE_KEY = "default/defaultUserImg.png";
-
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
@@ -80,7 +78,7 @@ public class UserService {
         String profileImageUrl = user.getProfileImageUrl();
 
         if (profileImageUrl == null) {
-            return s3UploadPresignedUrlService.getPublicUrl(DEFAULT_PROFILE_IMAGE_KEY);
+            return null;
         }
         return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
     }
