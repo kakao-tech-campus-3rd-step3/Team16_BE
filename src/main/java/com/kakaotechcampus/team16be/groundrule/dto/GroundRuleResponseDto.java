@@ -1,9 +1,12 @@
 package com.kakaotechcampus.team16be.groundrule.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
+
 public record GroundRuleResponseDto(
     String content,
-    String createdAt,
-    String updatedAt
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
 
   public static GroundRuleResponseDto empty(){

@@ -35,23 +35,30 @@ public class GroundRuleController {
   }
 
   @Operation(summary = "그라운드룰 수정", description = "특정 모임의 기존 그라운드룰을 수정합니다.")
-  @PutMapping("/{groupId}/rule")
+  @PutMapping("/{groupId}/rule/{ruleId}")
   public ResponseEntity<GroundRuleResponseDto> updateGroundRule(
       @PathVariable Long groupId,
+      @PathVariable Long ruleId,
       @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
-    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, groundRuleRequestDto));
+    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, ruleId, groundRuleRequestDto));
   }
 
   @Operation(summary = "그라운드룰 조회", description = "특정 모임의 그라운드룰을 조회합니다.")
-  @GetMapping("/{groupId}/rule")
-  public ResponseEntity<GroundRuleResponseDto> getGroundRule(@PathVariable Long groupId) {
-    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId));
+  @GetMapping("/{groupId}/rule/{ruleId}")
+  public ResponseEntity<GroundRuleResponseDto> getGroundRule(
+      @PathVariable Long groupId,
+      @PathVariable Long ruleId
+  ) {
+    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId, ruleId));
   }
 
   @Operation(summary = "그라운드룰 삭제", description = "특정 모임의 그라운드룰을 삭제합니다.")
-  @DeleteMapping("/{groupId}/rule")
-  public ResponseEntity<Void> deleteGroundRule(@PathVariable Long groupId) {
-    groundRuleService.deleteGroundRule(groupId);
+  @DeleteMapping("/{groupId}/rule/{ruleId}")
+  public ResponseEntity<Void> deleteGroundRule(
+      @PathVariable Long groupId,
+      @PathVariable Long ruleId
+    ) {
+    groundRuleService.deleteGroundRule(groupId, ruleId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
