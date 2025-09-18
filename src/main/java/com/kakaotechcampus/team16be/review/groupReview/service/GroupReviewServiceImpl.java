@@ -1,10 +1,7 @@
 package com.kakaotechcampus.team16be.review.groupReview.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.exception.ErrorCode;
-import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.service.GroupService;
-import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;

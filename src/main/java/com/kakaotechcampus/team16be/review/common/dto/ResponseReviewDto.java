@@ -2,7 +2,7 @@ package com.kakaotechcampus.team16be.review.common.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.review.common.exception.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
