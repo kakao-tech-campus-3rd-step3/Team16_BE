@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record PlanRequestDto(
     String title,
     String description,
-    int capacity,
+    Integer capacity,
     LocalDateTime startTime,
     LocalDateTime endTime
 ) {
