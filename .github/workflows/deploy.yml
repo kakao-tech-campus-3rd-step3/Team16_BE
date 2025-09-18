@@ -74,7 +74,7 @@ jobs:
           key: ${{ secrets.EC2_PEM_KEY }}
           script: |
             set -e
-            mkdir -p /home/${USER}/Team15_BE
+            mkdir -p /home/${USER}/Team16_BE
 
       # 8) 정확히 단일 파일만 전송 + 경로 납작화(strip_components: 2)
       - name: Copy JAR to EC2 (flatten path)
@@ -84,7 +84,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_PEM_KEY }}
           source: "build/libs/${{ steps.find_jar.outputs.JAR_NAME }}"
-          target: "/home/${{ secrets.EC2_USER }}/Team15_BE"
+          target: "/home/${{ secrets.EC2_USER }}/Team16_BE"
           overwrite: true
           strip_components: 2
 
@@ -97,7 +97,7 @@ jobs:
           key: ${{ secrets.EC2_PEM_KEY }}
           script: |
             set -euo pipefail
-            APP_DIR="/home/${USER}/Team15_BE"
+            APP_DIR="/home/${USER}/Team16_BE"
             echo "--- Full listing of ${APP_DIR} ---"
             ls -al "${APP_DIR}"
             echo "--- Verifying specific file ---"
@@ -113,7 +113,7 @@ jobs:
           script: |
             set -Eeuo pipefail
             
-            APP_DIR="/home/${USER}/Team15_BE"
+            APP_DIR="/home/${USER}/Team16_BE"
             JAR_NAME="${{ steps.find_jar.outputs.JAR_NAME }}"
             APP_JAR="app.jar"
             LOG_DIR="${APP_DIR}/logs"
