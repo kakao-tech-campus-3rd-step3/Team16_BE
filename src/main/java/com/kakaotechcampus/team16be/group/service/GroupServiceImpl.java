@@ -14,19 +14,29 @@ import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
-@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+
+    public GroupServiceImpl(
+            GroupRepository groupRepository,
+            @Lazy S3UploadPresignedUrlService s3UploadPresignedUrlService, // <- @Lazy 추가
+            UserRepository userRepository
+    ) {
+        this.groupRepository = groupRepository;
+        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
+        this.userRepository = userRepository;
+    }
 
 
     @Transactional
