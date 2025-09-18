@@ -13,7 +13,6 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
-import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,7 +80,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
-        String oldImgUrl = targetGroup.getCoverImageUrl();
 
         User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
 
@@ -91,15 +89,6 @@ public class GroupServiceImpl implements GroupService {
         String updatedIntro = updateGroupDto.intro();
         Integer updatedCapacity = updateGroupDto.capacity();
         targetGroup.update(updatedName, updatedIntro, updatedCapacity);
-
-        String updatedImgUrl = updateGroupDto.coverImageUrl();
-        targetGroup.changeCoverImage(updatedImgUrl);
-
-        boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-
-        if (isImageChanged) {
-            s3UploadPresignedUrlService.deleteImage(oldImgUrl);
-        }
 
         return targetGroup;
 
@@ -118,6 +107,25 @@ public class GroupServiceImpl implements GroupService {
 
         return ResponseSingleGroupDto.from(targetGroup, fullUrl);
 
+    }
+    @Transactional
+    @Override
+    public Group updateGroupImage(User user, Long groupId, UpdateGroupDto UpdateGroupDto) {
+        Group targetGroup = findGroupById(groupId);
+        User leader = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        targetGroup.checkLeader(leader);
+
+        String oldImgUrl = targetGroup.getCoverImageUrl();
+        String updatedImgUrl = UpdateGroupDto.coverImageUrl();
+
+        targetGroup.changeCoverImage(updatedImgUrl);
+
+        boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
+        if (isImageChanged&&!oldImgUrl.isEmpty()) {
+            s3UploadPresignedUrlService.deleteImage(oldImgUrl);
+        }
+
+        return targetGroup;
     }
 
     public boolean existGroupName(String groupName) {
