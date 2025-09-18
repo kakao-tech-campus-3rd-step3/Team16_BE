@@ -98,7 +98,7 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        boolean isOldImageDefault = (oldImgUrl == null || oldImgUrl.equals(targetGroup.returnDefaultImgUrl()));
+        boolean isOldImageDefault = (oldImgUrl == null);
 
         if (isImageChanged && !isOldImageDefault) {
             s3UploadPresignedUrlService.deleteImage(oldImgUrl);
