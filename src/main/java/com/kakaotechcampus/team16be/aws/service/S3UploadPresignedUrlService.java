@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
+import static com.kakaotechcampus.team16be.aws.domain.ImageUploadType.GROUP_ICON;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -108,13 +110,13 @@ public class S3UploadPresignedUrlService {
         return amazonS3Client.generatePresignedUrl(request).toString();
     }
 
-    public ImageUrlDto executeGroupImg(User user, Long groupId, ImageFileExtension fileExtension, ImageUploadType type) {
+    public ImageUrlDto executeGroupImg(User user, Long groupId, ImageFileExtension fileExtension) {
 
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
 
         String valueFileExtension = fileExtension.getUploadExtension();
-        String valueType = type.getType();
+        String valueType = String.valueOf(ImageUploadType.GROUP_ICON);
         String fileName = createGroupFileName(targetGroup.getId(), valueFileExtension, valueType);
         log.info(fileName);
 

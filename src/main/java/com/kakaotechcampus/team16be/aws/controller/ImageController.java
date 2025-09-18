@@ -38,7 +38,7 @@ public class ImageController {
             @RequestBody IssuePresignedUrlRequest request
     ) {
         ImageUrlDto imageUrlDto = s3UploadPresignedUrlService.executeGroupImg(
-                user,groupId, request.fileExtension(), request.type());
+                user,groupId, request.fileExtension());
         return ResponseEntity.ok(imageUrlDto);
     }
 
