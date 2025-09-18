@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.user.service;
 
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
-import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
@@ -17,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private static final String DEFAULT_PROFILE_IMAGE_KEY = "default/defaultUserImg.png";
 
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
@@ -79,7 +80,7 @@ public class UserService {
         String profileImageUrl = user.getProfileImageUrl();
 
         if (profileImageUrl == null) {
-            return null;
+            return s3UploadPresignedUrlService.getPublicUrl(DEFAULT_PROFILE_IMAGE_KEY);
         }
         return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
     }
