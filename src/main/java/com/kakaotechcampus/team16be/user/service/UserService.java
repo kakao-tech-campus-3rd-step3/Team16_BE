@@ -26,10 +26,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        if (request.type() == ImageUploadType.VERIFICATION) {
-            user.updateStudentIdImageUrl(request.fileName());
-            user.updateVerificationStatusPending();
-        }
+        user.updateStudentIdImageUrl(request.fileName());
+        user.updateVerificationStatusPending();
 
         userRepository.save(user);
     }
@@ -113,5 +111,10 @@ public class UserService {
     public void updateNickname(User user, UserNicknameRequest request) {
         user.updateNickname(request.nickname());
         userRepository.save(user);
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
 }
