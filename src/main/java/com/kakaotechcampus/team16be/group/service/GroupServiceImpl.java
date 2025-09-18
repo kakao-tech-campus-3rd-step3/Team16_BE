@@ -65,9 +65,7 @@ public class GroupServiceImpl implements GroupService {
                 }).toList();
     }
 
-    /***
-     * 관리자전용 삭제 or 그룹장전용 삭제?
-     */
+
     @Transactional
     @Override
     public void deleteGroup(User user, Long groupId) {
@@ -98,11 +96,11 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        boolean isOldImageDefault = (oldImgUrl == null || oldImgUrl.equals(targetGroup.returnDefaultImgUrl()));
 
-        if (isImageChanged && !isOldImageDefault) {
+        if (isImageChanged) {
             s3UploadPresignedUrlService.deleteImage(oldImgUrl);
         }
+
         return targetGroup;
 
     }

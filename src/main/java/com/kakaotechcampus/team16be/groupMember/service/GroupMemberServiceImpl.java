@@ -4,7 +4,7 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
-import com.kakaotechcampus.team16be.groupMember.exception.ErrorCode;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -49,7 +49,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     public GroupMember findByGroupAndUser(Group group, User user) {
         return groupMemberRepository.findByGroupAndUser(group, user)
-                .orElseThrow(() -> new GroupMemberException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GroupMemberException(GroupMemberErrorCode.GROUP_MEMBER_NOT_FOUND));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     private void checkGroupLeader(Group group, Long userId) {
         if (!group.getLeader().getId().equals(userId)) {
-            throw new GroupMemberException(ErrorCode.LEADER_CANNOT_JOIN);
+            throw new GroupMemberException(GroupMemberErrorCode.LEADER_CANNOT_JOIN);
         }
     }
 

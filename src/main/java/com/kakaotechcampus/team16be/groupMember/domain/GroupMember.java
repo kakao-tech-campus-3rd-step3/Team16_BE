@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
-import static com.kakaotechcampus.team16be.groupMember.exception.ErrorCode.*;
+import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
 
 @Entity
 @Getter

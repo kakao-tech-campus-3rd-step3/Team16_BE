@@ -1,7 +1,7 @@
 package com.kakaotechcampus.team16be.groupMember.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.kakaotechcampus.team16be.group.exception.ErrorCode;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -18,7 +18,7 @@ public class ResponseGroupMemberDto {
         return new ResponseGroupMemberDto(status.value(), "", message);
     }
 
-    public static ResponseGroupMemberDto error(ErrorCode errorCode) {
+    public static ResponseGroupMemberDto error(GroupMemberErrorCode errorCode) {
         return new ResponseGroupMemberDto(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage());
     }
 

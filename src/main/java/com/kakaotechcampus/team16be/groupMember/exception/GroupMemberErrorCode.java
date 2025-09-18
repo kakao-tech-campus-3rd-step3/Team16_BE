@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode {
+public enum GroupMemberErrorCode {
 
     GROUP_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "GROUP_MEMBER-001", "이미 그룹에 속해있는 멤버입니다."),
     GROUP_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP_MEMBER-002", "해당 유저는 그룹의 멤버가 아닙니다."),

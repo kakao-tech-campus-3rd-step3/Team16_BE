@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public class GroupMemberException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final GroupMemberErrorCode errorCode;
 
-    public GroupMemberException(ErrorCode errorCode) {
+    public GroupMemberException(GroupMemberErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
