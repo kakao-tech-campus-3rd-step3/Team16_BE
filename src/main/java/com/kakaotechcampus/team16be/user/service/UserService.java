@@ -51,11 +51,9 @@ public class UserService {
     @Transactional
     public void createProfileImage(Long userId, String fileName) {
         User user = getUser(userId);
-
         if (user.getProfileImageUrl() != null) {
             throw new UserException(UserErrorCode.PROFILE_IMAGE_ALREADY_EXISTS);
         }
-
         user.updateProfileImageUrl(fileName);
         userRepository.save(user);
     }
@@ -63,11 +61,6 @@ public class UserService {
     @Transactional
     public void updateProfileImage(Long userId, String fileName) {
         User user = getUser(userId);
-
-        if (user.getProfileImageUrl() == null) {
-            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
-        }
-
         user.updateProfileImageUrl(fileName);
         userRepository.save(user);
     }
@@ -76,7 +69,6 @@ public class UserService {
     public String getProfileImage(Long userId) {
         User user = getUser(userId);
         String profileImageUrl = user.getProfileImageUrl();
-
         if (profileImageUrl == null) {
             return null;
         }
