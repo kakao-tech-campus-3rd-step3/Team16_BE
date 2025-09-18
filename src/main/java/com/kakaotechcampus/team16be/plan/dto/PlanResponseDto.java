@@ -3,11 +3,13 @@ package com.kakaotechcampus.team16be.plan.dto;
 import java.time.LocalDateTime;
 
 public record PlanResponseDto(
-    Long groupId,
+    Long id,
     String title,
     String description,
-    int capacity,
+    Integer capacity,
     LocalDateTime startTime,
-    LocalDateTime endTime
+    LocalDateTime endTime,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
 }

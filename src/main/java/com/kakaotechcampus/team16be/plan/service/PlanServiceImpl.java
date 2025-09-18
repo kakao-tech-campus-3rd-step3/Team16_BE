@@ -8,6 +8,7 @@ import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
 import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
 import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
 import com.kakaotechcampus.team16be.plan.exception.PlanException;
+import com.kakaotechcampus.team16be.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,10 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   @Transactional
-  public PlanResponseDto createPlan(PlanRequestDto planRequestDto) {
-    Group group = groupService.findGroupById(planRequestDto.groupId());
+  public PlanResponseDto createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
+
+    Group group = groupService.findGroupById(groupId);
+    group.checkLeader(user);
 
     Plan plan = Plan.builder()
                     .group(group)
@@ -41,16 +44,18 @@ public class PlanServiceImpl implements PlanService {
   }
 
   @Override
-  public PlanResponseDto getPlan(Long planId) {
-    Plan plan = planRepository.findById(planId)
+  public PlanResponseDto getPlan(Long groupId, Long planId) {
+
+    Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
         .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
     return toDto(plan);
   }
 
   @Override
-  public List<PlanResponseDto> getAllPlans() {
-    return planRepository.findAll()
+  public List<PlanResponseDto> getAllPlans(Long groupId) {
+
+    return planRepository.findByGroupId(groupId)
         .stream()
         .map(this::toDto)
         .toList();
@@ -58,10 +63,11 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   @Transactional
-  public PlanResponseDto updatePlan(Long planId, PlanRequestDto planRequestDto) {
-    Group group = groupService.findGroupById(planRequestDto.groupId());
+  public PlanResponseDto updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto) {
+    Group group = groupService.findGroupById(groupId);
+    group.checkLeader(user);
 
-    Plan plan = planRepository.findById(planId)
+    Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
                               .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
     plan.changePlan(planRequestDto);
@@ -70,18 +76,26 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   @Transactional
-  public void deletePlan(Long planId) {
-    planRepository.deleteById(planId);
+  public void deletePlan(User user, Long groupId, Long planId) {
+    Group group = groupService.findGroupById(groupId);
+    group.checkLeader(user);
+
+    Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
+                .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+
+    planRepository.delete(plan);
   }
 
   public PlanResponseDto toDto(Plan plan){
     return new PlanResponseDto(
-        plan.getGroup().getId(),
+        plan.getId(),
         plan.getTitle(),
         plan.getDescription(),
         plan.getCapacity(),
         plan.getStartTime(),
-        plan.getEndTime()
+        plan.getEndTime(),
+        plan.getCreatedAt(),
+        plan.getUpdatedAt()
     );
   }
 }

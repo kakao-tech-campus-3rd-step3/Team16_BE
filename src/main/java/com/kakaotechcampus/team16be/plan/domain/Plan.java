@@ -37,7 +37,7 @@ public class Plan extends BaseEntity {
   private String description;
 
   @Column(name = "capacity", nullable = false)
-  private int capacity;
+  private Integer capacity;
 
   @Column(name = "start_time", nullable = false)
   private LocalDateTime startTime;
@@ -46,7 +46,7 @@ public class Plan extends BaseEntity {
   private LocalDateTime endTime;
 
   @Builder
-  public Plan(Group group, String title, String description, int capacity, LocalDateTime startTime, LocalDateTime endTime){
+  public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime){
     if(capacity <= 0){
       throw new IllegalArgumentException("참여 인원은 1명 이상이어야 합니다.");
     }
@@ -65,12 +65,17 @@ public class Plan extends BaseEntity {
   public void changePlan(PlanRequestDto dto) {
     if (dto.title() != null)
       this.title = dto.title();
+
     if (dto.description() != null)
       this.description = dto.description();
-    if (dto.capacity() <= 0)
-      this.capacity = dto.capacity();
+
+    if (dto.capacity() != null){
+      if(dto.capacity() <= 0) throw new IllegalArgumentException("참가 인원 수는 1명 이상이어야 합니다.");
+    }
+
     if (dto.startTime() != null)
       this.startTime = dto.startTime();
+
     if (dto.endTime() != null)
       this.endTime = dto.endTime();
   }
