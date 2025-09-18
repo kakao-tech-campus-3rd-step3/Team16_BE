@@ -11,5 +11,4 @@ import org.springframework.stereotype.Repository;
 public interface PlanRepository extends JpaRepository<Plan, Long> {
   Optional<Plan> findByGroupIdAndId(Long groupId, Long planId);
   List<Plan> findByGroupId(Long groupId);
-
 }
