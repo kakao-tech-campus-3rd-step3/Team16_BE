@@ -76,12 +76,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public String getProfileImage(Long userId) {
         User user = getUser(userId);
+        String profileImageUrl = user.getProfileImageUrl();
 
-        if (user.getProfileImageUrl() == null) {
-            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
+        if (profileImageUrl == null) {
+            return null;
         }
-
-        return s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+        return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
     }
 
     private User getUser(Long userId) {
