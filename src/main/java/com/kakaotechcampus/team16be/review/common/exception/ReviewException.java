@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class ReviewException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final ReviewErrorCode reviewErrorCode;
 
-    public ReviewException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+    public ReviewException(ReviewErrorCode reviewErrorCode) {
+        super(reviewErrorCode.getMessage());
+        this.reviewErrorCode = reviewErrorCode;
     }
 }

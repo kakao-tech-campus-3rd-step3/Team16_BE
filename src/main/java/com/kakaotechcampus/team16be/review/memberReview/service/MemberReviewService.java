@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.ACTIVE;
-import static com.kakaotechcampus.team16be.review.common.exception.ErrorCode.ACTIVE_CANNOT_REVIEW;
+import static com.kakaotechcampus.team16be.review.common.exception.ReviewErrorCode.ACTIVE_CANNOT_REVIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +37,9 @@ public class MemberReviewService implements ReviewService<CreateMemberReviewDto,
        Group targetGroup = groupService.findGroupById(createReviewDto.getGroupId());
        User reviewee = userService.findById(createReviewDto.getRevieweeId());
 
-        GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
+        GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, reviewee);
 
-        groupMember.checkUserInGroup(user);
+        groupMember.checkUserInGroup(reviewee);
         if (groupMember.getStatus().equals(ACTIVE)) {
             throw new ReviewException(ACTIVE_CANNOT_REVIEW);
         }

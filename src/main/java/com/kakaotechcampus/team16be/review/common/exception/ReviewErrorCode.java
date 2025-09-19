@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode {
+public enum ReviewErrorCode {
 
     ACTIVE_CANNOT_REVIEW(HttpStatus.FORBIDDEN, "REVIEW-001", "탈퇴한 회원에 대해서만 리뷰가 가능합니다.");
 

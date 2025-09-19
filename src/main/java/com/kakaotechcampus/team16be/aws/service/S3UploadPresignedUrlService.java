@@ -80,6 +80,8 @@ public class S3UploadPresignedUrlService {
     public String getPublicUrl(String fileName) {
         if (fileName == null) {
             return null;
+        } else if (fileName.isEmpty()) {
+            return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
