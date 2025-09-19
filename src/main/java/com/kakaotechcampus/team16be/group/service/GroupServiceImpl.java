@@ -99,7 +99,6 @@ public class GroupServiceImpl implements GroupService {
         String updatedIntro = updateGroupDto.intro();
         Integer updatedCapacity = updateGroupDto.capacity();
         targetGroup.update(updatedName, updatedIntro, updatedCapacity);
-
         return targetGroup;
 
     }

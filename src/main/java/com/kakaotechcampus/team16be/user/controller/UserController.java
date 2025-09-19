@@ -53,11 +53,11 @@ public class UserController {
 
     @Operation(summary = "프로필 이미지 삭제", description = "사용자의 프로필 이미지를 삭제합니다.")
     @DeleteMapping("/profile-image")
-    public ResponseEntity<Void> deleteProfileImage(
+    public ResponseEntity<String> deleteProfileImage(
             @LoginUser User user
     ) {
         userService.deleteProfileImage(user.getId());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok("null");
     }
 
     @Operation(summary = "닉네임 등록", description = "사용자의 닉네임을 최초 등록합니다.")
