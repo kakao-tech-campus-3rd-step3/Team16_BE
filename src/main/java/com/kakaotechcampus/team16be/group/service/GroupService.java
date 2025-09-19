@@ -5,19 +5,23 @@ import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
+import com.kakaotechcampus.team16be.user.domain.User;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface GroupService {
-    Group createGroup(Long userId, CreateGroupDto createGroupDto);
+    Group createGroup(User user, CreateGroupDto createGroupDto);
 
     List<ResponseGroupListDto> getAllGroups();
 
-    void deleteGroup(Long groupId);
+    void deleteGroup(User user,Long groupId);
 
-    Group updateGroup(Long userId, Long groupId, UpdateGroupDto updateGroupDto);
+    Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto);
 
     Group findGroupById(Long groupId);
 
     ResponseSingleGroupDto getGroup(Long groupId);
+
+    Group updateGroupImage(User user, Long groupId, UpdateGroupDto updateGroupDto);
 }

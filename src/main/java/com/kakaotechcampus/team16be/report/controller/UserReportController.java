@@ -6,6 +6,8 @@ import com.kakaotechcampus.team16be.report.dto.ReportRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
 import com.kakaotechcampus.team16be.report.service.ReportService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
+@Tag(name = "신고 관련 API", description = "일반 유저용 신고 관련 API")
 public class UserReportController {
 
   private final ReportService reportService;
 
-
+  @Operation(summary = "신고 생성", description = "사용자가 특정 대상(모임, 게시글, 댓글)에 대해 신고를 생성합니다.")
   @PostMapping("/{targetType}/{targetId}")
   public ResponseEntity<ReportResponseDto> createReport(
       @LoginUser User reporter,

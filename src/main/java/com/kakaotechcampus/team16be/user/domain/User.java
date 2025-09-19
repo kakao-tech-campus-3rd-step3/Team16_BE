@@ -41,6 +41,7 @@ public class User extends BaseEntity {
 
     public User(String kakaoId) {
         this.kakaoId = kakaoId;
+        this.nickname = "익명";
         this.role = Role.USER;
         this.verificationStatus = VerificationStatus.UNVERIFIED;
     }
