@@ -51,10 +51,17 @@ public class GroupController {
         return ResponseEntity.ok(ResponseGroupDto.success(HttpStatus.OK, "모임이 성공적으로 삭제되었습니다."));
     }
 
-    @Operation(summary = "모임 수정", description = "특정 모임의 정보를 수정합니다.")
+    @Operation(summary = "모임 정보 수정", description = "특정 모임의 정보를 수정합니다.")
     @PutMapping("/{groupId}")
     public ResponseEntity<ResponseUpdateGroupDto> updateGroup(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
         Group group = groupService.updateGroup(user, groupId, updateGroupDto);
+        return ResponseEntity.ok(ResponseUpdateGroupDto.from(group));
+    }
+
+    @Operation(summary = "모임 이미지 수정", description = "특정 모임의 대표 이미지를 수정합니다.")
+    @PutMapping("/{groupId}/image")
+    public ResponseEntity<ResponseUpdateGroupDto> updateGroupImage(@LoginUser User user, @PathVariable("groupId") Long groupId, @Valid @RequestBody UpdateGroupDto updateGroupDto) {
+        Group group = groupService.updateGroupImage(user, groupId, updateGroupDto);
         return ResponseEntity.ok(ResponseUpdateGroupDto.from(group));
     }
 }

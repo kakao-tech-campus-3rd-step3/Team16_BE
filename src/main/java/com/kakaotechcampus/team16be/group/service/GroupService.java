@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.user.domain.User;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface GroupService {
     Group findGroupById(Long groupId);
 
     ResponseSingleGroupDto getGroup(Long groupId);
+
+    Group updateGroupImage(User user, Long groupId, UpdateGroupDto updateGroupDto);
 }
