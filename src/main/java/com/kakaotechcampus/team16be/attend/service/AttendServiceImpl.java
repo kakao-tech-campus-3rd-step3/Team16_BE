@@ -12,6 +12,7 @@ import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class AttendServiceImpl implements AttendService{
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
 
+    @Transactional
     @Override
     public Attend attendGroup(User user, Long groupId, RequestAttendDto requestAttendDto) {
         Group targetGroup = groupService.findGroupById(groupId);
