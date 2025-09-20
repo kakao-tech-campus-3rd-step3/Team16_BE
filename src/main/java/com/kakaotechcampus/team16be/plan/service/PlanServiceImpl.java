@@ -86,7 +86,13 @@ public class PlanServiceImpl implements PlanService {
     planRepository.delete(plan);
   }
 
-  public PlanResponseDto toDto(Plan plan){
+    @Override
+    public Plan findByGroupIdAndPlanId(Long groupId, Long planId) {
+        return planRepository.findByGroupIdAndId(groupId, planId)
+            .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+    }
+
+    public PlanResponseDto toDto(Plan plan){
     return new PlanResponseDto(
         plan.getId(),
         plan.getTitle(),
