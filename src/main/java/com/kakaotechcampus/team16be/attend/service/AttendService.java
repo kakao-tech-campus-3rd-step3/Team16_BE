@@ -13,4 +13,6 @@ public interface AttendService {
     List<Attend> getAllAttends(User user, Long groupId, Long planId);
 
     List<Attend> getAttendsByGroup(User user, Long groupId);
+
+    Attend getAttendByPlan(User user, Long groupId, Long planId);
 }

@@ -12,4 +12,8 @@ public interface AttendRepository extends JpaRepository<Attend, Long> {
     List<Attend> findAllByPlan(Plan plan);
 
     List<Attend> findAllByGroupMember(GroupMember groupMember);
+
+    Attend findByPlan(Plan plan);
+
+    Attend findByPlanAndGroupMember(Plan plan, GroupMember groupMember);
 }

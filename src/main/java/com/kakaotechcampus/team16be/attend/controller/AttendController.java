@@ -48,5 +48,15 @@ public class AttendController {
 
         return ResponseEntity.ok(ResponseAttendsDto.from(userAttends));
     }
+
+    @Operation(summary = "일정별 개인 출석 조회",description = "특정 일정에 대한 개인 출석 정보를 조회합니다.")
+    @GetMapping("/{groupId}/attend/{planId}")
+    public ResponseEntity<ResponseAttendsDto> getUserAttendsByPlan(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long planId) {
+        Attend userAttends = attendService.getAttendByPlan(user, groupId, planId);
+
+        return ResponseEntity.ok(ResponseAttendsDto.from(userAttends));
+    }
+
+
 }
 

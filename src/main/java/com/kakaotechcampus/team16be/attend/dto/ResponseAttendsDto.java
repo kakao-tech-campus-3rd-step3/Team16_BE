@@ -17,4 +17,12 @@ public record ResponseAttendsDto(String planName, String userName, AttendStatus 
                 ))
                 .collect(Collectors.toList());
     }
+
+    public static ResponseAttendsDto from(Attend attend) {
+        return new ResponseAttendsDto(
+                attend.getPlan().getTitle(),
+                attend.getGroupMember().getUser().getNickname(),
+                attend.getAttendStatus()
+        );
+    }
 }
