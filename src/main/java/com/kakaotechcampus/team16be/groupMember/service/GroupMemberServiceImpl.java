@@ -62,6 +62,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    @Transactional
     public void createGroup(Group createdGroup, User user) {
 
         GroupMember groupMember = GroupMember.create(createdGroup, user);
@@ -69,6 +70,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    @Transactional
     public GroupMember signGroup(User user, Long groupId) {
         User signedUser = userService.findById(user.getId());
         Group targetGroup = groupService.findGroupById(groupId);
