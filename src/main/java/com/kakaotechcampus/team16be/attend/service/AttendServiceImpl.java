@@ -12,6 +12,7 @@ import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class AttendServiceImpl implements AttendService{
     /***
      *  조회 권한은 그룹장만 가능?
      */
+    @Transactional(readOnly = true)
     @Override
     public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
         Group targetGroup = groupService.findGroupById(groupId);
@@ -48,6 +50,7 @@ public class AttendServiceImpl implements AttendService{
         return attendRepository.findAllByPlan(plan);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Attend> getAttendsByGroup(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
@@ -56,6 +59,7 @@ public class AttendServiceImpl implements AttendService{
         return attendRepository.findAllByGroupMember(groupMember);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Attend getAttendByPlan(User user, Long groupId, Long planId) {
         Group targetGroup = groupService.findGroupById(groupId);
