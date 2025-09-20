@@ -2,6 +2,8 @@ package com.kakaotechcampus.team16be.groupMember.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+import static com.kakaotechcampus.team16be.group.exception.GroupErrorCode.WRONG_GROUP_ACCESS;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
 import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
@@ -130,6 +133,22 @@ public class GroupMember extends BaseEntity {
             throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
         }
 
+    }
+
+    public void changeToLeader() {
+        if(this.role == LEADER){
+            throw new GroupException(WRONG_GROUP_ACCESS);
+        }
+        this.role = LEADER;
+        this.group.changeLeader(this.user);
+    }
+
+
+    public void changeToMember() {
+        if(!(this.role == LEADER)){
+            throw new GroupException(WRONG_GROUP_ACCESS);
+        }
+        this.role = MEMBER;
     }
 
 }
