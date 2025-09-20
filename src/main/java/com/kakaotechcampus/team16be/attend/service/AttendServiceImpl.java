@@ -41,11 +41,18 @@ public class AttendServiceImpl implements AttendService{
     @Override
     public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
         Group targetGroup = groupService.findGroupById(groupId);
-        System.out.println(user.getId());
 
         targetGroup.checkLeader(user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
 
         return attendRepository.findAllByPlan(plan);
+    }
+
+    @Override
+    public List<Attend> getAttendsByGroup(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
+
+        return attendRepository.findAllByGroupMember(groupMember);
     }
 }

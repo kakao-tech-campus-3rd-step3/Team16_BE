@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.attend.repository;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,6 @@ import java.util.List;
 public interface AttendRepository extends JpaRepository<Attend, Long> {
 
     List<Attend> findAllByPlan(Plan plan);
+
+    List<Attend> findAllByGroupMember(GroupMember groupMember);
 }
