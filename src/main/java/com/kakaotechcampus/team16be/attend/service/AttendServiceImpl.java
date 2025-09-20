@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class AttendServiceImpl implements AttendService{
@@ -25,6 +26,7 @@ public class AttendServiceImpl implements AttendService{
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
 
+    @Transactional
     @Override
     public Attend attendGroup(User user, Long groupId, RequestAttendDto requestAttendDto) {
         Group targetGroup = groupService.findGroupById(groupId);
