@@ -30,8 +30,6 @@ public class GroupMemberController {
     public ResponseEntity<ResponseGroupMemberDto> joinGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         groupMemberService.joinGroup(requestGroupMemberDto.groupId(), requestGroupMemberDto.userId(), user.getId());
 
-        System.out.println(requestGroupMemberDto.groupId());
-
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "해당 유저를 그룹에 가입 승인했습니다"));
     }
 

@@ -133,9 +133,9 @@ public class GroupMember extends BaseEntity {
 
     }
 
-    public GroupMember cancelSignGroup() {
+    public void cancelSignGroup() {
         if (this.status == PENDING) {
-            return this;
+            this.status = CANCELED;
         } else
             throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
 

@@ -29,21 +29,25 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public GroupMember joinGroup(Long groupId, Long joinerId ,Long leaderId) {
         Group group = groupService.findGroupById(groupId);
 
-        User user = userService.findById(leaderId);
-        checkGroupLeader(group,user.getId());
+        User leader = userService.findById(leaderId);
+        group.checkLeader(leader);
 
         User joiner = userService.findById(joinerId);
 
         Optional<GroupMember> existingMember = groupMemberRepository.findByGroupAndUser(group, joiner);
 
-        if (existingMember.isPresent()) {
-            GroupMember member = existingMember.get();
-            member.join();
-            return member;
-        } else {
-            GroupMember newMember = GroupMember.join(group, joiner);
-            return groupMemberRepository.save(newMember);
+    if (existingMember.isPresent()) {
+         if (existingMember.get().getStatus() == GroupMemberStatus.CANCELED) {
+            throw new GroupMemberException(GroupMemberErrorCode.MEMBER_NOT_PENDING);
         }
+        GroupMember member = existingMember.get();
+        member.join();
+        return member;
+    }
+    else {
+        GroupMember newMember = GroupMember.join(group, joiner);
+        return groupMemberRepository.save(newMember);
+    }
 
     }
 
@@ -82,14 +86,13 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     @Transactional
-    public void cancelSignGroup(User user, Long groupId) {
+    public GroupMember cancelSignGroup(User user, Long groupId) {
         Group group = groupService.findGroupById(groupId);
 
         GroupMember groupMember = findByGroupAndUser(group, user);
         groupMember.cancelSignGroup();
 
-        groupMemberRepository.delete(groupMember);
-
+        return groupMember;
     }
 
 

@@ -19,5 +19,5 @@ public interface GroupMemberService {
 
     GroupMember signGroup(User user, Long groupId);
 
-    void cancelSignGroup(User user, Long groupId);
+    GroupMember cancelSignGroup(User user, Long groupId);
 }
