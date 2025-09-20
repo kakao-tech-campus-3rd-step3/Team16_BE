@@ -1,6 +1,6 @@
 package com.kakaotechcampus.team16be.attend.service;
 
-import com.kakaotechcampus.team16be.attend.controller.RequestAttendDto;
+import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.group.domain.Group;
@@ -13,6 +13,9 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,38 @@ public class AttendServiceImpl implements AttendService{
         Attend attend = Attend.attendPlan(groupMember, plan);
 
         return attendRepository.save(attend);
+    }
+
+    /***
+     *  조회 권한은 그룹장만 가능?
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+
+        targetGroup.checkLeader(user);
+        Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
+
+        return attendRepository.findAllByPlan(plan);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Attend> getAttendsByGroup(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
+
+        return attendRepository.findAllByGroupMember(groupMember);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Attend getAttendByPlan(User user, Long groupId, Long planId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
+        Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
+
+        return attendRepository.findByPlanAndGroupMember(plan, groupMember);
     }
 }
