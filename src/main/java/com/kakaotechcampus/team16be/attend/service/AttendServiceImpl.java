@@ -1,6 +1,6 @@
 package com.kakaotechcampus.team16be.attend.service;
 
-import com.kakaotechcampus.team16be.attend.controller.RequestAttendDto;
+import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.group.domain.Group;
@@ -12,6 +12,8 @@ import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +33,19 @@ public class AttendServiceImpl implements AttendService{
         Attend attend = Attend.attendPlan(groupMember, plan);
 
         return attendRepository.save(attend);
+    }
+
+    /***
+     *  조회 권한은 그룹장만 가능?
+     */
+    @Override
+    public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        System.out.println(user.getId());
+
+        targetGroup.checkLeader(user);
+        Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
+
+        return attendRepository.findAllByPlan(plan);
     }
 }
