@@ -78,6 +78,18 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         return groupMemberRepository.save(signMember);
     }
 
+    @Override
+    @Transactional
+    public void cancelSignGroup(User user, Long groupId) {
+        Group group = groupService.findGroupById(groupId);
+
+        GroupMember groupMember = findByGroupAndUser(group, user);
+        groupMember.cancelSignGroup();
+
+        groupMemberRepository.delete(groupMember);
+
+    }
+
 
     private void checkGroupLeader(Group group, Long userId) {
         if (!group.getLeader().getId().equals(userId)) {

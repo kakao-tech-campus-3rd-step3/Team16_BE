@@ -18,4 +18,6 @@ public interface GroupMemberService {
     void createGroup(Group createdGroup, User user);
 
     GroupMember signGroup(User user, Long groupId);
+
+    void cancelSignGroup(User user, Long groupId);
 }

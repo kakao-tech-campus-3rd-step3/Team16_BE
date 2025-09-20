@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.groupMember.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
@@ -108,7 +109,7 @@ public class GroupMember extends BaseEntity {
         }
         if (this.status == GroupMemberStatus.BANNED) {
             throw new GroupMemberException(MEMBER_HAS_BANNED);
-        }else
+        } else
             this.status = ACTIVE;
     }
 
@@ -132,4 +133,11 @@ public class GroupMember extends BaseEntity {
 
     }
 
+    public GroupMember cancelSignGroup() {
+        if (this.status == PENDING) {
+            return this;
+        } else
+            throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
+
+    }
 }

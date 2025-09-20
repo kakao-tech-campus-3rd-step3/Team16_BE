@@ -52,6 +52,14 @@ public class GroupMemberController {
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹에서 강퇴당했습니다"));
     }
 
+    @Operation(summary = "그룹 가입 신청 취소", description = "특정 유저가 그룹 가입 신청을 취소합니다.")
+    @PostMapping("/sign/cancel")
+    public ResponseEntity<ResponseGroupMemberDto> cancelSignGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
+        groupMemberService.cancelSignGroup(user, requestGroupMemberDto.groupId());
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, "가입신청을 취소했습니다."));
+    }
+
+
     @Operation(summary = "그룹 가입 신청", description = "로그인한 유저가 그룹 가입 신청을 합니다.")
     @PostMapping("/sign")
     public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
