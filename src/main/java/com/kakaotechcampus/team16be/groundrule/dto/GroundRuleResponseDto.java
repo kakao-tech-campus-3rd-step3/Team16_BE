@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 public record GroundRuleResponseDto(
+    Long id,
     String content,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {
-
-  public static GroundRuleResponseDto empty(){
-    return new GroundRuleResponseDto("", null, null);
-  }
 }
