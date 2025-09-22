@@ -30,7 +30,7 @@ public class GroupServiceImpl implements GroupService {
 
     public GroupServiceImpl(
             GroupRepository groupRepository,
-            @Lazy S3UploadPresignedUrlService s3UploadPresignedUrlService, // <- @Lazy 추가
+            S3UploadPresignedUrlService s3UploadPresignedUrlService,
             UserRepository userRepository
     ) {
         this.groupRepository = groupRepository;
