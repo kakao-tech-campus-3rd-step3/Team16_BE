@@ -30,9 +30,9 @@ public class ImageController {
         return ResponseEntity.ok(imageUrlDto);
     }
 
-    @Operation(summary = "S3 그룹 이미지  주소 요청", description = "이미지 업로드할 그룹 이미지 presigned-url을 반환합니다.")
+    @Operation(summary = "S3 그룹 이미지 주소 요청", description = "이미지 업로드할 그룹 이미지 presigned-url을 반환합니다.")
     @PostMapping("/presigned/groups/{groupId}")
-    public ResponseEntity<ImageUrlDto> createGroupPresignedUrl(
+    public ResponseEntity<ImageUrlDto> createGroupIconPresignedUrl(
             @LoginUser User user,
             @PathVariable Long groupId,
             @RequestBody IssuePresignedUrlRequest request
@@ -40,6 +40,24 @@ public class ImageController {
         ImageUrlDto imageUrlDto = s3UploadPresignedUrlService.executeGroupImg(
                 user,groupId, request.fileExtension());
         return ResponseEntity.ok(imageUrlDto);
+    }
+
+    @Operation(summary = "S3 게시글 이미지 주소 요청", description = "게시글 이미지 업로드할 presigned-url을 반환합니다.")
+    @PostMapping("/presigned/group/{groupId}/posts/{postId}")
+    public ResponseEntity<ImageUrlDto> createPostImgPresignedUrls(
+            @LoginUser User user,
+            @PathVariable Long groupId,
+            @PathVariable Long postId,
+            @RequestBody IssuePresignedUrlRequest request
+    ) {
+
+        ImageUrlDto imageURlDto = s3UploadPresignedUrlService.executePostImg(
+                user,
+                groupId,
+                postId,
+                request.fileExtension()
+        );
+        return ResponseEntity.ok(imageURlDto);
     }
 
 

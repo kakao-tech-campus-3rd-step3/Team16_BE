@@ -41,7 +41,6 @@ public class GroupMember extends BaseEntity {
     @NotNull
     private GroupRole role;
 
-
     @Enumerated(EnumType.STRING)
     @NotNull
     private GroupMemberStatus status;
@@ -140,4 +139,10 @@ public class GroupMember extends BaseEntity {
             throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
 
     }
+    public void checkUserIsActive() {
+        if (this.status != ACTIVE) {
+            throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);
+        }
+    }
+
 }
