@@ -43,7 +43,6 @@ public class GroupMember extends BaseEntity {
     @NotNull
     private GroupRole role;
 
-
     @Enumerated(EnumType.STRING)
     @NotNull
     private GroupMemberStatus status;
@@ -135,6 +134,7 @@ public class GroupMember extends BaseEntity {
 
     }
 
+
     public void changeToLeader() {
         if(this.role == LEADER){
             throw new GroupException(WRONG_GROUP_ACCESS);
@@ -149,6 +149,12 @@ public class GroupMember extends BaseEntity {
             throw new GroupException(WRONG_GROUP_ACCESS);
         }
         this.role = MEMBER;
+
+    public void checkUserIsActive() {
+        if (this.status != ACTIVE) {
+            throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);
+        }
+
     }
 
 }

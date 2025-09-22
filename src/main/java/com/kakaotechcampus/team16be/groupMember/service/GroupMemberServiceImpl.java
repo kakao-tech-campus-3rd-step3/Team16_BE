@@ -133,5 +133,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         newLeaderMember.changeToLeader();
 
         targetGroup.changeLeader(newLeader);
+
+    public void validateGroupMember(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        GroupMember member = findByGroupAndUser(targetGroup, user);
+        member.checkUserIsActive();
+
     }
 }

@@ -20,4 +20,7 @@ public interface GroupMemberService {
     GroupMember signGroup(User user, Long groupId);
 
     void changeLeader(Long groupId, User oldLeader, Long newLeaderId);
+
+    void validateGroupMember(User user, Long groupId);
+
 }
