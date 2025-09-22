@@ -4,6 +4,8 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.user.domain.User;
 
+import java.util.List;
+
 public interface GroupMemberService {
     GroupMember joinGroup(Long groupId, Long joinerId,Long userId);
 
@@ -18,4 +20,6 @@ public interface GroupMemberService {
     void createGroup(Group createdGroup, User user);
 
     GroupMember signGroup(User user, Long groupId);
+
+    List<GroupMember> findByGroup(Group targetGroup);
 }

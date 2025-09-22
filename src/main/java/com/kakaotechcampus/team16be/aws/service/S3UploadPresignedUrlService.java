@@ -14,6 +14,7 @@ import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
@@ -23,7 +24,6 @@ import java.util.UUID;
 import static com.kakaotechcampus.team16be.aws.domain.ImageUploadType.GROUP_ICON;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class S3UploadPresignedUrlService {
 
@@ -36,6 +36,11 @@ public class S3UploadPresignedUrlService {
     private String bucket;
 
     private final GroupService groupService;
+
+    public S3UploadPresignedUrlService(AmazonS3Client amazonS3Client, @Lazy GroupService groupService) {
+        this.amazonS3Client = amazonS3Client;
+        this.groupService = groupService;
+    }
 
     public ImageUrlDto execute(
             Long userId, ImageFileExtension fileExtension, ImageUploadType type

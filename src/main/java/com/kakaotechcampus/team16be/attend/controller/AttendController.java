@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.attend.controller;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
+import com.kakaotechcampus.team16be.attend.dto.ResponseAbsentAttendsDto;
 import com.kakaotechcampus.team16be.attend.dto.ResponseAttendDto;
 import com.kakaotechcampus.team16be.attend.dto.ResponseAttendsDto;
 import com.kakaotechcampus.team16be.attend.service.AttendService;
@@ -9,6 +10,7 @@ import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +59,12 @@ public class AttendController {
         return ResponseEntity.ok(ResponseAttendsDto.from(userAttends));
     }
 
+    @Operation(summary = "결석한 인원 조회", description = "특정 그룹의 일정에 결석한 인원들을 조회합니다.")
+    @GetMapping("/{groupId}/attend/{planId}/absent")
+    public ResponseEntity<List<ResponseAbsentAttendsDto>> getAbsentMembers(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long planId) {
+        List<Attend> absentMembers = attendService.getAbsentMembers(user, groupId, planId);
 
+        return ResponseEntity.ok(ResponseAbsentAttendsDto.from(absentMembers));
+    }
 }
 

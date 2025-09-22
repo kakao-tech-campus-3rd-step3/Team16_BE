@@ -15,4 +15,6 @@ public interface AttendService {
     List<Attend> getAttendsByGroup(User user, Long groupId);
 
     Attend getAttendByPlan(User user, Long groupId, Long planId);
+
+    List<Attend> getAbsentMembers(User user, Long groupId, Long planId);
 }

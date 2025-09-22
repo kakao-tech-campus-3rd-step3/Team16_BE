@@ -92,6 +92,12 @@ public class PlanServiceImpl implements PlanService {
             .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
     }
 
+    @Override
+    public Plan findById(Long planId) {
+        return planRepository.findById(planId)
+            .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+    }
+
     public PlanResponseDto toDto(Plan plan){
     return new PlanResponseDto(
         plan.getId(),

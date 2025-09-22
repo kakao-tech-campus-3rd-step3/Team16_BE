@@ -11,7 +11,7 @@ public record ResponseAttendsDto(String planName, String userName, AttendStatus 
 
     public static List<ResponseAttendsDto> from(List<Attend> allAttends) {
         return allAttends.stream()
-                .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                .sorted((a1, a2) -> a1.getCreatedAt().compareTo(a2.getCreatedAt()))
                 .map(attend -> new ResponseAttendsDto(
                         attend.getPlan().getTitle(),
                         attend.getGroupMember().getUser().getNickname(),

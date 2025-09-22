@@ -10,11 +10,14 @@ import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -69,5 +72,31 @@ public class AttendServiceImpl implements AttendService{
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
 
         return attendRepository.findByPlanAndGroupMember(plan, groupMember);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Attend> getAbsentMembers(User user, Long groupId, Long planId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        targetGroup.checkLeader(user);
+
+        Plan plan = planService.findById(planId);
+
+        List<GroupMember> allGroupMembers = groupMemberService.findByGroup(targetGroup);
+
+        List<Attend> presentAttends = attendRepository.findAllByPlan(plan);
+
+        Set<GroupMember> presentMembers = presentAttends.stream()
+                .map(Attend::getGroupMember)
+                .collect(Collectors.toSet());
+
+
+        return allGroupMembers.stream()
+                .filter(member -> !presentMembers.contains(member))
+                .map(absentMember -> Attend.builder()
+                        .groupMember(absentMember)
+                        .plan(plan)
+                        .build())
+                .toList();
     }
 }

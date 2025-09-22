@@ -16,4 +16,6 @@ public interface PlanService {
   void deletePlan(User user, Long groupId, Long planId);
 
   Plan findByGroupIdAndPlanId(Long groupId, Long planId);
+
+    Plan findById(Long planId);
 }
