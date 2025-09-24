@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -76,6 +77,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
          GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
 
         return groupMemberRepository.save(signMember);
+    }
+
+    @Override
+    public List<GroupMember> findByGroup(Group targetGroup) {
+        return groupMemberRepository.findAllByGroup((targetGroup));
     }
 
 
