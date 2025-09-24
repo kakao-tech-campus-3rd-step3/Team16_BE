@@ -12,7 +12,6 @@ import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -139,6 +138,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         newLeaderMember.changeToLeader();
 
         targetGroup.changeLeader(newLeader);
+    }
 
     public void validateGroupMember(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
