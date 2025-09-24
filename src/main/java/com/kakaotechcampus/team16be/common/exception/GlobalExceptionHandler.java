@@ -2,8 +2,11 @@ package com.kakaotechcampus.team16be.common.exception;
 
 import com.kakaotechcampus.team16be.auth.exception.JwtException;
 import com.kakaotechcampus.team16be.auth.exception.KakaoException;
+import com.kakaotechcampus.team16be.comment.exception.CommentException;
 import com.kakaotechcampus.team16be.groundrule.exception.GroundRuleException;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
+import com.kakaotechcampus.team16be.like.exception.LikeException;
+import com.kakaotechcampus.team16be.post.exception.PostException;
 import com.kakaotechcampus.team16be.report.exception.ReportException;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +59,30 @@ public class GlobalExceptionHandler {
     // GroundRule 예외
     @ExceptionHandler(GroundRuleException.class)
     public ResponseEntity<ErrorResponseDto> handleGroundRuleException(GroundRuleException e) {
+        return buildErrorResponse(e.getErrorCode().getMessage(),
+                e.getErrorCode().getCode(),
+                e.getErrorCode().getStatus().value());
+    }
+
+    // Comment 예외
+    @ExceptionHandler(CommentException.class)
+    public ResponseEntity<ErrorResponseDto> handleCommentException(CommentException e) {
+        return buildErrorResponse(e.getErrorCode().getMessage(),
+                e.getErrorCode().getCode(),
+                e.getErrorCode().getStatus().value());
+    }
+
+    // Post 예외
+    @ExceptionHandler(PostException.class)
+    public ResponseEntity<ErrorResponseDto> handlePostException(PostException e) {
+        return buildErrorResponse(e.getErrorCode().getMessage(),
+                e.getErrorCode().getCode(),
+                e.getErrorCode().getStatus().value());
+    }
+
+    // Like 예외
+    @ExceptionHandler(LikeException.class)
+    public ResponseEntity<ErrorResponseDto> handleLikeException(LikeException e) {
         return buildErrorResponse(e.getErrorCode().getMessage(),
                 e.getErrorCode().getCode(),
                 e.getErrorCode().getStatus().value());

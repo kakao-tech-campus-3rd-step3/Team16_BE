@@ -123,4 +123,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         return member;
 
     }
+
+    @Override
+    public void validateGroupMember(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        GroupMember member = findByGroupAndUser(targetGroup, user);
+        member.checkUserIsActive();
+    }
 }

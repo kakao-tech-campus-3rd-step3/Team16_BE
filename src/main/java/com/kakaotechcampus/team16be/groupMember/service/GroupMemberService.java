@@ -22,4 +22,6 @@ public interface GroupMemberService {
     GroupMember signGroup(User user, Long groupId);
 
     List<GroupMember> findByGroup(Group targetGroup);
+  
+    void validateGroupMember(User user, Long groupId);
 }
