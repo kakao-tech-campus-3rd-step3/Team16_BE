@@ -11,23 +11,29 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class S3UploadPresignedUrlService {
 
     @Value("${cloud.aws.s3.default-image-url}")
     private String defaultCoverImageUrl;
 
-    private final AmazonS3Client amazonS3Client;
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    private final AmazonS3Client amazonS3Client;
+    private final GroupService groupService;
+  
+    public S3UploadPresignedUrlService(AmazonS3Client amazonS3Client, @Lazy GroupService groupService) {
+        this.amazonS3Client = amazonS3Client;
+        this.groupService = groupService;
+    }
 
     public ImageUrlDto execute(
             Long userId, ImageFileExtension fileExtension, ImageUploadType type
