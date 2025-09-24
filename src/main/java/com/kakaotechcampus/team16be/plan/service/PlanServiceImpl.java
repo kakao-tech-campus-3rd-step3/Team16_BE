@@ -35,8 +35,11 @@ public class PlanServiceImpl implements PlanService {
                     .title(planRequestDto.title())
                     .description(planRequestDto.description())
                     .capacity(planRequestDto.capacity())
+                    .attendee(planRequestDto.attendee())
                     .startTime(planRequestDto.startTime())
                     .endTime(planRequestDto.endTime())
+                    .latitude(planRequestDto.latitude())
+                    .longitude(planRequestDto.longitude())
                     .build();
 
     Plan saved = planRepository.save(plan);
@@ -104,10 +107,13 @@ public class PlanServiceImpl implements PlanService {
         plan.getTitle(),
         plan.getDescription(),
         plan.getCapacity(),
+        plan.getAttendee(),
         plan.getStartTime(),
         plan.getEndTime(),
         plan.getCreatedAt(),
-        plan.getUpdatedAt()
+        plan.getUpdatedAt(),
+        plan.getLatitude(),
+        plan.getLongitude()
     );
   }
 }
