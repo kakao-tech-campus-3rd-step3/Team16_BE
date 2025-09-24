@@ -2,13 +2,12 @@ package com.kakaotechcampus.team16be.groupMember.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
-import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 
 import java.util.List;
 
 public interface GroupMemberService {
-    GroupMember joinGroup(Long groupId, Long joinerId,Long userId) throws GroupMemberException;
+    GroupMember joinGroup(Long groupId, Long joinerId,Long userId);
 
     GroupMember leaveGroup(Long groupId, Long userId);
 
@@ -25,7 +24,6 @@ public interface GroupMemberService {
     void changeLeader(Long groupId, User oldLeader, Long newLeaderId);
 
     List<GroupMember> findByGroup(Group targetGroup);
-
 
     GroupMember cancelSignGroup(User user, Long groupId);
 
