@@ -23,7 +23,12 @@ import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErro
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "group_members")
+@Table(
+        name = "group_members",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"group_id", "user_id"})
+        }
+)
 public class GroupMember extends BaseEntity {
 
     @Id
