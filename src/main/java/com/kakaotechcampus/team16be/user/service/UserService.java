@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.user.service;
 
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
-import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
@@ -26,10 +25,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        if (request.type() == ImageUploadType.VERIFICATION) {
-            user.updateStudentIdImageUrl(request.fileName());
-            user.updateVerificationStatusPending();
-        }
+        user.updateStudentIdImageUrl(request.fileName());
+        user.updateVerificationStatusPending();
 
         userRepository.save(user);
     }
@@ -54,11 +51,9 @@ public class UserService {
     @Transactional
     public void createProfileImage(Long userId, String fileName) {
         User user = getUser(userId);
-
         if (user.getProfileImageUrl() != null) {
             throw new UserException(UserErrorCode.PROFILE_IMAGE_ALREADY_EXISTS);
         }
-
         user.updateProfileImageUrl(fileName);
         userRepository.save(user);
     }
@@ -66,11 +61,6 @@ public class UserService {
     @Transactional
     public void updateProfileImage(Long userId, String fileName) {
         User user = getUser(userId);
-
-        if (user.getProfileImageUrl() == null) {
-            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
-        }
-
         user.updateProfileImageUrl(fileName);
         userRepository.save(user);
     }
@@ -78,12 +68,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public String getProfileImage(Long userId) {
         User user = getUser(userId);
-
-        if (user.getProfileImageUrl() == null) {
-            throw new UserException(UserErrorCode.PROFILE_IMAGE_NOT_FOUND);
+        String profileImageUrl = user.getProfileImageUrl();
+        if (profileImageUrl == null) {
+            return null;
         }
-
-        return s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+        return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
     }
 
     private User getUser(Long userId) {
@@ -113,5 +102,10 @@ public class UserService {
     public void updateNickname(User user, UserNicknameRequest request) {
         user.updateNickname(request.nickname());
         userRepository.save(user);
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
 }

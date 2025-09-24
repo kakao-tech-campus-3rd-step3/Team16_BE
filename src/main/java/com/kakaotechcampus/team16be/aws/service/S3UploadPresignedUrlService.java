@@ -7,11 +7,11 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.kakaotechcampus.team16be.aws.domain.ImageFileExtension;
 import com.kakaotechcampus.team16be.aws.domain.ImageUploadType;
 import com.kakaotechcampus.team16be.aws.dto.ImageUrlDto;
+import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -79,6 +79,8 @@ public class S3UploadPresignedUrlService {
 
     public String getPublicUrl(String fileName) {
         if (fileName == null) {
+            return null;
+        } else if (fileName.isEmpty()) {
             return amazonS3Client.getUrl(bucket, defaultCoverImageUrl).toString();
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
@@ -98,5 +100,41 @@ public class S3UploadPresignedUrlService {
                 .withExpiration(expiration);
 
         return amazonS3Client.generatePresignedUrl(request).toString();
+    }
+
+    public ImageUrlDto executeGroupImg(User user, Long groupId, ImageFileExtension fileExtension) {
+
+        String valueFileExtension = fileExtension.getUploadExtension();
+        String valueType = String.valueOf(ImageUploadType.GROUP_ICON);
+        String fileName = createGroupFileName(groupId, valueFileExtension, valueType);
+        log.info(fileName);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                getGeneratePreSignedUrlRequest(bucket, fileName, valueFileExtension);
+        URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+        return ImageUrlDto.of(url.toString(), fileName);
+    }
+
+    private String createGroupFileName(Long groupId, String fileExtension, String valueType) {
+        return valueType + "/" + groupId + "/" + UUID.randomUUID() + "." + fileExtension;
+    }
+
+    public ImageUrlDto executePostImg(User user, Long groupId, Long postId, ImageFileExtension fileExtension) {
+
+        String valueFileExtension = fileExtension.getUploadExtension();
+        String valueType = String.valueOf(ImageUploadType.POST);
+        String fileName = createPostFileName(groupId, postId, valueFileExtension, valueType);
+        log.info(fileName);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                getGeneratePreSignedUrlRequest(bucket, fileName, valueFileExtension);
+        URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+
+        return ImageUrlDto.of(url.toString(), fileName);
+    }
+
+    private String createPostFileName(Long groupId, Long postId, String fileExtension,String valueType) {
+        return valueType + "/" + groupId + "/" + postId + "/" + UUID.randomUUID() + "." + fileExtension;
     }
 }
