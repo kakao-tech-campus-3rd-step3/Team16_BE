@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface GroundRuleRepository extends JpaRepository<GroundRule, Long>{
   Optional<GroundRule> findByGroupId(Long groupId);
   List<GroundRule> findAllByGroupId(Long groupId);
+  long countByGroupId(Long groupId);
 }

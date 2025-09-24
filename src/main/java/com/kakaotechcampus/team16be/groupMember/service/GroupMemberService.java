@@ -5,6 +5,8 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 
+import java.util.List;
+
 public interface GroupMemberService {
     GroupMember joinGroup(Long groupId, Long joinerId,Long userId) throws GroupMemberException;
 
@@ -19,6 +21,10 @@ public interface GroupMemberService {
     void createGroup(Group createdGroup, User user);
 
     GroupMember signGroup(User user, Long groupId);
+
+    void changeLeader(Long groupId, User oldLeader, Long newLeaderId);
+
+    List<GroupMember> findByGroup(Group targetGroup);
 
 
     GroupMember cancelSignGroup(User user, Long groupId);

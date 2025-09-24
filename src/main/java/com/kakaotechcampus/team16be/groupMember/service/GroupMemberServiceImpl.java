@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
@@ -82,6 +83,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    public List<GroupMember> findByGroup(Group targetGroup) {
+        return groupMemberRepository.findAllByGroup((targetGroup));
+    }
+
+    @Override
     @Transactional
     public GroupMember cancelSignGroup(User user, Long groupId) {
         Group group = groupService.findGroupById(groupId);
@@ -127,9 +133,26 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    @Transactional
+    public void changeLeader(Long groupId, User oldLeader, Long newLeaderId) {
+
+        Group targetGroup = groupService.findGroupById(groupId);
+        User newLeader = userService.findById(newLeaderId);
+
+        GroupMember oldLeaderMember = findByGroupAndUser(targetGroup, oldLeader);
+        GroupMember newLeaderMember = findByGroupAndUser(targetGroup, newLeader);
+
+        targetGroup.checkLeader(oldLeader);
+        oldLeaderMember.changeToMember();
+        newLeaderMember.changeToLeader();
+
+        targetGroup.changeLeader(newLeader);
+    }
+
     public void validateGroupMember(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
         GroupMember member = findByGroupAndUser(targetGroup, user);
         member.checkUserIsActive();
+
     }
 }
