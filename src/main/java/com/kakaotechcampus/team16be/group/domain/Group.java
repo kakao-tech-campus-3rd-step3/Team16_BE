@@ -94,4 +94,8 @@ public class Group extends BaseEntity {
             throw new GroupException(GroupErrorCode.WRONG_GROUP_LEADER);
         }
     }
+
+    public void changeLeader(User user) {
+        this.leader = user;
+    }
 }

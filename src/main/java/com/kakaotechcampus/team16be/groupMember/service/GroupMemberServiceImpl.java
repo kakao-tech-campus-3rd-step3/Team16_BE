@@ -125,9 +125,25 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    @Transactional
+    public void changeLeader(Long groupId, User oldLeader, Long newLeaderId) {
+
+        Group targetGroup = groupService.findGroupById(groupId);
+        User newLeader = userService.findById(newLeaderId);
+
+        GroupMember oldLeaderMember = findByGroupAndUser(targetGroup, oldLeader);
+        GroupMember newLeaderMember = findByGroupAndUser(targetGroup, newLeader);
+
+        targetGroup.checkLeader(oldLeader);
+        oldLeaderMember.changeToMember();
+        newLeaderMember.changeToLeader();
+
+        targetGroup.changeLeader(newLeader);
+
     public void validateGroupMember(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
         GroupMember member = findByGroupAndUser(targetGroup, user);
         member.checkUserIsActive();
+
     }
 }

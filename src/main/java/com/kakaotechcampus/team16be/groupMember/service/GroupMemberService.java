@@ -21,7 +21,10 @@ public interface GroupMemberService {
 
     GroupMember signGroup(User user, Long groupId);
 
+    void changeLeader(Long groupId, User oldLeader, Long newLeaderId);
+
     List<GroupMember> findByGroup(Group targetGroup);
   
     void validateGroupMember(User user, Long groupId);
+
 }
