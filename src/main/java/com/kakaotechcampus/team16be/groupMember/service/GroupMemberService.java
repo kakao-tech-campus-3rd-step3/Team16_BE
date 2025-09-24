@@ -2,10 +2,11 @@ package com.kakaotechcampus.team16be.groupMember.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 
 public interface GroupMemberService {
-    GroupMember joinGroup(Long groupId, Long joinerId,Long userId);
+    GroupMember joinGroup(Long groupId, Long joinerId,Long userId) throws GroupMemberException;
 
     GroupMember leaveGroup(Long groupId, Long userId);
 
