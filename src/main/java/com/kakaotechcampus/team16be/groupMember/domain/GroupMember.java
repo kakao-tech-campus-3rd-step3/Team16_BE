@@ -11,7 +11,10 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+
 import java.time.LocalDateTime;
+
 import static com.kakaotechcampus.team16be.group.exception.GroupErrorCode.WRONG_GROUP_ACCESS;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
@@ -20,7 +23,12 @@ import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErro
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "group_members")
+@Table(
+        name = "group_members",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"group_id", "user_id"})
+        }
+)
 public class GroupMember extends BaseEntity {
 
     @Id
@@ -60,7 +68,7 @@ public class GroupMember extends BaseEntity {
 
     }
 
-    public static GroupMember join(Group group, User user) {
+    public static GroupMember acceptJoin(Group group, User user) {
 
         return GroupMember.builder().
                 group(group).
@@ -97,7 +105,7 @@ public class GroupMember extends BaseEntity {
                 build();
     }
 
-    public void join() throws GroupMemberException {
+    public void acceptJoin() throws GroupMemberException {
         if (this.status == LEFT) {
             this.status = ACTIVE;
         }
@@ -147,6 +155,13 @@ public class GroupMember extends BaseEntity {
         this.role = MEMBER;
     }
 
+    public void cancelSignGroup() {
+        if (this.status == PENDING) {
+            this.status = CANCELED;
+        } else
+            throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
+
+    }
     public void checkUserIsActive() {
         if (this.status != ACTIVE) {
             throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);
