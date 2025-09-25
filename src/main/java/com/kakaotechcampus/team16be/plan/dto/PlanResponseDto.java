@@ -8,8 +8,12 @@ public record PlanResponseDto(
     String description,
     Integer capacity,
     LocalDateTime startTime,
+<<<<<<< Updated upstream
     LocalDateTime endTime,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
+=======
+    LocalDateTime endTime
+>>>>>>> Stashed changes
 ) {
 }

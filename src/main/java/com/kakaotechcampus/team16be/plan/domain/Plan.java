@@ -46,6 +46,7 @@ public class Plan extends BaseEntity {
   private LocalDateTime endTime;
 
   @Builder
+<<<<<<< Updated upstream
   public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime){
     if(capacity <= 0){
       throw new IllegalArgumentException("참여 인원은 1명 이상이어야 합니다.");
@@ -53,6 +54,11 @@ public class Plan extends BaseEntity {
     if (startTime.isAfter(endTime)) {
       throw new IllegalArgumentException("시작 시간이 종료 시간 이후일 수 없습니다.");
     }
+=======
+  public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime) {
+    validateCapacity(capacity);
+    validateTimeRange(startTime, endTime);
+>>>>>>> Stashed changes
 
     this.group = group;
     this.title = title;
@@ -73,10 +79,44 @@ public class Plan extends BaseEntity {
       if(dto.capacity() <= 0) throw new IllegalArgumentException("참가 인원 수는 1명 이상이어야 합니다.");
     }
 
+<<<<<<< Updated upstream
     if (dto.startTime() != null)
       this.startTime = dto.startTime();
 
     if (dto.endTime() != null)
       this.endTime = dto.endTime();
+=======
+    this.startTime = newStartTime;
+    this.endTime = newEndTime;
+  }
+
+  public static Plan create(Group group, String title, String description,
+      Integer capacity, LocalDateTime startTime, LocalDateTime endTime
+  ){
+    return Plan.builder()
+               .group(group)
+               .title(title)
+               .description(description)
+               .capacity(capacity)
+               .startTime(startTime)
+               .endTime(endTime)
+               .build();
+  }
+
+  private void validateCapacity(Integer capacity) {
+    if(capacity == null || capacity <= 0) {
+      throw new PlanException(PlanErrorCode.INVALID_CAPACITY);
+    }
+  }
+
+  private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+    if (startTime == null || endTime == null) {
+      throw new PlanException(PlanErrorCode.TIME_REQUIRED);
+    }
+
+    if (!startTime.isBefore(endTime)) {
+      throw new PlanException(PlanErrorCode.INVALID_TIME_RANGE);
+    }
+>>>>>>> Stashed changes
   }
 }

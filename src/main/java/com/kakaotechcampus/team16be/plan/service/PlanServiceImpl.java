@@ -22,7 +22,6 @@ public class PlanServiceImpl implements PlanService {
   private final PlanRepository planRepository;
   private final GroupService groupService;
 
-
   @Override
   @Transactional
   public PlanResponseDto createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
@@ -64,6 +63,7 @@ public class PlanServiceImpl implements PlanService {
   @Override
   @Transactional
   public PlanResponseDto updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto) {
+
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
 
@@ -77,6 +77,7 @@ public class PlanServiceImpl implements PlanService {
   @Override
   @Transactional
   public void deletePlan(User user, Long groupId, Long planId) {
+
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
 
@@ -99,9 +100,13 @@ public class PlanServiceImpl implements PlanService {
         plan.getDescription(),
         plan.getCapacity(),
         plan.getStartTime(),
+<<<<<<< Updated upstream
         plan.getEndTime(),
         plan.getCreatedAt(),
         plan.getUpdatedAt()
+=======
+        plan.getEndTime()
+>>>>>>> Stashed changes
     );
   }
 }
