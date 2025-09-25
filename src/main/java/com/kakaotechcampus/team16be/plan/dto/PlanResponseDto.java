@@ -7,13 +7,12 @@ public record PlanResponseDto(
     String title,
     String description,
     Integer capacity,
+    Integer attendee,
     LocalDateTime startTime,
-<<<<<<< Updated upstream
     LocalDateTime endTime,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
-=======
-    LocalDateTime endTime
->>>>>>> Stashed changes
+    LocalDateTime updatedAt,
+    Double latitude,
+    Double longitude
 ) {
 }

@@ -5,9 +5,10 @@ import lombok.Getter;
 @Getter
 public class PlanException extends RuntimeException {
 
-  private final PlanErrorCode planErrorCode;
-  public PlanException(PlanErrorCode planErrorCode) {
-    super(planErrorCode.getMessage());
-    this.planErrorCode = planErrorCode;
-  }
+    private final PlanErrorCode planErrorCode;
+
+    public PlanException(PlanErrorCode planErrorCode) {
+        super(planErrorCode.getMessage());
+        this.planErrorCode = planErrorCode;
+    }
 }

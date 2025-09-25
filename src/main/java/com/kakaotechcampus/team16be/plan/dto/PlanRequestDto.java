@@ -6,7 +6,10 @@ public record PlanRequestDto(
     String title,
     String description,
     Integer capacity,
+    Integer attendee,
     LocalDateTime startTime,
-    LocalDateTime endTime
+    LocalDateTime endTime,
+    Double latitude,
+    Double longitude
 ) {
 }

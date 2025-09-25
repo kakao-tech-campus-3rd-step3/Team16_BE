@@ -12,10 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,8 +26,6 @@ public class GroupMemberController {
     @PostMapping("/join")
     public ResponseEntity<ResponseGroupMemberDto> joinGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         groupMemberService.joinGroup(requestGroupMemberDto.groupId(), requestGroupMemberDto.userId(), user.getId());
-
-        System.out.println(requestGroupMemberDto.groupId());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "해당 유저를 그룹에 가입 승인했습니다"));
     }
@@ -52,11 +47,27 @@ public class GroupMemberController {
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹에서 강퇴당했습니다"));
     }
 
+    @Operation(summary = "그룹 가입 신청 취소", description = "특정 유저가 그룹 가입 신청을 취소합니다.")
+    @PostMapping("/sign/cancel")
+    public ResponseEntity<ResponseGroupMemberDto> cancelSignGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
+        groupMemberService.cancelSignGroup(user, requestGroupMemberDto.groupId());
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, "가입신청을 취소했습니다."));
+    }
+
+
     @Operation(summary = "그룹 가입 신청", description = "로그인한 유저가 그룹 가입 신청을 합니다.")
     @PostMapping("/sign")
     public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
         GroupMember groupMember = groupMemberService.signGroup(user, requestGroupMemberDto.groupId());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "가입신청을 완료했습니다."));
+    }
+
+    @Operation(summary = "그룹장 위임", description = "특정 유저에게 그룹장 권한을 위임합니다.")
+    @PutMapping("/change")
+    public ResponseEntity changeGroupLeader(@LoginUser User user, @RequestBody RequestGroupMemberDto requestGroupMemberDto) {
+        groupMemberService.changeLeader(requestGroupMemberDto.groupId(), user, requestGroupMemberDto.userId());
+
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, "그룹장 위임이 완료되었습니다."));
     }
 }

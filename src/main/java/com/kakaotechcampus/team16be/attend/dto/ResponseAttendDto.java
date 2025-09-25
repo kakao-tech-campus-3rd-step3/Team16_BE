@@ -1,4 +1,4 @@
-package com.kakaotechcampus.team16be.attend.controller;
+package com.kakaotechcampus.team16be.attend.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode;
