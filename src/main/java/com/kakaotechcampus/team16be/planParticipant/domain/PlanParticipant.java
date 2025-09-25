@@ -31,10 +31,6 @@ public class PlanParticipant {
   @ManyToOne(fetch = FetchType.LAZY)
   private Plan plan;
 
-  @JoinColumn(name = "group_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Group group;
-
   @JoinColumn(name = "user_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private User user;
@@ -46,8 +42,19 @@ public class PlanParticipant {
   @Builder
   public PlanParticipant(Plan plan, Group group, User user, ParticipantStatus participantStatus) {
     this.plan = plan;
-    this.group = group;
     this.user = user;
-    this.participantStatus = ParticipantStatus.ATTEND;
+    this.participantStatus = participantStatus;
+  }
+
+  public static PlanParticipant create(Plan plan, User user) {
+    return PlanParticipant.builder()
+                          .plan(plan)
+                          .user(user)
+                          .participantStatus(ParticipantStatus.ATTENDING)
+                          .build();
+  }
+
+  public void withdraw() {
+    this.participantStatus = ParticipantStatus.WITHDRAWN;
   }
 }

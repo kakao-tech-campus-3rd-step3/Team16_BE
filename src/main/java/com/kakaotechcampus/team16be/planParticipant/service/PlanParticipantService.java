@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface PlanParticipantService {
 
-  void attendPlan(Long userId, Long planId);
+  Long attendPlan(Long userId, Long planId);
   List<PlanParticipantResponseDto> getAllParticipants(Long planId);
-  void cancelAttendance(Long userId, Long planId);
+  void withdrawAttendance(Long userId, Long planId);
 }
