@@ -1,12 +1,13 @@
 package com.kakaotechcampus.team16be.plan.exception;
 
+import com.kakaotechcampus.team16be.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum PlanErrorCode {
+public enum PlanErrorCode implements ErrorCode {
 
   // 기본 에러
   PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "PLAN-001", "일정이 존재하지 않습니다."),
@@ -26,7 +27,7 @@ public enum PlanErrorCode {
   COORDINATES_REQUIRED(HttpStatus.BAD_REQUEST, "PLAN-009", "위도와 경도는 필수입니다."),
   INVALID_COORDINATE(HttpStatus.BAD_REQUEST, "PLAN-010", "좌표 값이 범위를 벗어났습니다.");
 
-  private final HttpStatus httpStatus;
+  private final HttpStatus status;
   private final String code;
   private final String message;
 }
