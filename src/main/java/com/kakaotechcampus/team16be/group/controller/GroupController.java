@@ -4,6 +4,7 @@ package com.kakaotechcampus.team16be.group.controller;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.*;
+import com.kakaotechcampus.team16be.group.service.GroupFacade;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final GroupFacade groupFacade;
 
     @Operation(summary = "모임 생성", description = "새로운 모임을 생성합니다.")
     @PostMapping
@@ -34,14 +36,14 @@ public class GroupController {
     @Operation(summary = "모임 목록 조회", description = "모든 모임 목록을 조회합니다.")
     @GetMapping
     public ResponseEntity<List<ResponseGroupListDto>> getAllGroups() {
-        List<ResponseGroupListDto> result = groupService.getAllGroups();
+        List<ResponseGroupListDto> result = groupFacade.getGroups();
         return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "모임 상세 조회", description = "특정 모임의 상세 정보를 조회합니다.")
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseSingleGroupDto> getGroup(@PathVariable("groupId") Long groupId) {
-        return ResponseEntity.ok(groupService.getGroup(groupId));
+        return ResponseEntity.ok(groupFacade.getGroup(groupId));
     }
 
     @Operation(summary = "모임 삭제", description = "특정 모임을 삭제합니다.")
