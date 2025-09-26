@@ -7,11 +7,9 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +26,6 @@ public class PlanParticipantController {
       @LoginUser User user,
       @PathVariable Long planId
   ){
-    System.out.println("✅ [Controller] attendPlan 호출됨! planId: " + planId);
     Long participantId =  planParticipantService.attendPlan(user.getId(), planId);
     URI location = URI.create(String.format("/api/plans/%d/participant/%d", planId, participantId));
     return ResponseEntity.created(location).build();
@@ -39,8 +36,8 @@ public class PlanParticipantController {
     return ResponseEntity.ok(planParticipantService.getAllParticipants(planId));
   }
 
-  @DeleteMapping
-  public ResponseEntity<Void> cancelAttendance(
+  @PatchMapping
+  public ResponseEntity<Void> withdrawAttendance(
       @LoginUser User user,
       @PathVariable Long planId
   ){

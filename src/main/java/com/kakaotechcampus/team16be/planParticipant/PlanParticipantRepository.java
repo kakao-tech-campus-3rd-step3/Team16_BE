@@ -1,9 +1,6 @@
 package com.kakaotechcampus.team16be.planParticipant;
 
-import com.kakaotechcampus.team16be.plan.domain.Plan;
-import com.kakaotechcampus.team16be.planParticipant.domain.ParticipantStatus;
 import com.kakaotechcampus.team16be.planParticipant.domain.PlanParticipant;
-import com.kakaotechcampus.team16be.user.domain.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
