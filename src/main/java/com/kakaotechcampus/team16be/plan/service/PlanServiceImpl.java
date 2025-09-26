@@ -9,6 +9,8 @@ import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
 import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
 import com.kakaotechcampus.team16be.plan.exception.PlanException;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
+import com.kakaotechcampus.team16be.user.exception.UserException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,6 @@ public class PlanServiceImpl implements PlanService {
   private final PlanRepository planRepository;
   private final GroupService groupService;
 
-
   @Override
   @Transactional
   public PlanResponseDto createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
@@ -35,11 +36,8 @@ public class PlanServiceImpl implements PlanService {
                     .title(planRequestDto.title())
                     .description(planRequestDto.description())
                     .capacity(planRequestDto.capacity())
-                    .attendee(planRequestDto.attendee())
                     .startTime(planRequestDto.startTime())
                     .endTime(planRequestDto.endTime())
-                    .latitude(planRequestDto.latitude())
-                    .longitude(planRequestDto.longitude())
                     .build();
 
     Plan saved = planRepository.save(plan);
@@ -67,6 +65,7 @@ public class PlanServiceImpl implements PlanService {
   @Override
   @Transactional
   public PlanResponseDto updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto) {
+
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
 
@@ -80,6 +79,7 @@ public class PlanServiceImpl implements PlanService {
   @Override
   @Transactional
   public void deletePlan(User user, Long groupId, Long planId) {
+
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
 
@@ -95,11 +95,10 @@ public class PlanServiceImpl implements PlanService {
             .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
     }
 
-    @Override
-    public Plan findById(Long planId) {
-        return planRepository.findById(planId)
-            .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
-    }
+  public Plan findById(Long userId) {
+    return planRepository.findById(userId)
+                         .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+  }
 
     public PlanResponseDto toDto(Plan plan){
     return new PlanResponseDto(
@@ -107,13 +106,8 @@ public class PlanServiceImpl implements PlanService {
         plan.getTitle(),
         plan.getDescription(),
         plan.getCapacity(),
-        plan.getAttendee(),
         plan.getStartTime(),
-        plan.getEndTime(),
-        plan.getCreatedAt(),
-        plan.getUpdatedAt(),
-        plan.getLatitude(),
-        plan.getLongitude()
+        plan.getEndTime()
     );
   }
 }

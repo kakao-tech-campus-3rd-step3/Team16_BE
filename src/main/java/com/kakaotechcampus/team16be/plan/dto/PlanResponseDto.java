@@ -7,12 +7,7 @@ public record PlanResponseDto(
     String title,
     String description,
     Integer capacity,
-    Integer attendee,
     LocalDateTime startTime,
-    LocalDateTime endTime,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt,
-    Double latitude,
-    Double longitude
+    LocalDateTime endTime
 ) {
 }
