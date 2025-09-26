@@ -2,7 +2,7 @@ package com.kakaotechcampus.team16be.plan.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
-import com.kakaotechcampus.team16be.plan.domain.Location; // Location 임포트 추가
+import com.kakaotechcampus.team16be.plan.domain.Location;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
