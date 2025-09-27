@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.groundrule.dto.GroundRuleResponseDto;
 import com.kakaotechcampus.team16be.groundrule.service.GroundRuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,12 @@ public class GroundRuleController {
       @PathVariable Long ruleId
   ) {
     return ResponseEntity.ok(groundRuleService.getGroundRule(groupId, ruleId));
+  }
+
+  @Operation(summary = "그라운드룰 목록 조회", description = "특정 모임의 그라운드룰의 목록을 조회합니다.")
+  @GetMapping("/{groupId}/rule")
+  public ResponseEntity<List<GroundRuleResponseDto>> getAllGroundRules(@PathVariable Long groupId){
+    return ResponseEntity.ok(groundRuleService.getAllGroundRules(groupId));
   }
 
   @Operation(summary = "그라운드룰 삭제", description = "특정 모임의 그라운드룰을 삭제합니다.")

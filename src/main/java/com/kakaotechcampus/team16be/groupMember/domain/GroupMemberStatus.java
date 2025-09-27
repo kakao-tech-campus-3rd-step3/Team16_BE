@@ -4,5 +4,6 @@ public enum GroupMemberStatus {
     ACTIVE,
     LEFT,
     BANNED,
-    PENDING
+    PENDING,
+    CANCELED
 }

@@ -1,12 +1,13 @@
 package com.kakaotechcampus.team16be.group.exception;
 
+import com.kakaotechcampus.team16be.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum GroupErrorCode {
+public enum GroupErrorCode implements ErrorCode {
 
     GROUP_NAME_DUPLICATE(HttpStatus.CONFLICT, "GROUP-001", "해당 모임의 이름은 이미 존재합니다."),
     WRONG_GROUP_NAME(HttpStatus.BAD_REQUEST, "GROUP-002", "올바르지 않은 모임 이름입니다."),
@@ -18,9 +19,7 @@ public enum GroupErrorCode {
     GROUP_NO_FILENAME(HttpStatus.BAD_REQUEST, "GROUP-007", "해당 파일이 없습니다."),
     WRONG_GROUP_ACCESS(HttpStatus.FORBIDDEN, "GROUP-009", "잘못된 그룹 접근입니다.");
 
-
     private final HttpStatus status;
     private final String code;
     private final String message;
-
 }

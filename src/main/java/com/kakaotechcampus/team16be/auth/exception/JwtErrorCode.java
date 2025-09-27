@@ -1,12 +1,13 @@
 package com.kakaotechcampus.team16be.auth.exception;
 
+import com.kakaotechcampus.team16be.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@RequiredArgsConstructor
 @Getter
-public enum JwtErrorCode {
+@RequiredArgsConstructor
+public enum JwtErrorCode implements ErrorCode {
     // 401 Unauthorized
     WRONG_HEADER_TOKEN(HttpStatus.UNAUTHORIZED,"AUTH-001", "잘못된 토큰입니다."),
 

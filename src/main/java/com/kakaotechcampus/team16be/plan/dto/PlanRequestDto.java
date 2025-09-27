@@ -7,6 +7,13 @@ public record PlanRequestDto(
     String description,
     Integer capacity,
     LocalDateTime startTime,
-    LocalDateTime endTime
+    LocalDateTime endTime,
+    LocationDto location
 ) {
+
+  public record LocationDto(
+      String name,
+      Double latitude,
+      Double longitude
+  ) {}
 }

@@ -36,7 +36,7 @@ public class MemberReviewController {
     }
 
     @Operation(summary = "회원 리뷰 조회", description = "특정 그룹에 작성된 모든 회원 리뷰를 조회합니다.")
-    @GetMapping("{groupId}/review")
+    @GetMapping("/{groupId}/review")
     public ResponseEntity<List<ResponseMemberReviewListDto>> getMemberReviews(@LoginUser User user, @PathVariable Long groupId) {
         List<MemberReview> reviews = reviewService.getAllReviews(user, groupId);
         List<ResponseMemberReviewListDto> result = ResponseMemberReviewListDto.from(reviews);
