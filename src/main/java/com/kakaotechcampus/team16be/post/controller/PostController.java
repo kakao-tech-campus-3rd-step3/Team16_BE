@@ -34,15 +34,15 @@ public class PostController {
 
     @Operation(summary = "게시글 조회", description = "특정 게시글을 조회합니다.")
     @GetMapping("/{groupId}/posts/{postId}")
-    public ResponseEntity<GetPostResponse> getPost(@PathVariable Long groupId, @PathVariable Long postId) {
-        GetPostResponse PostResponse = postService.getPost(groupId, postId);
+    public ResponseEntity<GetPostResponse> getPost(@LoginUser User user,@PathVariable Long groupId, @PathVariable Long postId) {
+        GetPostResponse PostResponse = postService.getPost(user,groupId, postId);
         return ResponseEntity.ok(PostResponse);
     }
 
     @Operation(summary = "게시글 전체 조회", description = "특정 그룹의 모든 게시글을 조회합니다.")
     @GetMapping("/{groupId}/posts")
-    public ResponseEntity<List<GetPostResponse>> getAllPosts(@PathVariable Long groupId) {
-        List<GetPostResponse> PostResponses = postService.getAllPosts(groupId);
+    public ResponseEntity<List<GetPostResponse>> getAllPosts(@LoginUser User user, @PathVariable Long groupId) {
+        List<GetPostResponse> PostResponses = postService.getAllPosts(user, groupId);
         return ResponseEntity.ok(PostResponses);
     }
 

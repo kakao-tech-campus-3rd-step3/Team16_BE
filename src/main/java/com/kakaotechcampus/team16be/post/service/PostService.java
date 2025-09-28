@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.post.service;
 
+import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.post.dto.CreatePostRequest;
 import com.kakaotechcampus.team16be.post.dto.GetPostResponse;
@@ -14,9 +15,9 @@ import java.util.List;
 public interface PostService {
     Post createPost(User user, CreatePostRequest createPostRequest);
 
-    GetPostResponse getPost(Long groupId, Long postId);
+    GetPostResponse getPost(User user, Long groupId, Long postId);
 
-    List<GetPostResponse> getAllPosts(Long groupId);
+    List<GetPostResponse> getAllPosts(User user, Long groupId);
 
     void deletePost(User user, Long postId);
 
