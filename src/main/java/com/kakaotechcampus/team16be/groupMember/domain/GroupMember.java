@@ -53,15 +53,18 @@ public class GroupMember extends BaseEntity {
 
     private LocalDateTime leftAt;
 
+    private String intro;
+
     @CreatedDate
     private LocalDateTime joinAt;
 
     @Builder
-    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status) {
+    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status,String intro) {
         this.group = group;
         this.user = user;
         this.role = role;
         this.status = status;
+        this.intro = intro;
     }
 
     protected GroupMember() {
@@ -97,11 +100,12 @@ public class GroupMember extends BaseEntity {
                 build();
     }
 
-    public static GroupMember sign(User signedUser, Group targetGroup) {
+    public static GroupMember sign(User signedUser, Group targetGroup, String intro) {
         return GroupMember.builder().
                 group(targetGroup).
                 user(signedUser).role(MEMBER).
                 status(PENDING).
+                intro(intro).
                 build();
     }
 
@@ -114,7 +118,7 @@ public class GroupMember extends BaseEntity {
         }
         if (this.status == GroupMemberStatus.BANNED) {
             throw new GroupMemberException(MEMBER_HAS_BANNED);
-        }else
+        } else
             this.status = ACTIVE;
     }
 
@@ -140,7 +144,7 @@ public class GroupMember extends BaseEntity {
 
 
     public void changeToLeader() {
-        if(this.role == LEADER){
+        if (this.role == LEADER) {
             throw new GroupException(WRONG_GROUP_ACCESS);
         }
         this.role = LEADER;
@@ -162,6 +166,7 @@ public class GroupMember extends BaseEntity {
             throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
 
     }
+
     public void checkUserIsActive() {
         if (this.status != ACTIVE) {
             throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);

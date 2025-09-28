@@ -2,6 +2,10 @@ package com.kakaotechcampus.team16be.plan.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
+import com.kakaotechcampus.team16be.notification.repository.NotificationRepository;
+import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.plan.domain.Location;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
@@ -20,8 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PlanServiceImpl implements PlanService {
 
-  private final PlanRepository planRepository;
-  private final GroupService groupService;
+
+    private final PlanRepository planRepository;
+    private final GroupService groupService;
+    private final NotificationService notificationService;
+    private final GroupMemberService groupMemberService;
 
   @Override
   @Transactional
@@ -75,6 +82,9 @@ public class PlanServiceImpl implements PlanService {
                               .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
     plan.changePlan(planRequestDto);
+      List<GroupMember> members = groupMemberService.findByGroup(plan.getGroup());
+
+    notificationService.createPlanUpdateNotifications(plan,members);
     return PlanResponseDto.from(plan);
   }
 
