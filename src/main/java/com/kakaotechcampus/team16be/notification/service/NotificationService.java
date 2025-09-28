@@ -8,6 +8,9 @@ public interface NotificationService {
 
     SseEmitter connectNotification(User user);
 
-    void createGroupJoinNotification(User targetUser, Group targetGroup);
+    void createGroupSignNotification(User targetUser, Group targetGroup);
 
+    void createGroupJoinNotification(User joiner, Group targetGroup);
+
+    void createGroupLeaveNotification(User user, Group group);
 }

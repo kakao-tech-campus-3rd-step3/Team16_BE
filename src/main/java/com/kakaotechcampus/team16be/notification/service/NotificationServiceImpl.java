@@ -59,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
         }, () -> log.info("No emitter found"));
     }
 
-    public void createGroupJoinNotification(User targetUser, Group targetGroup) {
+    public void createGroupSignNotification(User targetUser, Group targetGroup) {
         Notification notification = Notification.builder()
                 .notificationType(GROUP_JOIN_REQUEST)
                 .receiver(targetGroup.getLeader())
@@ -72,5 +72,20 @@ public class NotificationServiceImpl implements NotificationService {
 
         send(targetGroup.getLeader(), notification.getId(),notification.getMessage());
     }
+
+    public void createGroupJoinNotification(User joiner, Group targetGroup) {
+        Notification notification = Notification.builder()
+                .notificationType(GROUP_JOIN_REQUEST)
+                .receiver(joiner)
+                .relatedGroup(targetGroup)
+                .relatedUser(targetGroup.getLeader())
+                .message("[" + targetGroup.getName() + "] 그룹에 가입되었습니다.")
+                .build();
+
+        notificationRepository.save(notification);
+
+        send(joiner, notification.getId(),notification.getMessage());
+    }
+
 
 }

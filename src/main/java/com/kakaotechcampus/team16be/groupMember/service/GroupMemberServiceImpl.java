@@ -43,6 +43,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     if (existingMember.isPresent()) {
         GroupMember member = existingMember.get();
         member.acceptJoin();
+        notificationService.createGroupJoinNotification(joiner, group);
         return member;
     }
     else {
@@ -80,7 +81,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         Group targetGroup = groupService.findGroupById(groupId);
 
         GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
-        notificationService.createGroupJoinNotification(targetGroup.getLeader(), targetGroup);
+        notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
 
         return groupMemberRepository.save(signMember);
     }
@@ -115,7 +116,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 
         member.leaveGroup();
-
+        notificationService.createGroupLeaveNotification(user, group);
         return member;
     }
 
