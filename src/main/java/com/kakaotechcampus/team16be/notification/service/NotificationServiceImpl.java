@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.notification.service;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.notification.domain.Notification;
+import com.kakaotechcampus.team16be.notification.dto.ResponseNotification;
 import com.kakaotechcampus.team16be.notification.exception.NotificationErrorCode;
 import com.kakaotechcampus.team16be.notification.exception.NotificationException;
 import com.kakaotechcampus.team16be.notification.repository.EmitterRepository;
@@ -142,5 +143,14 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
 
         send(bannedUser, notification.getId(),notification.getMessage());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseNotification> getAllNotifications(User user) {
+        List<Notification> notifications = notificationRepository.findAllByReceiverOrderByCreatedAtDesc((user));
+        return notifications.stream()
+                .map(ResponseNotification::from)
+                .toList();
     }
 }
