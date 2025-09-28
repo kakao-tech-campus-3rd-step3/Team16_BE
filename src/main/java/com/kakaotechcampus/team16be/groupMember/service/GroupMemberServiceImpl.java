@@ -5,6 +5,7 @@ import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
+import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
 
     @Transactional
@@ -77,7 +79,8 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         User signedUser = userService.findById(user.getId());
         Group targetGroup = groupService.findGroupById(groupId);
 
-         GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
+        GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
+        notificationService.createGroupJoinNotification(targetGroup.getLeader(), targetGroup);
 
         return groupMemberRepository.save(signMember);
     }
