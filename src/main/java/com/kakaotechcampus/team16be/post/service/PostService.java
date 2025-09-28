@@ -15,10 +15,6 @@ import java.util.List;
 public interface PostService {
     Post createPost(User user, CreatePostRequest createPostRequest);
 
-    GetPostResponse getPost(User user, Long groupId, Long postId);
-
-    List<GetPostResponse> getAllPosts(User user, Long groupId);
-
     void deletePost(User user, Long postId);
 
     Post findByAuthorAndId(User user, Long postId);
