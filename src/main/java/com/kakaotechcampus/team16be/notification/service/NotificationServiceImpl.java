@@ -45,13 +45,13 @@ public class NotificationServiceImpl implements NotificationService {
         return sseEmitter;
     }
 
-    public void send(User user, Long notificationId) {
+    public void send(User user, Long notificationId,String message) {
         emitterRepository.get(user.getId()).ifPresentOrElse(sseEmitter -> {
             try {
                 sseEmitter.send(SseEmitter.event()
                         .id(notificationId.toString())
                         .name(NOTIFICATION_NAME)
-                        .data("새로운 알림이 도착했습니다."));
+                        .data(message));
             } catch (IOException exception) {
                 emitterRepository.delete(user.getId());
                 throw new NotificationException(NotificationErrorCode.NOTIFICATION_CONNECTION_ERROR);
@@ -70,7 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
 
-        send(targetGroup.getLeader(), notification.getId());
+        send(targetGroup.getLeader(), notification.getId(),notification.getMessage());
     }
 
 }
