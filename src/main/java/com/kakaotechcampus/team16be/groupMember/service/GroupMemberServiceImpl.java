@@ -5,7 +5,6 @@ import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
-import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,32 +25,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
     private final UserService userService;
-    private final NotificationService notificationService;
 
-
-    @Transactional
-    public GroupMember joinGroup(Long groupId, Long joinerId ,Long leaderId) throws GroupMemberException {
-        Group group = groupService.findGroupById(groupId);
-
-        User leader = userService.findById(leaderId);
-        group.checkLeader(leader);
-
-        User joiner = userService.findById(joinerId);
-
-        Optional<GroupMember> existingMember = groupMemberRepository.findByGroupAndUser(group, joiner);
-
-    if (existingMember.isPresent()) {
-        GroupMember member = existingMember.get();
-        member.acceptJoin();
-        notificationService.createGroupJoinNotification(joiner, group);
-        return member;
-    }
-    else {
-        GroupMember newMember = GroupMember.acceptJoin(group, joiner);
-        return groupMemberRepository.save(newMember);
-    }
-
-    }
     public GroupMember findByGroupAndUser(Group group, User user) {
         return groupMemberRepository.findByGroupAndUser(group, user)
                 .orElseThrow(() -> new GroupMemberException(GROUP_MEMBER_NOT_FOUND));
@@ -74,17 +48,6 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         groupMemberRepository.save(groupMember);
     }
 
-    @Override
-    @Transactional
-    public GroupMember signGroup(User user, Long groupId) {
-        User signedUser = userService.findById(user.getId());
-        Group targetGroup = groupService.findGroupById(groupId);
-
-        GroupMember signMember = GroupMember.sign(signedUser, targetGroup);
-        notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
-
-        return groupMemberRepository.save(signMember);
-    }
 
     @Override
     public List<GroupMember> findByGroup(Group targetGroup) {
@@ -102,41 +65,6 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         return groupMember;
     }
 
-
-
-    @Transactional
-    public GroupMember leaveGroup(Long groupId, Long userId) {
-        Group group = groupService.findGroupById(groupId);
-
-        User user = userService.findById(userId);
-
-        GroupMember member = findByGroupAndUser(group, user);
-
-        GroupMember.checkLeftGroup(member);
-
-
-        member.leaveGroup();
-        notificationService.createGroupLeaveNotification(user, group);
-        return member;
-    }
-
-    @Transactional
-    public GroupMember bannedGroup(Long groupId, Long userId, User leaderUser) {
-        Group group = groupService.findGroupById(groupId);
-
-        group.checkLeader(leaderUser);
-
-        User bannedUser = userService.findById(userId);
-
-        GroupMember member = findByGroupAndUser(group, bannedUser);
-
-        member.bannedGroup();
-
-        notificationService.createGroupBannedNotification(bannedUser, group);
-
-        return member;
-
-    }
 
     @Override
     @Transactional
@@ -160,5 +88,13 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         GroupMember member = findByGroupAndUser(targetGroup, user);
         member.checkUserIsActive();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<GroupMember> findByGroupAndPendingUser(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        targetGroup.checkLeader(user);
+
+        return groupMemberRepository.findAllByGroupAndStatus(targetGroup, PENDING);
     }
 }
