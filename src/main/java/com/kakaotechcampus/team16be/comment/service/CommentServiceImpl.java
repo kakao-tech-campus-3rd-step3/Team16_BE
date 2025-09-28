@@ -1,19 +1,14 @@
 package com.kakaotechcampus.team16be.comment.service;
 
 import com.kakaotechcampus.team16be.comment.domain.Comment;
-import com.kakaotechcampus.team16be.comment.dto.CommentRequest;
 import com.kakaotechcampus.team16be.comment.dto.CommentUpdateRequest;
 import com.kakaotechcampus.team16be.comment.exception.CommentErrorCode;
 import com.kakaotechcampus.team16be.comment.exception.CommentException;
 import com.kakaotechcampus.team16be.comment.repository.CommentRepository;
-import com.kakaotechcampus.team16be.post.domain.Post;
-import com.kakaotechcampus.team16be.post.service.PostService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

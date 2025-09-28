@@ -1,10 +1,7 @@
 package com.kakaotechcampus.team16be.comment.controller;
 
 import com.kakaotechcampus.team16be.comment.domain.Comment;
-import com.kakaotechcampus.team16be.comment.dto.CommentIdResponse;
-import com.kakaotechcampus.team16be.comment.dto.CommentRequest;
-import com.kakaotechcampus.team16be.comment.dto.CommentResponse;
-import com.kakaotechcampus.team16be.comment.dto.CommentUpdateRequest;
+import com.kakaotechcampus.team16be.comment.dto.*;
 import com.kakaotechcampus.team16be.comment.service.CommentFacadeService;
 import com.kakaotechcampus.team16be.comment.service.CommentService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
@@ -29,9 +26,9 @@ public class CommentController {
     @PostMapping("/comments")
     public ResponseEntity<CommentIdResponse> createParentComment(
             @LoginUser User user,
-            @RequestBody CommentRequest commentRequest
+            @RequestBody ParentCommentRequest parentCommentRequest
     ) {
-        Long commentId= commentFacadeService.createParentComment(user, commentRequest);
+        Long commentId= commentFacadeService.createParentComment(user, parentCommentRequest);
         return ResponseEntity.ok(CommentIdResponse.from(commentId));
     }
 
@@ -39,9 +36,9 @@ public class CommentController {
     @PostMapping("/comments/reply")
     public ResponseEntity<CommentIdResponse> createChildComment(
             @LoginUser User user,
-            @RequestBody CommentRequest commentRequest
+            @RequestBody ChildCommentRequest childCommentRequest
     ) {
-        Long commentId = commentFacadeService.createChildComment(user, commentRequest);
+        Long commentId = commentFacadeService.createChildComment(user, childCommentRequest);
         return ResponseEntity.ok(CommentIdResponse.from(commentId));
     }
 
