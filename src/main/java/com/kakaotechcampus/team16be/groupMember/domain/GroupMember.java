@@ -82,11 +82,11 @@ public class GroupMember extends BaseEntity {
     }
 
     public static void checkLeftGroup(GroupMember member) {
-        if (member.getRole() == GroupRole.LEADER) {
+        if (member.getRole().equals(LEADER)) {
             throw new GroupMemberException(LEADER_CANNOT_LEAVE);
         }
 
-        if (member.getStatus() == LEFT) {
+        if (member.getStatus().equals(LEFT)) {
             throw new GroupMemberException(MEMBER_ALREADY_LEFT);
         }
 
@@ -110,13 +110,13 @@ public class GroupMember extends BaseEntity {
     }
 
     public void acceptJoin() throws GroupMemberException {
-        if (this.status == LEFT) {
+        if (this.status.equals(LEFT)) {
             this.status = ACTIVE;
         }
-        if (this.status == ACTIVE) {
+        if (this.status.equals(ACTIVE)) {
             throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
         }
-        if (this.status == GroupMemberStatus.BANNED) {
+        if (this.status.equals(BANNED)) {
             throw new GroupMemberException(MEMBER_HAS_BANNED);
         } else
             this.status = ACTIVE;
@@ -128,7 +128,7 @@ public class GroupMember extends BaseEntity {
     }
 
     public void bannedGroup() {
-        if (this.status == BANNED) {
+        if (this.status.equals(BANNED)) {
             throw new GroupMemberException(MEMBER_ALREADY_BANNED);
         }
         this.status = BANNED;
@@ -144,7 +144,7 @@ public class GroupMember extends BaseEntity {
 
 
     public void changeToLeader() {
-        if (this.role == LEADER) {
+        if (this.role.equals(LEADER)) {
             throw new GroupException(WRONG_GROUP_ACCESS);
         }
         this.role = LEADER;
@@ -160,7 +160,7 @@ public class GroupMember extends BaseEntity {
     }
 
     public void cancelSignGroup() {
-        if (this.status == PENDING) {
+        if (this.status.equals(PENDING)) {
             this.status = CANCELED;
         } else
             throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
@@ -168,7 +168,7 @@ public class GroupMember extends BaseEntity {
     }
 
     public void checkUserIsActive() {
-        if (this.status != ACTIVE) {
+        if (!this.status.equals(ACTIVE)) {
             throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);
         }
     }
