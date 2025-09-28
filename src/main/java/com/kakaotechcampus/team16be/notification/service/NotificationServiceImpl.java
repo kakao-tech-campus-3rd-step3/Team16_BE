@@ -10,9 +10,11 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_LEFT;
 import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_REQUEST;
 
 @Slf4j
@@ -59,13 +61,14 @@ public class NotificationServiceImpl implements NotificationService {
         }, () -> log.info("No emitter found"));
     }
 
+    @Transactional
     public void createGroupSignNotification(User targetUser, Group targetGroup) {
         Notification notification = Notification.builder()
                 .notificationType(GROUP_JOIN_REQUEST)
                 .receiver(targetGroup.getLeader())
                 .relatedGroup(targetGroup)
                 .relatedUser(targetUser)
-                .message("[" + targetGroup.getName() + "] 그룹에 " + targetUser.getNickname() + "님이 가입을 요청했습니다.")
+                .message("[" + targetGroup.getName() + "] 모임에 " + targetUser.getNickname() + "님이 가입을 요청했습니다.")
                 .build();
 
         notificationRepository.save(notification);
@@ -73,13 +76,14 @@ public class NotificationServiceImpl implements NotificationService {
         send(targetGroup.getLeader(), notification.getId(),notification.getMessage());
     }
 
+    @Transactional
     public void createGroupJoinNotification(User joiner, Group targetGroup) {
         Notification notification = Notification.builder()
                 .notificationType(GROUP_JOIN_REQUEST)
                 .receiver(joiner)
                 .relatedGroup(targetGroup)
                 .relatedUser(targetGroup.getLeader())
-                .message("[" + targetGroup.getName() + "] 그룹에 가입되었습니다.")
+                .message("[" + targetGroup.getName() + "] 모임에 가입되었습니다.")
                 .build();
 
         notificationRepository.save(notification);
@@ -87,5 +91,18 @@ public class NotificationServiceImpl implements NotificationService {
         send(joiner, notification.getId(),notification.getMessage());
     }
 
+    @Transactional
+    public void createGroupLeaveNotification(User leftUser, Group group) {
+        Notification notification = Notification.builder()
+                .notificationType(GROUP_JOIN_LEFT)
+                .receiver(group.getLeader())
+                .relatedGroup(group)
+                .relatedUser(leftUser)
+                .message("[" + group.getName() + "]모임에서 "+leftUser.getNickname()+"님이 탈퇴했습니다..")
+                .build();
 
+        notificationRepository.save(notification);
+
+        send(group.getLeader(), notification.getId(),notification.getMessage());
+    }
 }
