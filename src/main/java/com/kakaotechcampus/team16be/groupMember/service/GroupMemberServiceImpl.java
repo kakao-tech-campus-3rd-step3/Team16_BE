@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
