@@ -47,83 +47,83 @@ public class Plan extends BaseEntity {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-  @Column(name = "start_time", nullable = false)
-  private LocalDateTime startTime;
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-  @Builder
-  public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location){
-    validateCapacity(capacity);
-    validateTimeRange(startTime, endTime);
+    @Builder
+    public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location) {
+        validateCapacity(capacity);
+        validateTimeRange(startTime, endTime);
 
-    this.group = group;
-    this.title = title;
-    this.description = description;
-    this.capacity = capacity;
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.location = location;
-  }
-
-  public void changePlan(PlanRequestDto dto) {
-    LocalDateTime newStartTime = dto.startTime() != null ? dto.startTime() : this.startTime;
-    LocalDateTime newEndTime = dto.endTime() != null ? dto.endTime() : this.endTime;
-    validateTimeRange(newStartTime, newEndTime);
-
-    if(dto.title() != null) {
-      this.title = dto.title();
+        this.group = group;
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
     }
 
-    if(dto.description() != null) {
-      this.description = dto.description();
+    public void changePlan(PlanRequestDto dto) {
+        LocalDateTime newStartTime = dto.startTime() != null ? dto.startTime() : this.startTime;
+        LocalDateTime newEndTime = dto.endTime() != null ? dto.endTime() : this.endTime;
+        validateTimeRange(newStartTime, newEndTime);
+
+        if (dto.title() != null) {
+            this.title = dto.title();
+        }
+
+        if (dto.description() != null) {
+            this.description = dto.description();
+        }
+
+        if (dto.capacity() != null) {
+            validateCapacity(dto.capacity());
+            this.capacity = dto.capacity();
+        }
+
+        this.startTime = newStartTime;
+        this.endTime = newEndTime;
+
+        if (dto.location() != null) {
+            this.location = Location.builder()
+                    .name(dto.location().name())
+                    .latitude(dto.location().latitude())
+                    .longitude(dto.location().longitude())
+                    .build();
+        }
     }
 
-    if(dto.capacity() != null) {
-      validateCapacity(dto.capacity());
-      this.capacity = dto.capacity();
+    public static Plan create(Group group, String title, String description,
+                              Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location
+    ) {
+        return Plan.builder()
+                .group(group)
+                .title(title)
+                .description(description)
+                .capacity(capacity)
+                .startTime(startTime)
+                .endTime(endTime)
+                .location(location)
+                .build();
     }
 
-    this.startTime = newStartTime;
-    this.endTime = newEndTime;
-
-    if (dto.location() != null) {
-      this.location = Location.builder()
-                              .name(dto.location().name())
-                              .latitude(dto.location().latitude())
-                              .longitude(dto.location().longitude())
-                              .build();
-    }
-  }
-
-  public static Plan create(Group group, String title, String description,
-      Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location
-      ) {
-    return Plan.builder()
-               .group(group)
-               .title(title)
-               .description(description)
-               .capacity(capacity)
-               .startTime(startTime)
-               .endTime(endTime)
-               .location(location)
-               .build();
-  }
-
-  private void validateCapacity(Integer capacity) {
-    if(capacity == null || capacity <= 0) {
-      throw new PlanException(PlanErrorCode.INVALID_CAPACITY);
-    }
-  }
-
-  private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
-    if (startTime == null || endTime == null) {
-      throw new PlanException(PlanErrorCode.TIME_REQUIRED);
+    private void validateCapacity(Integer capacity) {
+        if (capacity == null || capacity <= 0) {
+            throw new PlanException(PlanErrorCode.INVALID_CAPACITY);
+        }
     }
 
-    if (!startTime.isBefore(endTime)) {
-      throw new PlanException(PlanErrorCode.INVALID_TIME_RANGE);
+    private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime == null || endTime == null) {
+            throw new PlanException(PlanErrorCode.TIME_REQUIRED);
+        }
+
+        if (!startTime.isBefore(endTime)) {
+            throw new PlanException(PlanErrorCode.INVALID_TIME_RANGE);
+        }
     }
-  }
 }
