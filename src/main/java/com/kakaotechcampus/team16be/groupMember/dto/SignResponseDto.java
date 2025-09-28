@@ -4,13 +4,13 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 
 import java.util.List;
 
-public record JoinRequestDto(
+public record SignResponseDto(
         Long userId,
         String intro
 ) {
-    public static List<JoinRequestDto> from(List<GroupMember> members) {
+    public static List<SignResponseDto> from(List<GroupMember> members) {
         return members.stream()
-                .map(m -> new JoinRequestDto(
+                .map(m -> new SignResponseDto(
                         m.getUser().getId(),
                         m.getIntro()
                 ))
