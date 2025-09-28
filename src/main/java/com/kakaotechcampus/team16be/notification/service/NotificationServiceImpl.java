@@ -112,6 +112,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
     public void createPlanUpdateNotifications(Plan plan, List<GroupMember> members) {
         for (GroupMember member : members) {
             Notification notification = Notification.builder()
@@ -125,5 +126,21 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.save(notification);
             send(member.getUser(), notification.getId(),notification.getMessage());
         }
+    }
+
+    @Override
+    @Transactional
+    public void createGroupBannedNotification(User bannedUser, Group group) {
+        Notification notification = Notification.builder()
+                .notificationType(GROUP_JOIN_BANNED)
+                .receiver(bannedUser)
+                .relatedGroup(group)
+                .relatedUser(group.getLeader())
+                .message("[" + group.getName() + "] 모임에서 강퇴되었습니다.")
+                .build();
+
+        notificationRepository.save(notification);
+
+        send(bannedUser, notification.getId(),notification.getMessage());
     }
 }

@@ -19,4 +19,6 @@ public interface NotificationService {
     void createGroupLeaveNotification(User user, Group group);
 
     void createPlanUpdateNotifications(Plan plan, List<GroupMember> members);
+
+    void createGroupBannedNotification(User bannedUser, Group group);
 }

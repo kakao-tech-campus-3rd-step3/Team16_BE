@@ -132,6 +132,8 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
         member.bannedGroup();
 
+        notificationService.createGroupBannedNotification(bannedUser, group);
+
         return member;
 
     }
