@@ -1,11 +1,13 @@
 package com.kakaotechcampus.team16be.notification.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.notification.domain.Notification;
 import com.kakaotechcampus.team16be.notification.exception.NotificationErrorCode;
 import com.kakaotechcampus.team16be.notification.exception.NotificationException;
 import com.kakaotechcampus.team16be.notification.repository.EmitterRepository;
 import com.kakaotechcampus.team16be.notification.repository.NotificationRepository;
+import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
+import java.util.List;
 
-import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_LEFT;
-import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_REQUEST;
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.*;
 
 @Slf4j
 @Service
@@ -61,6 +63,7 @@ public class NotificationServiceImpl implements NotificationService {
         }, () -> log.info("No emitter found"));
     }
 
+    @Override
     @Transactional
     public void createGroupSignNotification(User targetUser, Group targetGroup) {
         Notification notification = Notification.builder()
@@ -76,6 +79,7 @@ public class NotificationServiceImpl implements NotificationService {
         send(targetGroup.getLeader(), notification.getId(),notification.getMessage());
     }
 
+    @Override
     @Transactional
     public void createGroupJoinNotification(User joiner, Group targetGroup) {
         Notification notification = Notification.builder()
@@ -91,6 +95,7 @@ public class NotificationServiceImpl implements NotificationService {
         send(joiner, notification.getId(),notification.getMessage());
     }
 
+    @Override
     @Transactional
     public void createGroupLeaveNotification(User leftUser, Group group) {
         Notification notification = Notification.builder()
@@ -104,5 +109,21 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
 
         send(group.getLeader(), notification.getId(),notification.getMessage());
+    }
+
+    @Override
+    public void createPlanUpdateNotifications(Plan plan, List<GroupMember> members) {
+        for (GroupMember member : members) {
+            Notification notification = Notification.builder()
+                    .notificationType(CHANGE_GROUP_PLAN)
+                    .receiver(member.getUser())
+                    .relatedGroup(plan.getGroup())
+                    .relatedUser(plan.getGroup().getLeader())
+                    .message("[" + plan.getGroup().getName() + "] 모임의 일정이 변경되었습니다.")
+                    .build();
+
+            notificationRepository.save(notification);
+            send(member.getUser(), notification.getId(),notification.getMessage());
+        }
     }
 }
