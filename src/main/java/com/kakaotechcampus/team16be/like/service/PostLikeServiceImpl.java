@@ -32,8 +32,8 @@ public class PostLikeServiceImpl implements  PostLikeService {
 
     @Override
     @Transactional
-    public void unlikePost(User user, PostLikeRequest postLikeRequest) {
-        Post post = postService.findById(postLikeRequest.postId());
+    public void unlikePost(User user, Long postId) {
+        Post post = postService.findById(postId);
         post.decreaseLikeCount();
         Like postLike = findByUserAndPost(user, post);
         postLikeRepository.delete(postLike);
