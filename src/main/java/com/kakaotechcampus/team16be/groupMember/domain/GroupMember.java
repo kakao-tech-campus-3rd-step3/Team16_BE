@@ -153,7 +153,7 @@ public class GroupMember extends BaseEntity {
 
 
     public void changeToMember() {
-        if (!(this.role == LEADER)) {
+        if (!(this.role.equals(MEMBER))) {
             throw new GroupException(WRONG_GROUP_ACCESS);
         }
         this.role = MEMBER;
