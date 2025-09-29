@@ -59,7 +59,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         Group group = groupService.findGroupById(groupId);
 
         GroupMember groupMember = findByGroupAndUser(group, user);
-        groupMember.cancelSignGroup();
+        groupMember.canCancel();
 
         return groupMember;
     }
