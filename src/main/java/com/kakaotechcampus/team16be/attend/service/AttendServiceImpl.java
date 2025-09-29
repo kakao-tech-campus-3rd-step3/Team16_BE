@@ -52,7 +52,7 @@ public class AttendServiceImpl implements AttendService{
         targetGroup.checkLeader(user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
 
-        return attendRepository.findAllByPlan(plan);
+        return attendRepository.findAllByPlanOrderByCreatedAtAsc(plan);
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +61,7 @@ public class AttendServiceImpl implements AttendService{
         Group targetGroup = groupService.findGroupById(groupId);
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
 
-        return attendRepository.findAllByGroupMember(groupMember);
+        return attendRepository.findAllByGroupMemberOrderByCreatedAtAsc(groupMember);
     }
 
     @Transactional(readOnly = true)
