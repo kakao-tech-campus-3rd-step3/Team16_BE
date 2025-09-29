@@ -32,7 +32,7 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   @Transactional
-  public PlanResponseDto createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
+  public Long createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
 
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
@@ -54,7 +54,7 @@ public class PlanServiceImpl implements PlanService {
                     .build();
 
     Plan savedPlan = planRepository.save(plan);
-    return PlanResponseDto.from(savedPlan);
+    return savedPlan.getId();
   }
 
   @Override
@@ -74,7 +74,7 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   @Transactional
-  public PlanResponseDto updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto) {
+  public void updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto) {
     Group group = groupService.findGroupById(groupId);
     group.checkLeader(user);
 
@@ -85,7 +85,6 @@ public class PlanServiceImpl implements PlanService {
       List<GroupMember> members = groupMemberService.findByGroup(plan.getGroup());
 
     notificationService.createPlanUpdateNotifications(plan,members);
-    return PlanResponseDto.from(plan);
   }
 
   @Override
