@@ -1,10 +1,14 @@
 package com.kakaotechcampus.team16be.post.service;
 
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.comment.service.CommentFacadeService;
+import com.kakaotechcampus.team16be.comment.service.CommentService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
+import com.kakaotechcampus.team16be.like.dto.PostLikeResponse;
+import com.kakaotechcampus.team16be.like.service.PostLikeService;
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.post.dto.CreatePostRequest;
 import com.kakaotechcampus.team16be.post.dto.GetPostResponse;
@@ -26,7 +30,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
-    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
     @Override
     @Transactional
@@ -44,36 +47,6 @@ public class PostServiceImpl implements PostService {
         );
 
         return postRepository.save(post);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public GetPostResponse getPost(Long groupId, Long postId) {
-        Group targetGroup = groupService.findGroupById(groupId);
-        Post post = postRepository.findByIdAndGroup(postId, targetGroup)
-                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
-
-        List<String> fullURLs = post.getImageUrls().stream()
-                .map(s3UploadPresignedUrlService::getPublicUrl)
-                .toList();
-
-        return GetPostResponse.from(post, fullURLs);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<GetPostResponse> getAllPosts(Long groupId) {
-        Group targetGroup = groupService.findGroupById(groupId);
-        List<Post> posts = postRepository.findByGroup((targetGroup));
-
-        return posts.stream()
-                .map(post -> {
-                    List<String> fullURLs = post.getImageUrls().stream()
-                            .map(s3UploadPresignedUrlService::getPublicUrl)
-                            .toList();
-                    return GetPostResponse.from(post, fullURLs);
-                })
-                .toList();
     }
 
     @Override

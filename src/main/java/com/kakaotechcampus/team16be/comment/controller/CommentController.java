@@ -1,10 +1,8 @@
 package com.kakaotechcampus.team16be.comment.controller;
 
 import com.kakaotechcampus.team16be.comment.domain.Comment;
-import com.kakaotechcampus.team16be.comment.dto.CommentIdResponse;
-import com.kakaotechcampus.team16be.comment.dto.CommentRequest;
-import com.kakaotechcampus.team16be.comment.dto.CommentResponse;
-import com.kakaotechcampus.team16be.comment.dto.CommentUpdateRequest;
+import com.kakaotechcampus.team16be.comment.dto.*;
+import com.kakaotechcampus.team16be.comment.service.CommentFacadeService;
 import com.kakaotechcampus.team16be.comment.service.CommentService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -22,14 +20,15 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentFacadeService commentFacadeService;
 
     @Operation(summary = "부모 댓글 작성", description = "부모 댓글을 작성합니다.(대댓글 X)")
     @PostMapping("/comments")
     public ResponseEntity<CommentIdResponse> createParentComment(
             @LoginUser User user,
-            @RequestBody CommentRequest commentRequest
+            @RequestBody ParentCommentRequest parentCommentRequest
     ) {
-        Long commentId= commentService.createParentComment(user, commentRequest);
+        Long commentId= commentFacadeService.createParentComment(user, parentCommentRequest);
         return ResponseEntity.ok(CommentIdResponse.from(commentId));
     }
 
@@ -37,9 +36,9 @@ public class CommentController {
     @PostMapping("/comments/reply")
     public ResponseEntity<CommentIdResponse> createChildComment(
             @LoginUser User user,
-            @RequestBody CommentRequest commentRequest
+            @RequestBody ChildCommentRequest childCommentRequest
     ) {
-        Long commentId = commentService.createChildComment(user, commentRequest);
+        Long commentId = commentFacadeService.createChildComment(user, childCommentRequest);
         return ResponseEntity.ok(CommentIdResponse.from(commentId));
     }
 
@@ -48,7 +47,7 @@ public class CommentController {
     public ResponseEntity<List<CommentResponse>> getAllComments(
             @PathVariable Long postId
     ) {
-        List<Comment> comments = commentService.getCommentsByPostId(postId);
+        List<Comment> comments = commentFacadeService.getCommentsByPostId(postId);
         return ResponseEntity.ok(CommentResponse.from(comments));
     }
 

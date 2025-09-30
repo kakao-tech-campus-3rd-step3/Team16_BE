@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.post.dto.CreatePostRequest;
 import com.kakaotechcampus.team16be.post.dto.GetPostResponse;
 import com.kakaotechcampus.team16be.post.dto.PostIdResponse;
 import com.kakaotechcampus.team16be.post.dto.UpdatePostRequest;
+import com.kakaotechcampus.team16be.post.service.PostFacadeService;
 import com.kakaotechcampus.team16be.post.service.PostService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostFacadeService postFacadeService;
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
     @PostMapping("/posts")
@@ -34,15 +36,15 @@ public class PostController {
 
     @Operation(summary = "게시글 조회", description = "특정 게시글을 조회합니다.")
     @GetMapping("/{groupId}/posts/{postId}")
-    public ResponseEntity<GetPostResponse> getPost(@PathVariable Long groupId, @PathVariable Long postId) {
-        GetPostResponse PostResponse = postService.getPost(groupId, postId);
+    public ResponseEntity<GetPostResponse> getPost(@LoginUser User user,@PathVariable Long groupId, @PathVariable Long postId) {
+        GetPostResponse PostResponse = postFacadeService.getPost(user,groupId, postId);
         return ResponseEntity.ok(PostResponse);
     }
 
     @Operation(summary = "게시글 전체 조회", description = "특정 그룹의 모든 게시글을 조회합니다.")
     @GetMapping("/{groupId}/posts")
-    public ResponseEntity<List<GetPostResponse>> getAllPosts(@PathVariable Long groupId) {
-        List<GetPostResponse> PostResponses = postService.getAllPosts(groupId);
+    public ResponseEntity<List<GetPostResponse>> getAllPosts(@LoginUser User user, @PathVariable Long groupId) {
+        List<GetPostResponse> PostResponses = postFacadeService.getAllPosts(user, groupId);
         return ResponseEntity.ok(PostResponses);
     }
 

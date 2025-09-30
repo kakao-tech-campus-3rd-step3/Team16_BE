@@ -27,9 +27,12 @@ public class PostLikeController {
     }
 
     @Operation(summary = "게시글 좋아요 취소", description = "사용자가 특정 게시글에 눌렀던 좋아요를 취소합니다.")
-    @DeleteMapping("/likes")
-    public ResponseEntity<Void> unlikePost(@LoginUser User user, @RequestBody PostLikeRequest postLikeRequest) {
-        postLikeService.unlikePost(user, postLikeRequest);
+    @DeleteMapping("/{postId}/likes")
+    public ResponseEntity<Void> unlikePost(
+            @LoginUser User user,
+            @PathVariable Long postId
+    ) {
+        postLikeService.unlikePost(user, postId);
         return ResponseEntity.ok().build();
     }
 

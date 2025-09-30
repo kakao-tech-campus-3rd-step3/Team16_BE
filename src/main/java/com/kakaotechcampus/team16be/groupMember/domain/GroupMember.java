@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.groupMember.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+import static com.kakaotechcampus.team16be.group.exception.GroupErrorCode.WRONG_GROUP_ACCESS;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
 import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
@@ -21,7 +23,12 @@ import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErro
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "group_members")
+@Table(
+        name = "group_members",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"group_id", "user_id"})
+        }
+)
 public class GroupMember extends BaseEntity {
 
     @Id
@@ -46,22 +53,25 @@ public class GroupMember extends BaseEntity {
 
     private LocalDateTime leftAt;
 
+    private String intro;
+
     @CreatedDate
     private LocalDateTime joinAt;
 
     @Builder
-    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status) {
+    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status,String intro) {
         this.group = group;
         this.user = user;
         this.role = role;
         this.status = status;
+        this.intro = intro;
     }
 
     protected GroupMember() {
 
     }
 
-    public static GroupMember join(Group group, User user) {
+    public static GroupMember acceptJoin(Group group, User user) {
 
         return GroupMember.builder().
                 group(group).
@@ -72,11 +82,11 @@ public class GroupMember extends BaseEntity {
     }
 
     public static void checkLeftGroup(GroupMember member) {
-        if (member.getRole() == GroupRole.LEADER) {
+        if (member.getRole().isLeader()) {
             throw new GroupMemberException(LEADER_CANNOT_LEAVE);
         }
 
-        if (member.getStatus() == LEFT) {
+        if (member.getStatus().isLeft()) {
             throw new GroupMemberException(MEMBER_ALREADY_LEFT);
         }
 
@@ -90,24 +100,26 @@ public class GroupMember extends BaseEntity {
                 build();
     }
 
-    public static GroupMember sign(User signedUser, Group targetGroup) {
+    public static GroupMember sign(User signedUser, Group targetGroup, String intro) {
         return GroupMember.builder().
                 group(targetGroup).
                 user(signedUser).role(MEMBER).
                 status(PENDING).
+                intro(intro).
                 build();
     }
 
-    public void join() throws GroupMemberException {
-        if (this.status == LEFT) {
-            this.status = ACTIVE;
-        }
-        if (this.status == ACTIVE) {
+    public void acceptJoin() throws GroupMemberException {
+    if (this.status.isActive()) {
             throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
         }
-        if (this.status == GroupMemberStatus.BANNED) {
+
+        if (this.status.isLeft()) {
+            this.status = ACTIVE;
+        }
+        if (this.status.isBanned()) {
             throw new GroupMemberException(MEMBER_HAS_BANNED);
-        }else
+        } else
             this.status = ACTIVE;
     }
 
@@ -117,7 +129,7 @@ public class GroupMember extends BaseEntity {
     }
 
     public void bannedGroup() {
-        if (this.status == BANNED) {
+        if (this.status.isBanned()) {
             throw new GroupMemberException(MEMBER_ALREADY_BANNED);
         }
         this.status = BANNED;
@@ -131,8 +143,32 @@ public class GroupMember extends BaseEntity {
 
     }
 
+
+    public void changeToLeader() {
+        if (this.role.isLeader()) {
+            throw new GroupException(WRONG_GROUP_ACCESS);
+        }
+        this.role = LEADER;
+        this.group.changeLeader(this.user);
+    }
+
+    public void changeToMember() {
+        if (this.role.isMember()) {
+            throw new GroupException(WRONG_GROUP_ACCESS);
+        }
+        this.role = MEMBER;
+    }
+
+    public void canCancel() {
+        if (this.status.isPending()) {
+            this.status = CANCELED;
+        } else
+            throw new GroupMemberException(MEMBER_CANNOT_CANCEL);
+
+    }
+
     public void checkUserIsActive() {
-        if (this.status != ACTIVE) {
+        if (!this.status.isActive()) {
             throw new GroupMemberException(GROUP_MEMBER_NOT_FOUND);
         }
     }

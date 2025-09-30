@@ -13,15 +13,13 @@ import java.util.List;
 public interface GroupService {
     Group createGroup(User user, CreateGroupDto createGroupDto);
 
-    List<ResponseGroupListDto> getAllGroups();
+    List<Group> getAllGroups();
 
     void deleteGroup(User user,Long groupId);
 
     Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto);
 
     Group findGroupById(Long groupId);
-
-    ResponseSingleGroupDto getGroup(Long groupId);
 
     Group updateGroupImage(User user, Long groupId, UpdateGroupDto updateGroupDto);
 }

@@ -1,10 +1,8 @@
 package com.kakaotechcampus.team16be.group.service;
 
-import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.common.eventListener.ImageDeletedEvent;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
-import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
-import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
@@ -14,29 +12,20 @@ import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
-    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
-
-    public GroupServiceImpl(
-            GroupRepository groupRepository,
-            @Lazy S3UploadPresignedUrlService s3UploadPresignedUrlService, // <- @Lazy 추가
-            UserRepository userRepository
-    ) {
-        this.groupRepository = groupRepository;
-        this.s3UploadPresignedUrlService = s3UploadPresignedUrlService;
-        this.userRepository = userRepository;
-    }
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
@@ -59,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ResponseGroupListDto> getAllGroups() {
+    public List<Group> getAllGroups() {
 
         List<Group> findGroups = groupRepository.findAll();
 
@@ -67,11 +56,7 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);
         }
 
-        return findGroups.stream()
-                .map(group -> {
-                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(group.getCoverImageUrl());
-                    return ResponseGroupListDto.from(group, fullUrl);
-                }).toList();
+        return findGroups;
     }
 
 
@@ -108,15 +93,7 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
     }
 
-    @Override
-    public ResponseSingleGroupDto getGroup(Long groupId) {
-        Group targetGroup = findGroupById(groupId);
 
-        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
-
-        return ResponseSingleGroupDto.from(targetGroup, fullUrl);
-
-    }
     @Transactional
     @Override
     public Group updateGroupImage(User user, Long groupId, UpdateGroupDto UpdateGroupDto) {
@@ -130,8 +107,8 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        if (isImageChanged&&!oldImgUrl.isEmpty()) {
-            s3UploadPresignedUrlService.deleteImage(oldImgUrl);
+        if (isImageChanged && oldImgUrl != null && !oldImgUrl.isEmpty()) {
+            eventPublisher.publishEvent(new ImageDeletedEvent(oldImgUrl));
         }
 
         return targetGroup;
