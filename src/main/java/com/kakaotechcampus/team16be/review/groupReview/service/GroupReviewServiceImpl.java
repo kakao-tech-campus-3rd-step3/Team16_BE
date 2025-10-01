@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GroupReviewServiceImpl implements ReviewService<CreateGroupReviewDto, GroupReview> {
+public class GroupReviewServiceImpl implements GroupReviewService {
 
     private final GroupReviewRepository groupReviewRepository;
     private final GroupService groupService;
