@@ -41,15 +41,9 @@ public class AttendServiceImpl implements AttendService{
         return attendRepository.save(attend);
     }
 
-    /***
-     *  조회 권한은 그룹장만 가능?
-     */
     @Transactional(readOnly = true)
     @Override
     public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
-        Group targetGroup = groupService.findGroupById(groupId);
-
-        targetGroup.checkLeader(user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
 
         return attendRepository.findAllByPlan(plan);
