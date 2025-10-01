@@ -3,7 +3,6 @@ package com.kakaotechcampus.team16be.review.groupReview.service;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
-import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
 import com.kakaotechcampus.team16be.review.groupReview.dto.CreateGroupReviewDto;
 import com.kakaotechcampus.team16be.review.groupReview.repository.GroupReviewRepository;

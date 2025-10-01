@@ -5,7 +5,6 @@ import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.review.common.exception.ReviewException;
-import com.kakaotechcampus.team16be.review.common.service.ReviewService;
 import com.kakaotechcampus.team16be.review.memberReview.domain.Evaluation;
 import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
 import com.kakaotechcampus.team16be.review.memberReview.dto.CreateMemberReviewDto;
@@ -53,9 +52,15 @@ public class MemberReviewServiceImpl implements MemberReviewService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MemberReview> getAllReviews(User user, Long groupId) {
+    public List<MemberReview> getAllReviewsByGroup(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
 
         return memberReviewRepository.findByRevieweeAndGroup(user, targetGroup);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MemberReview> getAllReviews(User user) {
+        return memberReviewRepository.findByreviewee(user);
     }
 }

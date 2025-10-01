@@ -10,5 +10,7 @@ public interface MemberReviewService {
 
     MemberReview createReview(User user, CreateMemberReviewDto createReviewDto);
 
-    List<MemberReview> getAllReviews(User user, Long groupId);
+    List<MemberReview> getAllReviewsByGroup(User user, Long groupId);
+
+    List<MemberReview> getAllReviews(User user);
 }
