@@ -60,7 +60,8 @@ public class MemberReviewServiceImpl implements MemberReviewService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MemberReview> getAllReviews(User user) {
-        return memberReviewRepository.findByreviewee(user);
+    public List<MemberReview> getAllReviews(Long userId) {
+        User reviewee = userService.findById(userId);
+        return memberReviewRepository.findByreviewee(reviewee);
     }
 }

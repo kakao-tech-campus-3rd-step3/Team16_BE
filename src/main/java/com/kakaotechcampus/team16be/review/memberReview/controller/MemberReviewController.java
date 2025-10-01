@@ -42,9 +42,9 @@ public class MemberReviewController {
     }
 
     @Operation(summary = "회원 리뷰 조회", description = "해당 회원의 리뷰를 조회합니다.")
-    @GetMapping
-    public ResponseEntity<List<ResponseMemberReviewListDto>> getMemberReviews(@LoginUser User user) {
-        List<MemberReview> reviews = memberReviewService.getAllReviews(user);
+    @GetMapping("/{userId}/review")
+    public ResponseEntity<List<ResponseMemberReviewListDto>> getMemberReviews(@PathVariable Long userId) {
+        List<MemberReview> reviews = memberReviewService.getAllReviews(userId);
 
         return ResponseEntity.ok(ResponseMemberReviewListDto.from(reviews));
     }

@@ -12,5 +12,5 @@ public interface MemberReviewService {
 
     List<MemberReview> getAllReviewsByGroup(User user, Long groupId);
 
-    List<MemberReview> getAllReviews(User user);
+    List<MemberReview> getAllReviews(Long userId);
 }
