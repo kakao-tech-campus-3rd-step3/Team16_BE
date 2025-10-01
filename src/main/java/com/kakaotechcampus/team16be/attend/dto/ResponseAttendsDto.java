@@ -8,12 +8,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record ResponseAttendsDto(String userName, AttendStatus attendStatus, LocalDateTime attendAt) {
+public record ResponseAttendsDto(
+        String userName,
+        @Schema(
+        description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)",
+        allowableValues = {"PRESENT", "LATE", "ABSENT"}) AttendStatus attendStatus,
+        LocalDateTime attendAt) {
 
-    @Schema(
-            description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)",
-            allowableValues = {"PRESENT", "LATE", "ABSENT"}
-    )
+
+
     public static List<ResponseAttendsDto> from(List<Attend> allAttends) {
         return allAttends.stream()
                 .map(attend -> new ResponseAttendsDto(
