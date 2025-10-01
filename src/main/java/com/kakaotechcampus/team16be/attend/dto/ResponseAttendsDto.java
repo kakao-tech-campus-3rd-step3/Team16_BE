@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 public record ResponseAttendsDto(
         String userName,
         @Schema(
-        description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)",
-        allowableValues = {"PRESENT", "LATE", "ABSENT"}) AttendStatus attendStatus,
+        description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)")
+        AttendStatus attendStatus,
         LocalDateTime attendAt) {
 
 
