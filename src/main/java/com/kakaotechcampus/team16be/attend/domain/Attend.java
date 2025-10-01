@@ -54,11 +54,11 @@ public class Attend extends BaseEntity {
 
         if (now.isBefore(plan.getStartTime())) {
             return AttendStatus.PRESENT;
-        }
-        if (now.isAfter(plan.getEndTime())) {
+        } else if (!now.isAfter(plan.getEndTime())) {
             return AttendStatus.LATE;
+        } else {
+            return AttendStatus.ABSENT;
         }
-        return AttendStatus.ABSENT;
     }
 
 
