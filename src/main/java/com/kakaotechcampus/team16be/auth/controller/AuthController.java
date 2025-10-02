@@ -23,22 +23,13 @@ public class AuthController {
     private final KakaoAuthService kakaoAuthService;
     private final UserService userService;
 
-//    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리 후 토큰을 반환합니다.")
-//    @GetMapping("/kakao-login")
-//    public ResponseEntity<KakaoLoginResponse> kakaoLogin(
-//            @RequestParam("code") String code,
-//            HttpServletRequest request
-//    ) {
-//        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code, request);
-//        return ResponseEntity.ok(kakaoLoginResponse);
-//    }
-
-    @Operation(summary = "카카오 로그인(임시)", description = "프론트에서 받은 인가 코드를 통해 로그인 처리 후 토큰 반환")
-    @PostMapping("/kakao-login")
+    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리 후 토큰을 반환합니다.")
+    @GetMapping("/kakao-login")
     public ResponseEntity<KakaoLoginResponse> kakaoLogin(
-            @RequestParam("code") String code
+            @RequestParam("code") String code,
+            HttpServletRequest request
     ) {
-        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code, null);
+        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code, request);
         return ResponseEntity.ok(kakaoLoginResponse);
     }
 
