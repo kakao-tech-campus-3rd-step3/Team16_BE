@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.attend.service;
 
+import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
@@ -76,21 +77,18 @@ public class AttendServiceImpl implements AttendService{
 
         Plan plan = planService.findById(planId);
 
-        List<GroupMember> allGroupMembers = groupMemberService.findByGroup(targetGroup);
+        return attendRepository.findAllByPlanAndAttendStatus(plan, AttendStatus.ABSENT);
+    }
 
-        List<Attend> presentAttends = attendRepository.findAllByPlan(plan);
+    @Transactional
+    @Override
+    public List<Attend> findAllByPlan(Plan plan) {
+        return attendRepository.findAllByPlan(plan);
+    }
 
-        Set<GroupMember> presentMembers = presentAttends.stream()
-                .map(Attend::getGroupMember)
-                .collect(Collectors.toSet());
-
-
-        return allGroupMembers.stream()
-                .filter(member -> !presentMembers.contains(member))
-                .map(absentMember -> Attend.builder()
-                        .groupMember(absentMember)
-                        .plan(plan)
-                        .build())
-                .toList();
+    @Transactional
+    @Override
+    public void saveAll(List<Attend> absentAttendees) {
+        attendRepository.saveAll(absentAttendees);
     }
 }
