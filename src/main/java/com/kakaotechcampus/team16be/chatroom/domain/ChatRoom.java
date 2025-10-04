@@ -26,7 +26,7 @@ public class ChatRoom extends BaseEntity {
     private String roomName;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @Column(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
