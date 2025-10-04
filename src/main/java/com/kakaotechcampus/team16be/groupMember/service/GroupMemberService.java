@@ -23,4 +23,6 @@ public interface GroupMemberService {
     void validateGroupMember(User user, Long groupId);
 
     List<GroupMember> findByGroupAndPendingUser(User user, Long groupId);
+
+    List<GroupMember> getGroupMember(User user, Long groupId);
 }

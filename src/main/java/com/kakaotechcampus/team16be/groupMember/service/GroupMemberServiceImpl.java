@@ -96,4 +96,12 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
         return groupMemberRepository.findAllByGroupAndStatus(targetGroup, PENDING);
     }
+
+    @Override
+    public List<GroupMember> getGroupMember(User user, Long groupId) {
+        validateGroupMember(user, groupId);
+        Group targetGroup = groupService.findGroupById(groupId);
+
+        return groupMemberRepository.findAllByGroup(targetGroup);
+    }
 }
