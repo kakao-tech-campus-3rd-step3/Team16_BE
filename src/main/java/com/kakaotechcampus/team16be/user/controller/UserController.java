@@ -1,11 +1,10 @@
 package com.kakaotechcampus.team16be.user.controller;
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberInfoDto;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
-import com.kakaotechcampus.team16be.user.dto.UpdateProfileImageRequest;
-import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
-import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
-import com.kakaotechcampus.team16be.user.dto.UserProfileImageResponse;
+import com.kakaotechcampus.team16be.user.dto.*;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final GroupMemberService groupMemberService;
 
     @Operation(summary = "프로필 이미지 등록", description = "사용자의 프로필 이미지를 최초 등록합니다.")
     @PostMapping("/profile-image")
@@ -87,6 +87,14 @@ public class UserController {
     ) {
         userService.updateNickname(user, request);
         return ResponseEntity.ok("닉네임이 변경되었습니다.");
+    }
+
+
+    @Operation(summary = "유저 정보 조회", description = "사용자의 정보를 조회합니다.")
+    @GetMapping("/info")
+    public ResponseEntity<GroupMemberInfoDto> getUserInfo(@LoginUser User user) {
+        GroupMemberInfoDto userInfo = groupMemberService.getUserInfo(user);
+        return ResponseEntity.ok(userInfo);
     }
 
 }

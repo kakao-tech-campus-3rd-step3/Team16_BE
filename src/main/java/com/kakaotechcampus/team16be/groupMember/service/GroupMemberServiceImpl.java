@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberInfoDto;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -95,5 +96,18 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         targetGroup.checkLeader(user);
 
         return groupMemberRepository.findAllByGroupAndStatus(targetGroup, PENDING);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<GroupMember> findByUser(User user) {
+        return groupMemberRepository.findAllByUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    public GroupMemberInfoDto getUserInfo(User user) {
+        List<GroupMember> members = findByUser(user);
+
+        return GroupMemberInfoDto.from(user, members);
     }
 }

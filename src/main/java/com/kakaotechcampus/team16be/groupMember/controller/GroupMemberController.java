@@ -7,6 +7,7 @@ import com.kakaotechcampus.team16be.groupMember.dto.*;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberFacade;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
