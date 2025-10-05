@@ -30,11 +30,10 @@ public class AuthController {
     @GetMapping("/kakao-login")
     public void kakaoLogin(
             @RequestParam("code") String code,
-            HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         // 카카오 로그인 처리 후 액세스 토큰 DTO 발급
-        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code, request);
+        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code);
 
         // 프론트로 redirect + 토큰 전달
         String redirectUrl = "http://localhost:5173/login?token="
