@@ -1,33 +1,5 @@
 name: Deploy to EC2 with GitHub Actions
-uses: appleboy/ssh-action@master
-with:
-  host: ${{ secrets.EC2_HOST }}
-  username: ${{ secrets.EC2_USER }}
-  key: ${{ secrets.EC2_PEM_KEY }}
-  script: |
-    set -Eeuo pipefail
-    
-    # --- 0) 환경변수 주입 ---
-    export DB_HOST=${{ secrets.DB_HOST }}
-    export DB_PORT=${{ secrets.DB_PORT }}
-    export DB_NAME=${{ secrets.DB_NAME }}
-    export DB_USERNAME=${{ secrets.DB_USERNAME }}
-    export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-    export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-    export KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
-    export KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
-    export AWS_REGION=${{ secrets.AWS_REGION }}
-    export AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
-    export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-    export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    export DEFAULT_IMG=${{ secrets.DEFAULT_IMG }}
-    
-    APP_DIR="/home/${USER}/Team16_BE"
-    JAR_NAME="${{ steps.find_jar.outputs.JAR_NAME }}"
-    APP_JAR="app.jar"
-    LOG_DIR="${APP_DIR}/logs"
-    
-    cd "${APP_DIR}" || { echo "Failed to change directory to ${APP_DIR}"; exit 1; }
+
 on:
   push:
     branches: [develop]
@@ -67,7 +39,6 @@ jobs:
       # 4) gradlew 실행권한
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-
 
       # 5) 빌드 (테스트 제외)
       - name: Build with Gradle
@@ -140,6 +111,21 @@ jobs:
           key: ${{ secrets.EC2_PEM_KEY }}
           script: |
             set -Eeuo pipefail
+            
+            # --- 0) 환경변수 주입 ---
+            export DB_HOST=${{ secrets.DB_HOST }}
+            export DB_PORT=${{ secrets.DB_PORT }}
+            export DB_NAME=${{ secrets.DB_NAME }}
+            export DB_USERNAME=${{ secrets.DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            export KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            export KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
+            export AWS_REGION=${{ secrets.AWS_REGION }}
+            export AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            export DEFAULT_IMG=${{ secrets.DEFAULT_IMG }}
             
             APP_DIR="/home/${USER}/Team16_BE"
             JAR_NAME="${{ steps.find_jar.outputs.JAR_NAME }}"
