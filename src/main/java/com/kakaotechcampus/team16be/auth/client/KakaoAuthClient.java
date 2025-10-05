@@ -80,7 +80,15 @@ public class KakaoAuthClient {
                     ex.getStatusCode(), responseBody);
             // 에러 메시지에서 힌트 추출
             if (responseBody.contains("invalid_grant")) {
-                throw new KakaoException(KakaoErrorCode.INVALID_AUTHORIZATION_CODE);
+                if (responseBody.contains("code expired")) {
+                    throw new KakaoException(KakaoErrorCode.AUTH_CODE_EXPIRED);
+                } else if (responseBody.contains("already used")) {
+                    throw new KakaoException(KakaoErrorCode.AUTH_CODE_ALREADY_USED);
+                } else if (responseBody.contains("redirect_uri mismatch")) {
+                    throw new KakaoException(KakaoErrorCode.REDIRECT_URI_MISMATCH);
+                } else {
+                    throw new KakaoException(KakaoErrorCode.AUTH_CODE_INVALID);
+                }
             } else if (responseBody.contains("invalid_client")) {
                 throw new KakaoException(KakaoErrorCode.INVALID_CLIENT_ID);
             }

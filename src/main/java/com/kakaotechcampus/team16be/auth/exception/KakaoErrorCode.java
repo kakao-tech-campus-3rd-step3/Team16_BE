@@ -12,6 +12,10 @@ public enum KakaoErrorCode implements ErrorCode {
     // 400 BAD_REQUEST - 클라이언트 입력 오류
     INVALID_CLIENT_ID(HttpStatus.BAD_REQUEST, "AUTH-001", "유효하지 않은 카카오 클라이언트 ID입니다."),
     INVALID_AUTHORIZATION_CODE(HttpStatus.BAD_REQUEST, "AUTH-002", "유효하지 않은 인가 코드입니다. 인가 코드가 만료되었거나 이미 사용되었습니다."),
+    AUTH_CODE_EXPIRED(HttpStatus.BAD_REQUEST, "AUTH-012", "인가 코드가 만료되었습니다."),
+    AUTH_CODE_ALREADY_USED(HttpStatus.BAD_REQUEST, "AUTH-013", "인가 코드가 이미 사용되었습니다."),
+    AUTH_CODE_INVALID(HttpStatus.BAD_REQUEST, "AUTH-014", "유효하지 않은 인가 코드입니다."),
+    REDIRECT_URI_MISMATCH(HttpStatus.BAD_REQUEST, "AUTH-015", "redirect_uri가 애플리케이션 설정과 일치하지 않습니다."),
 
     // 500 INTERNAL_SERVER_ERROR
     TOKEN_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"AUTH-003", "카카오 토큰 요청에 실패했습니다."),
