@@ -82,18 +82,18 @@ public class KakaoAuthClient {
             String responseBody = ex.getResponseBodyAsString();
             log.error("Kakao Token Request Failed - Status: {}, Body: {}",
                     ex.getStatusCode(), responseBody);
-            // 에러 메시지에서 힌트 추출
-            if (responseBody.contains("invalid_grant")) {
-                if (responseBody.contains("code expired")) {
+            String bodyLower = responseBody.toLowerCase(); // 소문자로 변환
+            if (bodyLower.contains("invalid_grant")) {
+                if (bodyLower.contains("code expired")) {
                     throw new KakaoException(KakaoErrorCode.AUTH_CODE_EXPIRED);
-                } else if (responseBody.contains("already used")) {
+                } else if (bodyLower.contains("already used")) {
                     throw new KakaoException(KakaoErrorCode.AUTH_CODE_ALREADY_USED);
-                } else if (responseBody.contains("redirect_uri mismatch")) {
+                } else if (bodyLower.contains("redirect uri mismatch")) {
                     throw new KakaoException(KakaoErrorCode.REDIRECT_URI_MISMATCH);
                 } else {
                     throw new KakaoException(KakaoErrorCode.AUTH_CODE_INVALID);
                 }
-            } else if (responseBody.contains("invalid_client")) {
+            } else if (bodyLower.contains("invalid_client")) {
                 throw new KakaoException(KakaoErrorCode.INVALID_CLIENT_ID);
             }
             throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_CLIENT);
