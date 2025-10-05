@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.auth.dto.KakaoUserInfoResponse;
 import com.kakaotechcampus.team16be.auth.exception.KakaoErrorCode;
 import com.kakaotechcampus.team16be.auth.exception.KakaoException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoAuthClient {
 
     // 카카오 API URL 상수
@@ -34,6 +36,11 @@ public class KakaoAuthClient {
     public KakaoTokenResponse requestAccessToken(String code) {
         HttpEntity<MultiValueMap<String, String>> request = buildTokenRequestEntity(code);
 
+        log.info("### Kakao Token Request Params ###");
+        log.info("code={}", code);
+        log.info("client_id={}", kakaoProperties.getClientId());
+        log.info("redirect_uri={}", kakaoProperties.getRedirectUri());
+
         try {
             ResponseEntity<KakaoTokenResponse> response = restTemplate.exchange(
                     KAKAO_TOKEN_URL,
@@ -42,21 +49,43 @@ public class KakaoAuthClient {
                     KakaoTokenResponse.class
             );
 
+            log.info("Kakao Token API Response status={}", response.getStatusCode());
+            log.info("Kakao Token API Response body={}", response.getBody());
+
+            // 1. HTTP 상태가 2xx 아닌 경우
             if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED);
+                log.error("Kakao Token API returned non-2xx status: {}", response.getStatusCode());
+                throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_HTTP_STATUS);
             }
 
             KakaoTokenResponse tokenResponse = response.getBody();
-            if (tokenResponse == null || tokenResponse.accessToken() == null) {
-                throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED);
+
+            // 2. body 자체가 null
+            if (tokenResponse == null) {
+                log.error("Kakao Token API response body is null");
+                throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_NULL_BODY);
+            }
+
+            // 3. access_token이 없는 경우
+            if (tokenResponse.accessToken() == null) {
+                log.error("Kakao Token API response does not contain access_token");
+                throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_NO_TOKEN);
             }
 
             return tokenResponse;
 
-        } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED);
+        } catch (HttpClientErrorException ex) {
+            log.error("HttpClientErrorException: status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_CLIENT);
+        } catch (HttpServerErrorException ex) {
+            log.error("HttpServerErrorException: status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_SERVER);
         } catch (ResourceAccessException ex) {
+            log.error("Kakao Token API Connection Failed: {}", ex.getMessage());
             throw new KakaoException(KakaoErrorCode.CONNECTION_FAILED);
+        } catch (Exception ex) {
+            log.error("Unknown error during Kakao token request", ex);
+            throw new KakaoException(KakaoErrorCode.UNKNOWN_ERROR);
         }
     }
 
