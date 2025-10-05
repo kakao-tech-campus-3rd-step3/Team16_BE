@@ -16,6 +16,10 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -175,6 +179,13 @@ public class KakaoAuthClient {
 
     // Access Token 요청을 위한 HttpEntity 생성
     private HttpEntity<MultiValueMap<String, String>> buildTokenRequestEntity(String code) {
+        code = code.trim();
+        try {
+            code = URLDecoder.decode(code, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Failed to decode code", e);
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); // form-data 방식
 
