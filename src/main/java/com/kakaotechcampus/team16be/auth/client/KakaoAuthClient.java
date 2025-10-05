@@ -75,7 +75,15 @@ public class KakaoAuthClient {
             return tokenResponse;
 
         } catch (HttpClientErrorException ex) {
-            log.error("HttpClientErrorException: status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            String responseBody = ex.getResponseBodyAsString();
+            log.error("Kakao Token Request Failed - Status: {}, Body: {}",
+                    ex.getStatusCode(), responseBody);
+            // 에러 메시지에서 힌트 추출
+            if (responseBody.contains("invalid_grant")) {
+                throw new KakaoException(KakaoErrorCode.INVALID_AUTHORIZATION_CODE);
+            } else if (responseBody.contains("invalid_client")) {
+                throw new KakaoException(KakaoErrorCode.INVALID_CLIENT_ID);
+            }
             throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_CLIENT);
         } catch (HttpServerErrorException ex) {
             log.error("HttpServerErrorException: status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
