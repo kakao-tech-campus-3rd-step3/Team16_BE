@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum KakaoErrorCode implements ErrorCode {
 
+    // 400 BAD_REQUEST - 클라이언트 입력 오류
+    INVALID_CLIENT_ID(HttpStatus.BAD_REQUEST, "AUTH-001", "유효하지 않은 카카오 클라이언트 ID입니다."),
+    INVALID_AUTHORIZATION_CODE(HttpStatus.BAD_REQUEST, "AUTH-002", "유효하지 않은 인가 코드입니다. 인가 코드가 만료되었거나 이미 사용되었습니다."),
+
     // 500 INTERNAL_SERVER_ERROR
     TOKEN_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"AUTH-003", "카카오 토큰 요청에 실패했습니다."),
     USER_INFO_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"AUTH-004", "카카오 사용자 정보 요청에 실패했습니다."),
