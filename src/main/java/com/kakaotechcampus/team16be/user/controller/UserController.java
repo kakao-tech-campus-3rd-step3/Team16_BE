@@ -2,10 +2,7 @@ package com.kakaotechcampus.team16be.user.controller;
 
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.user.domain.User;
-import com.kakaotechcampus.team16be.user.dto.UpdateProfileImageRequest;
-import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
-import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
-import com.kakaotechcampus.team16be.user.dto.UserProfileImageResponse;
+import com.kakaotechcampus.team16be.user.dto.*;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -87,6 +84,15 @@ public class UserController {
     ) {
         userService.updateNickname(user, request);
         return ResponseEntity.ok("닉네임이 변경되었습니다.");
+    }
+
+    @Operation(summary = "로그인한 사용자의 프로필 및 그룹 소속 정보 조회", description = "로그인한 사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoResponse> getUserInfo(
+            @LoginUser User user
+    ) {
+        UserInfoResponse response = userService.getUserInfo(user);
+        return ResponseEntity.ok(response);
     }
 
 }
