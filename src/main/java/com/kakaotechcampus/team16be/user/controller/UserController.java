@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -92,6 +94,15 @@ public class UserController {
             @LoginUser User user
     ) {
         UserInfoResponse response = userService.getUserInfo(user);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "사용자의 그룹 활동 내역 조회 (나의활동이력)", description = "로그인한 사용자의 그룹 참여 및 탈퇴 이력을 반환합니다.")
+    @GetMapping("/groups/history")
+    public ResponseEntity<List<UserGroupHistoryResponse>> getUserGroupHistory(
+            @LoginUser User user
+    ) {
+        List<UserGroupHistoryResponse> response = userService.getUserGroupHistory(user);
         return ResponseEntity.ok(response);
     }
 

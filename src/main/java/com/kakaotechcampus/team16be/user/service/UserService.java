@@ -4,7 +4,11 @@ import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
+import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.dto.UserGroupHistoryResponse;
 import com.kakaotechcampus.team16be.user.dto.UserInfoResponse;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
@@ -25,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
     private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
     public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
@@ -126,6 +131,18 @@ public class UserService {
                 "memberOf", memberGroupIds
         );
         return UserInfoResponse.of(user, groups);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserGroupHistoryResponse> getUserGroupHistory(User user) {
+        List<GroupMember> memberships = groupMemberRepository.findAllByUserAndStatusIn(
+                user,
+                List.of(GroupMemberStatus.ACTIVE, GroupMemberStatus.LEFT, GroupMemberStatus.BANNED)
+        );
+
+        return memberships.stream()
+                .map(UserGroupHistoryResponse::from)
+                .toList();
     }
 
 }

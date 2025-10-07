@@ -5,6 +5,8 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
 import com.kakaotechcampus.team16be.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +19,12 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember,Long> {
     List<GroupMember> findAllByGroup(Group group);
 
     List<GroupMember> findAllByGroupAndStatus(Group group, GroupMemberStatus status);
+
+    @Query("SELECT gm FROM GroupMember gm " +
+            "WHERE gm.user = :user AND gm.status IN :statuses " +
+            "ORDER BY gm.joinAt DESC")
+    List<GroupMember> findAllByUserAndStatusIn(
+            @Param("user") User user,
+            @Param("statuses") List<GroupMemberStatus> statuses
+    );
 }
