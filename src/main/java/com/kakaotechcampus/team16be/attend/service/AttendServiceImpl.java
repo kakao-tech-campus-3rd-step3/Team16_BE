@@ -3,6 +3,8 @@ package com.kakaotechcampus.team16be.attend.service;
 import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
+import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
@@ -11,15 +13,10 @@ import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -65,8 +62,9 @@ public class AttendServiceImpl implements AttendService{
         Group targetGroup = groupService.findGroupById(groupId);
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
-
-        return attendRepository.findByPlanAndGroupMember(plan, groupMember);
+        Attend attend = attendRepository.findByPlanAndGroupMember(plan, groupMember)
+                .orElseThrow(() -> new AttendException(AttendErrorCode.ATTEND_NOT_FOUND));
+        return attend;
     }
 
     @Transactional(readOnly = true)
