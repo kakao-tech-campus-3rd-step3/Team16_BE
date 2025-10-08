@@ -88,21 +88,21 @@ public class UserController {
         return ResponseEntity.ok("닉네임이 변경되었습니다.");
     }
 
-    @Operation(summary = "로그인한 사용자의 프로필 및 그룹 소속 정보 조회", description = "로그인한 사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
-    @GetMapping("/me")
+    @Operation(summary = "사용자의 프로필 및 그룹 소속 정보 조회", description = "사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
+    @GetMapping("/{userId}/me")
     public ResponseEntity<UserInfoResponse> getUserInfo(
-            @LoginUser User user
+            @PathVariable Long userId
     ) {
-        UserInfoResponse response = userService.getUserInfo(user);
+        UserInfoResponse response = userService.getUserInfo(userId);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "사용자의 그룹 활동 내역 조회 (나의활동이력)", description = "로그인한 사용자의 그룹 참여 및 탈퇴 이력을 반환합니다.")
-    @GetMapping("/groups/history")
+    @Operation(summary = "사용자의 그룹 활동 내역 조회 (나의활동이력)", description = "사용자의 그룹 참여 및 탈퇴 이력을 반환합니다.")
+    @GetMapping("/{userId}/groups/history")
     public ResponseEntity<List<UserGroupHistoryResponse>> getUserGroupHistory(
-            @LoginUser User user
+            @PathVariable Long userId
     ) {
-        List<UserGroupHistoryResponse> response = userService.getUserGroupHistory(user);
+        List<UserGroupHistoryResponse> response = userService.getUserGroupHistory(userId);
         return ResponseEntity.ok(response);
     }
 
