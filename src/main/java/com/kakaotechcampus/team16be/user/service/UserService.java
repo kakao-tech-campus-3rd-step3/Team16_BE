@@ -122,9 +122,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoResponse getUserInfo(User user) {
-        List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(user.getId());
-        List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(user.getId());
+    public UserInfoResponse getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(userId);
+        List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(userId);
 
         Map<String, List<String>> groups = Map.of(
                 "leaderOf", leaderGroupIds,
@@ -134,9 +136,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserGroupHistoryResponse> getUserGroupHistory(User user) {
-        List<GroupMember> memberships = groupMemberRepository.findAllByUserAndStatusIn(
-                user,
+    public List<UserGroupHistoryResponse> getUserGroupHistory(Long userId) {
+        List<GroupMember> memberships = groupMemberRepository.findAllByUserIdAndStatusIn(
+                userId,
                 List.of(GroupMemberStatus.ACTIVE, GroupMemberStatus.LEFT, GroupMemberStatus.BANNED)
         );
 
