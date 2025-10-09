@@ -7,6 +7,7 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
 import java.time.format.DateTimeFormatter;
 
 public record UserGroupHistoryResponse(
+        Long groupId,
         String name,
         GroupMemberStatus groupMemberStatus,
         SafetyTag safetyTag,
@@ -20,6 +21,7 @@ public record UserGroupHistoryResponse(
         String leftAt = member.getLeftAt() != null ? member.getLeftAt().format(FORMATTER) : null;
 
         return new UserGroupHistoryResponse(
+                member.getGroup().getId(),
                 member.getGroup().getName(),
                 member.getStatus(),
                 member.getGroup().getSafetyTag(),
