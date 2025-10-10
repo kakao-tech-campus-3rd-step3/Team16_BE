@@ -1,8 +1,10 @@
 package com.kakaotechcampus.team16be.groupMember.service;
 
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -24,6 +26,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
     private final UserService userService;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
     public GroupMember findByGroupAndUser(Group group, User user) {
         return groupMemberRepository.findByGroupAndUser(group, user)
@@ -89,6 +92,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<GroupMember> findByGroupAndPendingUser(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
@@ -98,10 +102,26 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
-    public List<GroupMember> getGroupMember(User user, Long groupId) {
+    @Transactional(readOnly = true)
+    public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
         validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
+        List<GroupMember> members = groupMemberRepository.findAllByGroup(targetGroup);
 
-        return groupMemberRepository.findAllByGroup(targetGroup);
+        return members.stream()
+                .map(member -> {
+                    User memberUser = member.getUser();
+                    String originalUrl = memberUser.getProfileImageUrl();
+                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+
+                    return new GroupMemberDto(
+                            member.getId(),
+                            member.getGroup().getName(),
+                            memberUser.getNickname(),
+                            member.getRole(),
+                            publicUrl
+                    );
+                })
+                .toList();
     }
 }

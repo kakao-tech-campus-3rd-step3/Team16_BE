@@ -88,8 +88,8 @@ public class GroupMemberController {
     @Operation(summary = "그룹별 멤버", description = "해당 그룹에 가입한 멤버 반환")
     @GetMapping("/{groupId}")
     public ResponseEntity<List<GroupMemberDto>> getGroupMember(@LoginUser User user, @PathVariable Long groupId) {
-        List<GroupMember> members = groupMemberService.getGroupMember(user, groupId);
+        List<GroupMemberDto> members = groupMemberService.getGroupMember(user, groupId);
 
-        return ResponseEntity.ok(GroupMemberDto.from(members));
+        return ResponseEntity.ok(members);
     }
 }
