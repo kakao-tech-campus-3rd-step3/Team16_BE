@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.groupMember.dto;
 
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
-
 import java.util.List;
 
 public record SignResponseDto(

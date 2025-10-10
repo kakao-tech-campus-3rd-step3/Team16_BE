@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.groupMember.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.user.domain.User;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface GroupMemberService {
 
     void validateGroupMember(User user, Long groupId);
 
-    List<GroupMember> findByGroupAndPendingUser(User user, Long groupId);
+    List<SignResponseDto> findByGroupAndPendingUser(User user, Long groupId);
 
     List<GroupMember> getGroupMember(User user, Long groupId);
 }

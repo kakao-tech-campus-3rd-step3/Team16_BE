@@ -1,8 +1,10 @@
 package com.kakaotechcampus.team16be.groupMember.service;
 
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -24,6 +26,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
     private final UserService userService;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
     public GroupMember findByGroupAndUser(Group group, User user) {
         return groupMemberRepository.findByGroupAndUser(group, user)
@@ -89,13 +92,31 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     }
 
+
+    @Override
     @Transactional(readOnly = true)
-    public List<GroupMember> findByGroupAndPendingUser(User user, Long groupId) {
+    public List<SignResponseDto> findByGroupAndPendingUser(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
 
-        return groupMemberRepository.findAllByGroupAndStatus(targetGroup, PENDING);
+        List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup, PENDING);
+
+        return members.stream()
+                .map(member -> {
+                    User targetMember = member.getUser();
+                    String fileName = targetMember.getProfileImageUrl();
+
+                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(fileName);
+
+                    return new SignResponseDto(
+                            targetMember.getId(),
+                            member.getIntro(),
+                            publicUrl
+                    );
+                })
+                .toList();
     }
+
 
     @Override
     public List<GroupMember> getGroupMember(User user, Long groupId) {

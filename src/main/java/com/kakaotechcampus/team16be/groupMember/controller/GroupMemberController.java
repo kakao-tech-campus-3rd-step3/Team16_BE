@@ -80,9 +80,9 @@ public class GroupMemberController {
     public ResponseEntity<List<SignResponseDto>> getAllJoinRequest(
             @LoginUser User user, @PathVariable Long groupId
     ) {
-        List<GroupMember> members = groupMemberService.findByGroupAndPendingUser(user, groupId);
+        List<SignResponseDto> members = groupMemberService.findByGroupAndPendingUser(user, groupId);
 
-        return ResponseEntity.ok(SignResponseDto.from(members));
+        return ResponseEntity.ok(members);
     }
 
     @Operation(summary = "그룹별 멤버", description = "해당 그룹에 가입한 멤버 반환")
