@@ -13,11 +13,11 @@ public record UserInfoResponse(
         VerificationStatus isStudentVerified,
         Map<String, List<String>> groups
 ) {
-    public static UserInfoResponse of(User user, Map<String, List<String>> groups) {
+    public static UserInfoResponse of(User user, Map<String, List<String>> groups, String profileImageUrl) {
         return new UserInfoResponse(
                 user.getId().toString(),
                 user.getNickname(),
-                user.getProfileImageUrl(),
+                profileImageUrl,
                 user.getVerificationStatus(),
                 groups
         );

@@ -21,10 +21,10 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember,Long> {
     List<GroupMember> findAllByGroupAndStatus(Group group, GroupMemberStatus status);
 
     @Query("SELECT gm FROM GroupMember gm " +
-            "WHERE gm.user = :user AND gm.status IN :statuses " +
+            "WHERE gm.user.id = :userId AND gm.status IN :statuses " +
             "ORDER BY gm.joinAt DESC")
-    List<GroupMember> findAllByUserAndStatusIn(
-            @Param("user") User user,
+    List<GroupMember> findAllByUserIdAndStatusIn(
+            @Param("userId") Long userId,
             @Param("statuses") List<GroupMemberStatus> statuses
     );
 }
