@@ -9,7 +9,8 @@ public record GroupMemberDto(
         Long id,
         String groupName,
         String nickname,
-        GroupRole groupRole
+        GroupRole groupRole,
+        String profileImageUrl
 ) {
 
     public static List<GroupMemberDto> from(List<GroupMember> members) {
@@ -18,7 +19,8 @@ public record GroupMemberDto(
                         member.getId(),
                         member.getGroup().getName(),
                         member.getUser().getNickname(),
-                        member.getRole()
+                        member.getRole(),
+                        member.getUser().getProfileImageUrl()
                 ))
                 .toList();
     }
