@@ -88,7 +88,16 @@ public class UserController {
         return ResponseEntity.ok("닉네임이 변경되었습니다.");
     }
 
-    @Operation(summary = "사용자의 프로필 및 그룹 소속 정보 조회", description = "사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
+    @Operation(summary = "로그인한 사용자 본인의 프로필 및 그룹 소속 정보 조회", description = "JWT를 통해 로그인된 사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoResponse> getMyInfo(
+            @LoginUser User user
+    ) {
+        UserInfoResponse response = userService.getUserInfo(user.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "특정 사용자의 프로필 및 그룹 소속 정보 조회", description = "사용자의 프로필 및 그룹 소속 정보를 반환합니다.")
     @GetMapping("/{userId}/me")
     public ResponseEntity<UserInfoResponse> getUserInfo(
             @PathVariable Long userId
