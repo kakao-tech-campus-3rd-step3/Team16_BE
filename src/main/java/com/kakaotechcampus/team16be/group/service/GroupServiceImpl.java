@@ -7,6 +7,8 @@ import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
@@ -26,6 +28,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final GroupMemberRepository groupMemberRepository;
 
 
     @Transactional
@@ -35,15 +38,20 @@ public class GroupServiceImpl implements GroupService {
         String groupIntro = createGroupDto.intro();
         Integer groupCapacity = createGroupDto.capacity();
 
-        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+        User leader = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
-
-        if (existGroupName(createdGroup.getName())) {
+        if (existGroupName(groupName)) {
             throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);
         }
 
-        return groupRepository.save(createdGroup);
+        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
+        groupRepository.save(createdGroup);
+
+        GroupMember leaderMember = GroupMember.create(createdGroup, leader);
+        groupMemberRepository.save(leaderMember);
+
+        return createdGroup;
     }
 
     @Transactional(readOnly = true)

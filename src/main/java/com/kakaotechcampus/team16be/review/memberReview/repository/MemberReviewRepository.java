@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface MemberReviewRepository extends JpaRepository<MemberReview,Long> {
     List<MemberReview> findByRevieweeAndGroup(User reviewee, Group group);
+
+    List<MemberReview> findByreviewee(User reviewee);
 }

@@ -108,11 +108,11 @@ public class S3UploadPresignedUrlService {
         return amazonS3Client.generatePresignedUrl(request).toString();
     }
 
-    public ImageUrlDto executeGroupImg(User user, Long groupId, ImageFileExtension fileExtension) {
-
+    public ImageUrlDto executeGroupImg(User user, ImageFileExtension fileExtension) {
+        String groupUUID = UUID.randomUUID().toString();
         String valueFileExtension = fileExtension.getUploadExtension();
         String valueType = String.valueOf(ImageUploadType.GROUP_ICON);
-        String fileName = createGroupFileName(groupId, valueFileExtension, valueType);
+        String fileName = createGroupFileName(groupUUID, valueFileExtension, valueType);
         log.info(fileName);
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
@@ -122,17 +122,18 @@ public class S3UploadPresignedUrlService {
         return ImageUrlDto.of(url.toString(), fileName);
     }
 
-    private String createGroupFileName(Long groupId, String fileExtension, String valueType) {
-        return valueType + "/" + groupId + "/" + UUID.randomUUID() + "." + fileExtension;
+    private String createGroupFileName(String groupUUID, String fileExtension, String valueType) {
+        return valueType + "/" + groupUUID + "/" + UUID.randomUUID() + "." + fileExtension;
     }
 
-    public ImageUrlDto executePostImg(User user, Long groupId, Long postId, ImageFileExtension fileExtension) {
-
+    public ImageUrlDto executePostImg(User user, Long groupId, ImageFileExtension fileExtension) {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
+
+        String postUUID = UUID.randomUUID().toString();
         String valueFileExtension = fileExtension.getUploadExtension();
         String valueType = String.valueOf(ImageUploadType.POST);
-        String fileName = createPostFileName(groupId, postId, valueFileExtension, valueType);
+        String fileName = createPostFileName(groupId, postUUID, valueFileExtension, valueType);
         log.info(fileName);
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
@@ -142,7 +143,7 @@ public class S3UploadPresignedUrlService {
         return ImageUrlDto.of(url.toString(), fileName);
     }
 
-    private String createPostFileName(Long groupId, Long postId, String fileExtension,String valueType) {
-        return valueType + "/" + groupId + "/" + postId + "/" + UUID.randomUUID() + "." + fileExtension;
+    private String createPostFileName(Long groupId, String postUUID, String fileExtension,String valueType) {
+        return valueType + "/" + groupId + "/" + postUUID + "/" + UUID.randomUUID() + "." + fileExtension;
     }
 }

@@ -21,7 +21,7 @@ public class KakaoAuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public KakaoLoginResponse loginWithCode(String code, HttpServletRequest request) {
+    public KakaoLoginResponse loginWithCode(String code) {
         // 1. 인가 코드로 Access Token 요청
         KakaoTokenResponse kakaoTokenResponse = kakaoAuthClient.requestAccessToken(code);
         String kakaoAccessToken = kakaoTokenResponse.accessToken();

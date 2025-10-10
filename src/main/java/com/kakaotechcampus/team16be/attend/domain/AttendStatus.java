@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum AttendStatus {
-    PRESENT, ABSENT, LATE
+    PRESENT, ABSENT, LATE, PENDING
 }

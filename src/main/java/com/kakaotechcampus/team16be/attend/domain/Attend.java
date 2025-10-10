@@ -42,6 +42,14 @@ public class Attend extends BaseEntity {
     protected Attend() {
     }
 
+    @Builder(builderMethodName = "absentBuilder")
+    public Attend(GroupMember groupMember, Plan plan, AttendStatus attendStatus) {
+        this.groupMember = groupMember;
+        this.plan = plan;
+        this.attendStatus = attendStatus;
+    }
+
+
     @Builder
     public Attend(GroupMember groupMember, Plan plan) {
         this.groupMember = groupMember;
@@ -66,6 +74,14 @@ public class Attend extends BaseEntity {
         return Attend.builder()
                 .groupMember(groupMember)
                 .plan(plan)
+                .build();
+    }
+
+    public static Attend absentPlan(GroupMember groupMember, Plan plan) {
+        return Attend.absentBuilder()
+                .groupMember(groupMember)
+                .plan(plan)
+                .attendStatus(AttendStatus.ABSENT)
                 .build();
     }
 }

@@ -1,7 +1,10 @@
 package com.kakaotechcampus.team16be.attend.service;
 
+import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
+import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
@@ -10,15 +13,10 @@ import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -41,15 +39,9 @@ public class AttendServiceImpl implements AttendService{
         return attendRepository.save(attend);
     }
 
-    /***
-     *  조회 권한은 그룹장만 가능?
-     */
     @Transactional(readOnly = true)
     @Override
     public List<Attend> getAllAttends(User user, Long groupId, Long planId) {
-        Group targetGroup = groupService.findGroupById(groupId);
-
-        targetGroup.checkLeader(user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
 
         return attendRepository.findAllByPlanOrderByCreatedAtAsc(plan);
@@ -70,8 +62,9 @@ public class AttendServiceImpl implements AttendService{
         Group targetGroup = groupService.findGroupById(groupId);
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, planId);
-
-        return attendRepository.findByPlanAndGroupMember(plan, groupMember);
+        Attend attend = attendRepository.findByPlanAndGroupMember(plan, groupMember)
+                .orElseThrow(() -> new AttendException(AttendErrorCode.ATTEND_NOT_FOUND));
+        return attend;
     }
 
     @Transactional(readOnly = true)
@@ -82,21 +75,18 @@ public class AttendServiceImpl implements AttendService{
 
         Plan plan = planService.findById(planId);
 
-        List<GroupMember> allGroupMembers = groupMemberService.findByGroup(targetGroup);
+        return attendRepository.findAllByPlanAndAttendStatus(plan, AttendStatus.ABSENT);
+    }
 
-        List<Attend> presentAttends = attendRepository.findAllByPlan(plan);
+    @Transactional
+    @Override
+    public List<Attend> findAllByPlan(Plan plan) {
+        return attendRepository.findAllByPlan(plan);
+    }
 
-        Set<GroupMember> presentMembers = presentAttends.stream()
-                .map(Attend::getGroupMember)
-                .collect(Collectors.toSet());
-
-
-        return allGroupMembers.stream()
-                .filter(member -> !presentMembers.contains(member))
-                .map(absentMember -> Attend.builder()
-                        .groupMember(absentMember)
-                        .plan(plan)
-                        .build())
-                .toList();
+    @Transactional
+    @Override
+    public void saveAll(List<Attend> absentAttendees) {
+        attendRepository.saveAll(absentAttendees);
     }
 }
