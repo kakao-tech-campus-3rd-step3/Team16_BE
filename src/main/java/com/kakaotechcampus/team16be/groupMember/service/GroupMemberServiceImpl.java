@@ -4,6 +4,7 @@ import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberDto;
 import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
@@ -119,10 +120,26 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 
     @Override
-    public List<GroupMember> getGroupMember(User user, Long groupId) {
+    @Transactional(readOnly = true)
+    public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
         validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
+        List<GroupMember> members = groupMemberRepository.findAllByGroup(targetGroup);
 
-        return groupMemberRepository.findAllByGroup(targetGroup);
+        return members.stream()
+                .map(member -> {
+                    User memberUser = member.getUser();
+                    String originalUrl = memberUser.getProfileImageUrl();
+                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+
+                    return new GroupMemberDto(
+                            member.getId(),
+                            member.getGroup().getName(),
+                            memberUser.getNickname(),
+                            member.getRole(),
+                            publicUrl
+                    );
+                })
+                .toList();
     }
 }
