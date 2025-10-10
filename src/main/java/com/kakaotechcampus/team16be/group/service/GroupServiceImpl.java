@@ -48,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
         Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
         groupRepository.save(createdGroup);
 
-        GroupMember leaderMember = GroupMember.acceptJoin(createdGroup, leader);
+        GroupMember leaderMember = GroupMember.create(createdGroup, leader);
         groupMemberRepository.save(leaderMember);
 
         return createdGroup;
