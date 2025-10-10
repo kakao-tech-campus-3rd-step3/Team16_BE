@@ -132,7 +132,9 @@ public class UserService {
                 "leaderOf", leaderGroupIds,
                 "memberOf", memberGroupIds
         );
-        return UserInfoResponse.of(user, groups);
+
+        String profileImageUrl = s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+        return UserInfoResponse.of(user, groups, profileImageUrl);
     }
 
     @Transactional(readOnly = true)
