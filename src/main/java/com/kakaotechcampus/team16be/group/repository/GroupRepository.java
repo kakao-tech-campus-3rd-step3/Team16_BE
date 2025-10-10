@@ -12,7 +12,7 @@ import java.util.List;
 public interface GroupRepository extends JpaRepository<Group, Long> {
     boolean existsGroupByName(String name);
 
-    @Query("SELECT gm.group.id FROM GroupMember gm WHERE gm.user.id = :userId")
+    @Query("SELECT gm.group.id FROM GroupMember gm WHERE gm.user.id = :userId AND gm.status = 'ACTIVE'")
     List<String> findMemberGroupIdsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT g.id FROM Group g WHERE g.leader.id = :userId")
