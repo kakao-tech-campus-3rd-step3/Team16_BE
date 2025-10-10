@@ -10,7 +10,7 @@ public record UserInfoResponse(
         String id,
         String nickname,
         String profileImageUrl,
-        VerificationStatus isStudentVerified,
+        VerificationStatus studentVerifiedStatus,
         Map<String, List<String>> groups
 ) {
     public static UserInfoResponse of(User user, Map<String, List<String>> groups, String profileImageUrl) {
