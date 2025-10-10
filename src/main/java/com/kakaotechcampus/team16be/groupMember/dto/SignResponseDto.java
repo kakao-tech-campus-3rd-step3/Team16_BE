@@ -6,13 +6,15 @@ import java.util.List;
 
 public record SignResponseDto(
         Long userId,
-        String intro
+        String intro,
+        String profileImageUrl
 ) {
     public static List<SignResponseDto> from(List<GroupMember> members) {
         return members.stream()
                 .map(m -> new SignResponseDto(
                         m.getUser().getId(),
-                        m.getIntro()
+                        m.getIntro(),
+                        m.getUser().getProfileImageUrl()
                 ))
                 .toList();
     }
