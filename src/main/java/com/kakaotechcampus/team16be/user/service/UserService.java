@@ -3,7 +3,13 @@ package com.kakaotechcampus.team16be.user.service;
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.group.repository.GroupRepository;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
+import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.dto.UserGroupHistoryResponse;
+import com.kakaotechcampus.team16be.user.dto.UserInfoResponse;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameRequest;
 import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
@@ -13,12 +19,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+    private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     @Transactional
     public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
@@ -104,8 +115,38 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
+
+    @Transactional(readOnly = true)
+    public UserInfoResponse getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(userId);
+        List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(userId);
+
+        Map<String, List<String>> groups = Map.of(
+                "leaderOf", leaderGroupIds,
+                "memberOf", memberGroupIds
+        );
+
+        String profileImageUrl = s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+        return UserInfoResponse.of(user, groups, profileImageUrl);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserGroupHistoryResponse> getUserGroupHistory(Long userId) {
+        List<GroupMember> memberships = groupMemberRepository.findAllByUserIdAndStatusIn(
+                userId,
+                List.of(GroupMemberStatus.ACTIVE, GroupMemberStatus.LEFT, GroupMemberStatus.BANNED)
+        );
+
+        return memberships.stream()
+                .map(UserGroupHistoryResponse::from)
+                .toList();
+    }
+
 }

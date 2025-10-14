@@ -43,7 +43,8 @@ public class GroupController {
     @Operation(summary = "모임 상세 조회", description = "특정 모임의 상세 정보를 조회합니다.")
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseSingleGroupDto> getGroup(@PathVariable("groupId") Long groupId) {
-        return ResponseEntity.ok(groupFacade.getGroup(groupId));
+        ResponseSingleGroupDto responseSingleGroupDto = groupFacade.getGroup(groupId);
+        return ResponseEntity.ok(responseSingleGroupDto);
     }
 
     @Operation(summary = "모임 삭제", description = "특정 모임을 삭제합니다.")

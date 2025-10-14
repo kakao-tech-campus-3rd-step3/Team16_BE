@@ -14,6 +14,8 @@ import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
 import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
 import com.kakaotechcampus.team16be.plan.exception.PlanException;
 import com.kakaotechcampus.team16be.user.domain.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -111,4 +113,10 @@ public class PlanServiceImpl implements PlanService {
                          .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
   }
+
+    @Transactional
+    @Override
+    public List<Plan> findAllByEndTimeBetween(LocalDateTime fiveMinutesAgo, LocalDateTime now) {
+        return planRepository.findAllByEndTimeBetween(fiveMinutesAgo, now);
+    }
 }
