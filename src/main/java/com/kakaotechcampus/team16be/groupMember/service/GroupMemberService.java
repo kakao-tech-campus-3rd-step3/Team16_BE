@@ -27,4 +27,6 @@ public interface GroupMemberService {
     List<SignResponseDto> findByGroupAndPendingUser(User user, Long groupId);
 
     List<GroupMemberDto> getGroupMember(User user, Long groupId);
+
+    List<GroupMember> getActiveMember(Group group);
 }
