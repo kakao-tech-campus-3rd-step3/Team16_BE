@@ -142,4 +142,10 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 })
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<GroupMember> getActiveMember(Group group) {
+        return groupMemberRepository.findAllByGroupAndStatus(group, ACTIVE);
+    }
 }
