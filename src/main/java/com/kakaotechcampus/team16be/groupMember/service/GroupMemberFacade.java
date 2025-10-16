@@ -95,6 +95,7 @@ public class GroupMemberFacade {
 
     }
 
+    @Transactional
     public void allJoinGroup(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
