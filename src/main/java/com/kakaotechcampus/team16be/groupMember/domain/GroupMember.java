@@ -173,4 +173,10 @@ public class GroupMember extends BaseEntity {
         }
     }
 
+    public void rejectJoin() {
+        if(!this.status.isPending()){
+            throw new GroupMemberException(MEMBER_CANNOT_REJECT);
+        }
+        this.status = CANCELED;
+    }
 }

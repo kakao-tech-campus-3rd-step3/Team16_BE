@@ -22,12 +22,12 @@ import java.util.List;
 public class GroupMemberController {
 
     private final GroupMemberService groupMemberService;
-    private final GroupMemberFacade GroupMemberFacade;
+    private final GroupMemberFacade groupMemberFacade;
 
     @Operation(summary = "그룹 가입 승인", description = "특정 유저를 그룹에 가입 승인합니다.")
     @PostMapping("/join")
     public ResponseEntity<ResponseGroupMemberDto> joinGroup(@LoginUser User user, @RequestBody ApproveJoinRequestDto approveJoinRequestDto) {
-        GroupMemberFacade.joinGroup(approveJoinRequestDto.groupId(), approveJoinRequestDto.userId(), user.getId());
+        groupMemberFacade.joinGroup(approveJoinRequestDto.groupId(), approveJoinRequestDto.userId(), user.getId());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "해당 유저를 그룹에 가입 승인했습니다"));
     }
@@ -35,7 +35,7 @@ public class GroupMemberController {
     @Operation(summary = "그룹 탈퇴", description = "로그인한 유저를 해당 그룹에서 탈퇴 처리합니다.")
     @PostMapping("/leave")
     public ResponseEntity<ResponseGroupMemberDto> leaveGroup(@LoginUser User user, @RequestBody LeaveGroupRequestDto leaveGroupRequestDto) {
-        GroupMember groupMember = GroupMemberFacade.leaveGroup(leaveGroupRequestDto.groupId(), user.getId());
+        GroupMember groupMember = groupMemberFacade.leaveGroup(leaveGroupRequestDto.groupId(), user.getId());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹을 탈퇴했습니다."));
     }
@@ -43,7 +43,7 @@ public class GroupMemberController {
     @Operation(summary = "그룹 강퇴", description = "특정 유저를 그룹에서 강제로 제거합니다.")
     @PostMapping("/banned")
     public ResponseEntity<ResponseGroupMemberDto> bannedMember(@LoginUser User user, @RequestBody BanMemberRequestDto banMemberRequestDto) {
-        GroupMember groupMember = GroupMemberFacade.bannedGroup(banMemberRequestDto.groupId(), banMemberRequestDto.userId(), user);
+        GroupMember groupMember = groupMemberFacade.bannedGroup(banMemberRequestDto.groupId(), banMemberRequestDto.userId(), user);
 
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, groupMember.getUser().getNickname() + "가 그룹에서 강퇴당했습니다"));
@@ -59,7 +59,7 @@ public class GroupMemberController {
     @Operation(summary = "그룹 가입 신청", description = "로그인한 유저가 그룹 가입 신청을 합니다.")
     @PostMapping("/sign")
     public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody SignGroupRequestDto signGroupRequestDto) {
-        GroupMember groupMember = GroupMemberFacade.signGroup(user, signGroupRequestDto.groupId(), signGroupRequestDto.intro());
+        GroupMember groupMember = groupMemberFacade.signGroup(user, signGroupRequestDto.groupId(), signGroupRequestDto.intro());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "가입신청을 완료했습니다."));
     }
@@ -83,5 +83,13 @@ public class GroupMemberController {
         List<GroupMember> members = groupMemberService.findByGroupAndPendingUser(user, groupId);
 
         return ResponseEntity.ok(SignResponseDto.from(members));
+    }
+
+    @Operation(summary = "그룹 가입 신청 거절",description = "특정 유저의 가입 신청을 거절합니다.")
+    @PostMapping("/reject")
+    public ResponseEntity<ResponseGroupMemberDto> rejectJoin(@LoginUser User user, @RequestBody RejectJoinRequestDto rejectJoinRequestDto) {
+        GroupMember targetMember =groupMemberFacade.rejectJoin(user,rejectJoinRequestDto.groupId(),rejectJoinRequestDto.userId());
+
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, targetMember.getUser().getNickname()+"님의 가입 신청을 거절했습니다."));
     }
 }
