@@ -20,7 +20,7 @@ GroupMemberErrorCode implements ErrorCode {
     MEMBER_ALREADY_BANNED(HttpStatus.BAD_REQUEST, "GROUP_MEMBER-008", "해당 유저는 이미 강퇴 당한 유저입니다."),
     MEMBER_CANNOT_CANCEL(HttpStatus.BAD_REQUEST, "GROUP_MEMBER-009", "해당 유저는 가입 신청 취소할 수 없는 상태입니다."),
     MEMBER_NOT_PENDING(HttpStatus.BAD_REQUEST, "GROUP_MEMBER-010", "해당 유저는 가입 승인할 수 없는 상태입니다."),
-    MEMBER_CANNOT_REJECT(HttpStatus.NOT_FOUND, "GROUP_MEMBER-011", "해당 유저는 가입 거절 할 수 없는 상태입니다.");
+    MEMBER_CANNOT_REJECT(HttpStatus.BAD_REQUEST, "GROUP_MEMBER-011", "해당 유저는 가입 거절 할 수 없는 상태입니다.");
 
     private final HttpStatus status;
     private final String code;
