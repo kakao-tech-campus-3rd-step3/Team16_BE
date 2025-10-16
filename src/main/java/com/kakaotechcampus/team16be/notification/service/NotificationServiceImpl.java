@@ -153,4 +153,19 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(ResponseNotification::from)
                 .toList();
     }
+
+    @Override
+    public void createGroupRejectNotification(User joinUser, Group targetGroup) {
+        Notification notification = Notification.builder()
+                .notificationType(GROUP_JOIN_REJECT)
+                .receiver(joinUser)
+                .relatedGroup(targetGroup)
+                .relatedUser(targetGroup.getLeader())
+                .message("[" + targetGroup.getName() + "] 모임의 가입 요청이 거절되었습니다.")
+                .build();
+
+        notificationRepository.save(notification);
+
+        send(joinUser, notification.getId(),notification.getMessage());
+    }
 }

@@ -24,4 +24,6 @@ public interface NotificationService {
     void createGroupBannedNotification(User bannedUser, Group group);
 
     List<ResponseNotification> getAllNotifications(User user);
+
+    void createGroupRejectNotification(User joinUser, Group targetGroup);
 }

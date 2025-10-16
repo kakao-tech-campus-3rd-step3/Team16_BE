@@ -4,5 +4,6 @@ public enum NotificationType {
     GROUP_JOIN_REQUEST,
     GROUP_JOIN_LEFT,
     CHANGE_GROUP_PLAN,
-    GROUP_JOIN_BANNED
+    GROUP_JOIN_BANNED,
+    GROUP_JOIN_REJECT
 }
