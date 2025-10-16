@@ -14,17 +14,17 @@ public class ResponseGroupMemberDto {
     private final String code;
     private final String message;
 
+    private ResponseGroupMemberDto(int status, String code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
+    }
+
     public static ResponseGroupMemberDto success(HttpStatus status, String message) {
         return new ResponseGroupMemberDto(status.value(), "", message);
     }
 
     public static ResponseGroupMemberDto error(GroupMemberErrorCode errorCode) {
         return new ResponseGroupMemberDto(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage());
-    }
-
-    private ResponseGroupMemberDto(int status, String code, String message) {
-        this.status = status;
-        this.code = code;
-        this.message = message;
     }
 }

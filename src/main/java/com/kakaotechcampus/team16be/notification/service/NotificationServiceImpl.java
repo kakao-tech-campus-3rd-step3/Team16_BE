@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
         return sseEmitter;
     }
 
-    public void send(User user, Long notificationId,String message) {
+    public void send(User user, Long notificationId, String message) {
         emitterRepository.get(user.getId()).ifPresentOrElse(sseEmitter -> {
             try {
                 sseEmitter.send(SseEmitter.event()
@@ -77,7 +78,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
 
-        send(targetGroup.getLeader(), notification.getId(),notification.getMessage());
+        send(targetGroup.getLeader(), notification.getId(), notification.getMessage());
     }
 
     @Override
@@ -93,7 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
 
-        send(joiner, notification.getId(),notification.getMessage());
+        send(joiner, notification.getId(), notification.getMessage());
     }
 
     @Override
@@ -104,12 +105,12 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(group.getLeader())
                 .relatedGroup(group)
                 .relatedUser(leftUser)
-                .message("[" + group.getName() + "]모임에서 "+leftUser.getNickname()+"님이 탈퇴했습니다..")
+                .message("[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..")
                 .build();
 
         notificationRepository.save(notification);
 
-        send(group.getLeader(), notification.getId(),notification.getMessage());
+        send(group.getLeader(), notification.getId(), notification.getMessage());
     }
 
     @Override
@@ -125,7 +126,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .build();
 
             notificationRepository.save(notification);
-            send(member.getUser(), notification.getId(),notification.getMessage());
+            send(member.getUser(), notification.getId(), notification.getMessage());
         }
     }
 
@@ -142,7 +143,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
 
-        send(bannedUser, notification.getId(),notification.getMessage());
+        send(bannedUser, notification.getId(), notification.getMessage());
     }
 
     @Override
@@ -166,6 +167,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
 
-        send(joinUser, notification.getId(),notification.getMessage());
+        send(joinUser, notification.getId(), notification.getMessage());
     }
 }

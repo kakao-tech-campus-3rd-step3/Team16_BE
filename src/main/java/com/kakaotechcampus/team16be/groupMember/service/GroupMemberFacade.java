@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,7 +50,7 @@ public class GroupMemberFacade {
 
 
     @Transactional
-    public GroupMember signGroup(User user, Long groupId,String intro) {
+    public GroupMember signGroup(User user, Long groupId, String intro) {
         User signedUser = userService.findById(user.getId());
         Group targetGroup = groupService.findGroupById(groupId);
 
@@ -101,7 +100,7 @@ public class GroupMemberFacade {
         targetGroup.checkLeader(user);
         User joinUser = userService.findById(userId);
 
-        GroupMember targetMember = groupMemberService.findByGroupAndUser(targetGroup,joinUser);
+        GroupMember targetMember = groupMemberService.findByGroupAndUser(targetGroup, joinUser);
         targetMember.rejectJoin();
         notificationService.createGroupRejectNotification(joinUser, targetGroup);
 

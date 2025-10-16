@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GroupMemberRepository extends JpaRepository<GroupMember,Long> {
+public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
     Optional<GroupMember> findByGroupAndUser(Group group, User user);
 
     List<GroupMember> findAllByGroup(Group group);
