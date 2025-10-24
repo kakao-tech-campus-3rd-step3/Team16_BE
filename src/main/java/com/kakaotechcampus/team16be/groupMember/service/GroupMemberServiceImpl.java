@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.LEFT;
-import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.PENDING;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
 import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.GROUP_MEMBER_NOT_FOUND;
 
 
