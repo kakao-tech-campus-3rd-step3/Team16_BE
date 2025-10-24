@@ -125,7 +125,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
         validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
-        List<GroupMember> members = groupMemberRepository.findAllByGroup(targetGroup);
+        List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup,ACTIVE);
 
         return members.stream()
                 .map(member -> {
