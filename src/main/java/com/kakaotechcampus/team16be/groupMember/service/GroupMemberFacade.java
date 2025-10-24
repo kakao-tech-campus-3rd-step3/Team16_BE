@@ -53,7 +53,7 @@ public class GroupMemberFacade {
 
 
     @Transactional
-    public GroupMember signGroup(User user, Long groupId,String intro) {
+    public GroupMember signGroup(User user, Long groupId, String intro) {
         User signedUser = userService.findById(user.getId());
         Group targetGroup = groupService.findGroupById(groupId);
 
@@ -98,6 +98,19 @@ public class GroupMemberFacade {
 
     }
 
+
+    public GroupMember rejectJoin(User user, Long groupId, Long userId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        targetGroup.checkLeader(user);
+        User joinUser = userService.findById(userId);
+
+        GroupMember targetMember = groupMemberService.findByGroupAndUser(targetGroup, joinUser);
+        targetMember.rejectJoin();
+        notificationService.createGroupRejectNotification(joinUser, targetGroup);
+
+        return targetMember;
+    }
+  
     @Transactional
     public void allJoinGroup(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
@@ -107,5 +120,6 @@ public class GroupMemberFacade {
             member.acceptJoin();
             notificationService.createGroupJoinNotification(member.getUser(), targetGroup);
     });
+
     }
 }

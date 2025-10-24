@@ -4,8 +4,8 @@ package com.kakaotechcampus.team16be.groupMember.controller;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.dto.*;
-import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberFacade;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -99,5 +100,13 @@ public class GroupMemberController {
         groupMemberFacade.allJoinGroup(user, approveAllJoinRequestDto.groupId());
 
         return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, "모든 가입 신청을 승인했습니다."));
+    }
+
+    @Operation(summary = "그룹 가입 신청 거절", description = "특정 유저의 가입 신청을 거절합니다.")
+    @PostMapping("/reject")
+    public ResponseEntity<ResponseGroupMemberDto> rejectJoin(@LoginUser User user, @RequestBody RejectJoinRequestDto rejectJoinRequestDto) {
+        GroupMember targetMember = groupMemberFacade.rejectJoin(user, rejectJoinRequestDto.groupId(), rejectJoinRequestDto.userId());
+
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, targetMember.getUser().getNickname() + "님의 가입 신청을 거절했습니다."));
     }
 }

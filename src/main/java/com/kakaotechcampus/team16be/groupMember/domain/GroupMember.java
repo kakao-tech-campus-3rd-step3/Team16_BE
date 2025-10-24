@@ -12,12 +12,12 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 import java.time.LocalDateTime;
 
 import static com.kakaotechcampus.team16be.group.exception.GroupErrorCode.WRONG_GROUP_ACCESS;
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
-import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.*;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.LEADER;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupRole.MEMBER;
 import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
 
 @Entity
@@ -59,7 +59,7 @@ public class GroupMember extends BaseEntity {
     private LocalDateTime joinAt;
 
     @Builder
-    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status,String intro) {
+    public GroupMember(Group group, User user, GroupRole role, GroupMemberStatus status, String intro) {
         this.group = group;
         this.user = user;
         this.role = role;
@@ -110,7 +110,7 @@ public class GroupMember extends BaseEntity {
     }
 
     public void acceptJoin() throws GroupMemberException {
-    if (this.status.isActive()) {
+        if (this.status.isActive()) {
             throw new GroupMemberException(GROUP_MEMBER_ALREADY_EXIST);
         }
 
@@ -173,4 +173,10 @@ public class GroupMember extends BaseEntity {
         }
     }
 
+    public void rejectJoin() {
+        if (!this.status.isPending()) {
+            throw new GroupMemberException(MEMBER_CANNOT_REJECT);
+        }
+        this.status = CANCELED;
+    }
 }
