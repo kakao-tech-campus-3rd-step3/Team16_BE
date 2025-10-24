@@ -95,4 +95,14 @@ public class GroupMemberFacade {
 
     }
 
+    @Transactional
+    public void allJoinGroup(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        targetGroup.checkLeader(user);
+
+        groupMemberService.findByGroupAndPendingUser(user,groupId).forEach(member -> {
+            member.acceptJoin();
+            notificationService.createGroupJoinNotification(member.getUser(), targetGroup);
+        });
+    }
 }
