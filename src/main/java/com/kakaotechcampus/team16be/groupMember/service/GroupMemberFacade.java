@@ -3,6 +3,8 @@ package com.kakaotechcampus.team16be.groupMember.service;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
+import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -100,9 +103,9 @@ public class GroupMemberFacade {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
 
-        groupMemberService.findByGroupAndPendingUser(user,groupId).forEach(member -> {
+        groupMemberRepository.findAllByGroupAndStatus(targetGroup, GroupMemberStatus.PENDING).forEach(member -> {
             member.acceptJoin();
             notificationService.createGroupJoinNotification(member.getUser(), targetGroup);
-        });
+    });
     }
 }
