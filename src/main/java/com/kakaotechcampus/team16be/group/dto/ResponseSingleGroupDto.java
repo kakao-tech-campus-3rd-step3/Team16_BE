@@ -2,12 +2,16 @@ package com.kakaotechcampus.team16be.group.dto;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 
+import java.time.LocalDateTime;
+
 public record ResponseSingleGroupDto(
         Long groupId,
         String name,
         String intro,
         String safetyTag,
-        String coverImageUrl
+        String coverImageUrl,
+        LocalDateTime createdAt,
+        int capacity
 ) {
 
     public static ResponseSingleGroupDto from(Group group, String coverImageUrl) {
@@ -16,6 +20,9 @@ public record ResponseSingleGroupDto(
                 group.getName(),
                 group.getIntro(),
                 group.getSafetyTag().name(),
-                coverImageUrl);
+                coverImageUrl,
+                group.getCreatedAt(),
+                group.getCapacity()
+        );
     }
 }

@@ -81,9 +81,25 @@ public class GroupMemberController {
     public ResponseEntity<List<SignResponseDto>> getAllJoinRequest(
             @LoginUser User user, @PathVariable Long groupId
     ) {
-        List<GroupMember> members = groupMemberService.findByGroupAndPendingUser(user, groupId);
+        List<SignResponseDto> members = groupMemberService.findByGroupAndPendingUser(user, groupId);
 
-        return ResponseEntity.ok(SignResponseDto.from(members));
+        return ResponseEntity.ok(members);
+    }
+
+    @Operation(summary = "그룹별 멤버", description = "해당 그룹에 가입한 멤버 반환")
+    @GetMapping("/{groupId}")
+    public ResponseEntity<List<GroupMemberDto>> getGroupMember(@LoginUser User user, @PathVariable Long groupId) {
+        List<GroupMemberDto> members = groupMemberService.getGroupMember(user, groupId);
+
+        return ResponseEntity.ok(members);
+    }
+
+    @Operation(summary = "그룹 가입 신청 전체 수락", description = "그룹장이 그룹 가입 신청을 전체 수락합니다.")
+    @PostMapping("/join/all")
+    public ResponseEntity<ResponseGroupMemberDto> allJoinGroup(@LoginUser User user, @RequestBody ApproveAllJoinRequestDto approveAllJoinRequestDto) {
+        groupMemberFacade.allJoinGroup(user, approveAllJoinRequestDto.groupId());
+
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.OK, "모든 가입 신청을 승인했습니다."));
     }
 
     @Operation(summary = "그룹 가입 신청 거절", description = "특정 유저의 가입 신청을 거절합니다.")

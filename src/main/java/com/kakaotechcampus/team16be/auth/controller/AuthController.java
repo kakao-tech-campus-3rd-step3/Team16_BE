@@ -10,9 +10,12 @@ import com.kakaotechcampus.team16be.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,15 +26,21 @@ public class AuthController {
     private final KakaoAuthService kakaoAuthService;
     private final UserService userService;
 
-    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리 후 토큰을 반환합니다.")
+    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리 후 토큰을 프론트로 전달")
     @GetMapping("/kakao-login")
-    public ResponseEntity<KakaoLoginResponse> kakaoLogin(
+    public void kakaoLogin(
             @RequestParam("code") String code,
-            HttpServletRequest request
-    ) {
-        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code, request);
-        return ResponseEntity.ok(kakaoLoginResponse);
+            HttpServletResponse response
+    ) throws IOException {
+        // 카카오 로그인 처리 후 액세스 토큰 DTO 발급
+        KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code);
+
+        // 프론트로 redirect + 토큰 전달
+        String redirectUrl = "http://localhost:5173/login?token="
+                + kakaoLoginResponse.accessToken(); // DTO에서 액세스 토큰 꺼내서 붙임
+        response.sendRedirect(redirectUrl);
     }
+
 
     @Operation(summary = "카카오 로그아웃", description = "현재는 액세스 토큰만 사용하고 있어서 별 거 없음. 추후 리프레시 토큰 생기면 블랙리스트 처리해줄 예정입니다.")
     @PostMapping("/kakao-logout")

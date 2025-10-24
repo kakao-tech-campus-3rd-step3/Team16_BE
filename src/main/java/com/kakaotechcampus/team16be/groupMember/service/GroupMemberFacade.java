@@ -3,6 +3,8 @@ package com.kakaotechcampus.team16be.groupMember.service;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
+import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -95,6 +98,7 @@ public class GroupMemberFacade {
 
     }
 
+
     public GroupMember rejectJoin(User user, Long groupId, Long userId) {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
@@ -105,5 +109,17 @@ public class GroupMemberFacade {
         notificationService.createGroupRejectNotification(joinUser, targetGroup);
 
         return targetMember;
+    }
+  
+    @Transactional
+    public void allJoinGroup(User user, Long groupId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        targetGroup.checkLeader(user);
+
+        groupMemberRepository.findAllByGroupAndStatus(targetGroup, GroupMemberStatus.PENDING).forEach(member -> {
+            member.acceptJoin();
+            notificationService.createGroupJoinNotification(member.getUser(), targetGroup);
+    });
+
     }
 }
