@@ -158,4 +158,9 @@ public class UserService {
     public void decreaseScoreByAbsent(User user) {
         user.decreaseScoreByAbsent();
     }
+
+    @Transactional
+    public void increaseUserScoreByPosting(User user) {
+        user.increaseScoreByPosting();
+    }
 }

@@ -15,4 +15,9 @@ public class UserScoreEvent {
     public void increaseUserScoreByAttendance(IncreaseUserScore event) {
         userService.increaseUserScoreByAttendance(event.user());
     }
+
+    @EventListener
+    public void increaseUserScoreByPosting(IncreaseUserScore event) {
+        userService.increaseUserScoreByPosting(event.user());
+    }
 }

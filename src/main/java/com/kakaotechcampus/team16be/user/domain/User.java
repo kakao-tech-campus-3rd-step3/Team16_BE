@@ -11,7 +11,7 @@ import lombok.Getter;
 public class User extends BaseEntity {
 
     private final static Double ATTENDANCE = 0.03;
-    private final static Integer ABSENT = 5;
+    private final static Double POSTING = 0.15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,5 +95,9 @@ public class User extends BaseEntity {
         }
         this.score -= 5;
 
+    }
+
+    public void increaseScoreByPosting() {
+        this.score += POSTING;
     }
 }
