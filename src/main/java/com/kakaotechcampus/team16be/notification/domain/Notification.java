@@ -26,7 +26,7 @@ public class Notification extends BaseEntity {
     private NotificationType notificationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="related_group_id",nullable = false)
+    @JoinColumn(name = "related_group_id", nullable = false)
     private Group relatedGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)

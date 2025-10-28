@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
-import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.*;
+import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.GROUP_MEMBER_NOT_FOUND;
 
 
 @Service
@@ -124,7 +124,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
         validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
-        List<GroupMember> members = groupMemberRepository.findAllByGroup(targetGroup);
+        List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup,ACTIVE);
 
         return members.stream()
                 .map(member -> {
@@ -141,5 +141,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                     );
                 })
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<GroupMember> getActiveMember(Group group) {
+        return groupMemberRepository.findAllByGroupAndStatus(group, ACTIVE);
     }
 }

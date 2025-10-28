@@ -36,7 +36,7 @@ public class PlanScheduler {
 
         for (Plan plan : endedPlans) {
 
-            List<GroupMember> allMembers= groupMemberService.findByGroup(plan.getGroup());
+            List<GroupMember> allMembers= groupMemberService.getActiveMember(plan.getGroup());
 
             Set<Long> attendedMemberIds = attendService.findAllByPlan(plan).stream()
                     .map(attend -> attend.getGroupMember().getId())
