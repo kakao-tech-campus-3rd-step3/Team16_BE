@@ -8,6 +8,7 @@ public record PlanRequestDto(
     Integer capacity,
     LocalDateTime startTime,
     LocalDateTime endTime,
+    String coverImageUrl,
     LocationDto location
 ) {
 
