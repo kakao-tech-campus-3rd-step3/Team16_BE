@@ -10,7 +10,7 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-    private final static Integer ATTENDANCE = 10;
+    private final static Double ATTENDANCE = 0.03;
     private final static Integer ABSENT = 5;
 
     @Id
@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     private String studentIdImageUrl;
 
     @Column(name = "score")
-    private Long score;
+    private Double score;
 
     protected User() {}
 
@@ -47,10 +47,11 @@ public class User extends BaseEntity {
         this.nickname = "익명";
         this.role = Role.USER;
         this.verificationStatus = VerificationStatus.UNVERIFIED;
+        this.score = 40.0;
     }
 
     @Builder
-    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl, Long score) {
+    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl) {
         this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;
@@ -58,7 +59,7 @@ public class User extends BaseEntity {
         this.role = role;
         this.verificationStatus = verificationStatus;
         this.studentIdImageUrl = studentIdImageUrl;
-        this.score = score;
+        this.score = 40.0;
     }
 
     public void updateStudentIdImageUrl(String fileName) {
@@ -82,10 +83,16 @@ public class User extends BaseEntity {
     }
 
     public void increaseScoreByAttendance() {
+        if (this.score == null) {
+            this.score = 40.0;
+        }
         this.score += ATTENDANCE;
     }
 
     public void decreaseScoreByAbsent() {
+        if (this.score == null) {
+            this.score = 40.0;
+        }
         this.score -= 5;
 
     }

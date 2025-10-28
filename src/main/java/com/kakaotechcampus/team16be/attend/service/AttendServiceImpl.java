@@ -14,6 +14,10 @@ import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -37,8 +41,20 @@ public class AttendServiceImpl implements AttendService{
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
         Plan plan = planService.findByGroupIdAndPlanId(groupId, requestAttendDto.planId());
 
+        Optional<Attend> existingAttend = attendRepository.findByPlanAndGroupMember(plan, groupMember);
+
+        if (existingAttend.isPresent()) {
+            throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
+        }
+        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
+
         Attend attend = Attend.attendPlan(groupMember, plan);
-        eventPublisher.publishEvent(new IncreaseUserScore(user));
+        boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
+
+        if (!hasAlreadyAttendedToday) {
+            eventPublisher.publishEvent(new IncreaseUserScore(user));
+        }
+
         return attendRepository.save(attend);
     }
 
@@ -92,4 +108,5 @@ public class AttendServiceImpl implements AttendService{
     public void saveAll(List<Attend> absentAttendees) {
         attendRepository.saveAll(absentAttendees);
     }
+
 }
