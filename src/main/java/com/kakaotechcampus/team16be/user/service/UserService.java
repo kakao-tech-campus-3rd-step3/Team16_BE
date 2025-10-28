@@ -149,4 +149,13 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
+    public void increaseUserScoreByAttendance(User user) {
+        user.increaseScoreByAttendance();
+    }
+
+    @Transactional
+    public void decreaseScoreByAbsent(User user) {
+        user.decreaseScoreByAbsent();
+    }
 }

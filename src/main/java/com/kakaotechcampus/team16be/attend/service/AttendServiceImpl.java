@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
+import com.kakaotechcampus.team16be.common.eventListener.IncreaseUserScore;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -14,6 +15,7 @@ import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -26,6 +28,7 @@ public class AttendServiceImpl implements AttendService{
     private final PlanService planService;
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -35,7 +38,7 @@ public class AttendServiceImpl implements AttendService{
         Plan plan = planService.findByGroupIdAndPlanId(groupId, requestAttendDto.planId());
 
         Attend attend = Attend.attendPlan(groupMember, plan);
-
+        eventPublisher.publishEvent(new IncreaseUserScore(user));
         return attendRepository.save(attend);
     }
 

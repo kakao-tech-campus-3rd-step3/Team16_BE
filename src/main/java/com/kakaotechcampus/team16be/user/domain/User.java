@@ -10,6 +10,9 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    private final static Integer ATTENDANCE = 10;
+    private final static Integer ABSENT = 5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -76,5 +79,14 @@ public class User extends BaseEntity {
 
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
+    }
+
+    public void increaseScoreByAttendance() {
+        this.score += ATTENDANCE;
+    }
+
+    public void decreaseScoreByAbsent() {
+        this.score -= 5;
+
     }
 }
