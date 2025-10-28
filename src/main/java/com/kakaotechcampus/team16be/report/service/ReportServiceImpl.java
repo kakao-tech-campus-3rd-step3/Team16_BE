@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.report.service;
 
 
+import com.kakaotechcampus.team16be.common.eventListener.ReportResolvedEvent;
 import com.kakaotechcampus.team16be.report.ReportRepository;
 import com.kakaotechcampus.team16be.report.domain.TargetType;
 import com.kakaotechcampus.team16be.report.dto.ReportRequestDto;
@@ -13,6 +14,7 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportServiceImpl implements ReportService{
 
   private final ReportRepository reportRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
 
   @Override
@@ -36,6 +39,8 @@ public class ReportServiceImpl implements ReportService{
         .reasonCode(reportRequestDto.reasonCode())
         .reason(reportRequestDto.reason())
         .build();
+
+    eventPublisher.publishEvent(new ReportResolvedEvent(report));
 
     Report saved = reportRepository.save(report);
     return toDto(saved);

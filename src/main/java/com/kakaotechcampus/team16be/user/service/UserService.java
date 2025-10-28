@@ -149,4 +149,7 @@ public class UserService {
                 .toList();
     }
 
+    public void decreaseScoreByReport(User userToPenalize) {
+        userToPenalize.decreaseUserScore();
+    }
 }

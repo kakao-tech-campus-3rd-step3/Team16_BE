@@ -77,4 +77,8 @@ public class User extends BaseEntity {
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
     }
+
+    public void decreaseUserScore() {
+
+    }
 }
