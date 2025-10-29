@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.post.service;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.comment.service.CommentFacadeService;
 import com.kakaotechcampus.team16be.comment.service.CommentService;
+import com.kakaotechcampus.team16be.common.eventListener.IncreaseUserScore;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -17,7 +18,11 @@ import com.kakaotechcampus.team16be.post.exception.PostErrorCode;
 import com.kakaotechcampus.team16be.post.exception.PostException;
 import com.kakaotechcampus.team16be.post.repository.PostRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +35,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -45,8 +51,14 @@ public class PostServiceImpl implements PostService {
                 createPostRequest.content(),
                 createPostRequest.imageUrls()
         );
+        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
+        boolean hasAlreadyPostedToday = postRepository.existsByAuthorAndCreatedAtAfter(user.getNickname(), startOfToday);
 
+        if (!hasAlreadyPostedToday) {
+            eventPublisher.publishEvent(new IncreaseUserScore(user));
+        }
         return postRepository.save(post);
+
     }
 
     @Override
