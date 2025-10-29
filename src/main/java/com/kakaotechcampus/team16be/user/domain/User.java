@@ -12,6 +12,7 @@ public class User extends BaseEntity {
 
     private final static Double ATTENDANCE = 0.03;
     private final static Double POSTING = 0.15;
+    private final static Double REPORT = 1.80;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -99,5 +100,9 @@ public class User extends BaseEntity {
 
     public void increaseScoreByPosting() {
         this.score += POSTING;
+    }
+
+    public void decreaseScoreByReport(Double finalPenalty) {
+        this.score -= finalPenalty;
     }
 }

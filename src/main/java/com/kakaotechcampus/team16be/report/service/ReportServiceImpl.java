@@ -3,6 +3,7 @@ package com.kakaotechcampus.team16be.report.service;
 
 import com.kakaotechcampus.team16be.common.eventListener.ReportResolvedEvent;
 import com.kakaotechcampus.team16be.report.ReportRepository;
+import com.kakaotechcampus.team16be.report.domain.ReportStatus;
 import com.kakaotechcampus.team16be.report.domain.TargetType;
 import com.kakaotechcampus.team16be.report.dto.ReportRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResolveRequestDto;
@@ -40,7 +41,7 @@ public class ReportServiceImpl implements ReportService{
         .reason(reportRequestDto.reason())
         .build();
 
-    eventPublisher.publishEvent(new ReportResolvedEvent(report));
+
 
     Report saved = reportRepository.save(report);
     return toDto(saved);
@@ -70,7 +71,12 @@ public class ReportServiceImpl implements ReportService{
     Report report = reportRepository.findById(reportId)
         .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
 
+
     report.resolve(adminUser, reportResolveRequestDto.reportStatus());
+
+      if (report.getStatus() == ReportStatus.RESOLVED) {
+          eventPublisher.publishEvent(new ReportResolvedEvent(report));
+      }
 
     return toDto(report);
   }

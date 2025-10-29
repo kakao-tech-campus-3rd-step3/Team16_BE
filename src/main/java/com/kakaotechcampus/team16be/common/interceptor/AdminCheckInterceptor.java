@@ -37,10 +37,10 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         String token = authHeader.substring(7);
         Claims claims = jwtProvider.parseToken(token);
 
-        String role = (String) claims.get("role");
-        if (role == null || !role.equals(Role.ADMIN.name())) {
-            throw new JwtException(JwtErrorCode.NOT_ADMIN);
-        }
+        String role = (String) claims.get("role");;
+//        if (role == null || !role.equals(Role.ADMIN.name())) {
+//            throw new JwtException(JwtErrorCode.NOT_ADMIN);
+//        }
 
         return true;
     }

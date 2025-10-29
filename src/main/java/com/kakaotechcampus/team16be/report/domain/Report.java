@@ -61,6 +61,9 @@ public class Report extends BaseEntity {
   @Column(name = "resolved_at")
   private LocalDateTime resolvedAt;
 
+    @Column(name = "penalty_applied", nullable = false)
+    private boolean penaltyApplied = false;
+
   @Builder
   public Report(User reporter, TargetType targetType, Long targetId, ReasonCode reasonCode, String reason){
     if(reporter == null || targetType == null || targetId == null)
@@ -74,9 +77,15 @@ public class Report extends BaseEntity {
     this.reasonCode = reasonCode;
     this.reason = reason;
     this.status = ReportStatus.PENDING;
+    this.penaltyApplied = false;
   }
 
   public void resolve(User resolvedUser, ReportStatus reportStatus){
+
+      if (reportStatus == null) {
+          throw new IllegalArgumentException("신고 처리 상태는 null일 수 없습니다.");
+      }
+
     if(reportStatus == ReportStatus.PENDING){
       throw new IllegalArgumentException("신고 상태는 PENDING으로 변경할 수 없습니다.");
     }
@@ -92,4 +101,11 @@ public class Report extends BaseEntity {
     FRAUD_OR_PRIVACY,
     OTHER
   }
+    public void markPenaltyApplied() {
+        if (this.status == null) {
+            this.status = ReportStatus.PENDING;
+        }
+
+        this.penaltyApplied = true;
+    }
 }

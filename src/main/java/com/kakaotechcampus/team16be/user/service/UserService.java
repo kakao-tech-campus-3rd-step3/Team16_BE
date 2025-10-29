@@ -163,4 +163,8 @@ public class UserService {
     public void increaseUserScoreByPosting(User user) {
         user.increaseScoreByPosting();
     }
+
+    public void decreaseScoreByReport(User user,Double finalPenalty) {
+        user.decreaseScoreByReport(finalPenalty);
+    }
 }
