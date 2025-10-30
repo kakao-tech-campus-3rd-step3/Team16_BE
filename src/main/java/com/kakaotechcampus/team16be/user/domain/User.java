@@ -12,6 +12,7 @@ public class User extends BaseEntity {
 
     private final static Double ATTENDANCE = 0.03;
     private final static Double POSTING = 0.15;
+    private final static Double ABSENT = 5.00;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -93,11 +94,14 @@ public class User extends BaseEntity {
         if (this.score == null) {
             this.score = 40.0;
         }
-        this.score -= 5;
+        this.score -= ABSENT;
 
     }
 
     public void increaseScoreByPosting() {
+      if (this.score == null){
+        this.score = 40.0;
+      }
         this.score += POSTING;
     }
 }
