@@ -6,7 +6,7 @@ import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
-import com.kakaotechcampus.team16be.common.eventListener.IncreaseUserScore;
+import com.kakaotechcampus.team16be.common.eventListener.IncreaseScoreByAttendance;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -34,6 +34,8 @@ public class AttendServiceImpl implements AttendService{
     private final GroupService groupService;
     private final ApplicationEventPublisher eventPublisher;
 
+    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
+
     @Transactional
     @Override
     public Attend attendGroup(User user, Long groupId, RequestAttendDto requestAttendDto) {
@@ -46,16 +48,16 @@ public class AttendServiceImpl implements AttendService{
         if (existingAttend.isPresent()) {
             throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
         }
-        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
-
-        Attend attend = Attend.attendPlan(groupMember, plan);
+        LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
         boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
 
-        if (!hasAlreadyAttendedToday) {
-            eventPublisher.publishEvent(new IncreaseUserScore(user));
-        }
+        Attend attend = Attend.attendPlan(groupMember, plan);
+        Attend savedAttend = attendRepository.save(attend);
 
-        return attendRepository.save(attend);
+        if (!hasAlreadyAttendedToday) {
+            eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
+        }
+        return savedAttend;
     }
 
     @Transactional(readOnly = true)
