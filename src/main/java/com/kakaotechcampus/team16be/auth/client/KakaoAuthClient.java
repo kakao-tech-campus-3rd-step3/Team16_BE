@@ -40,11 +40,6 @@ public class KakaoAuthClient {
     public KakaoTokenResponse requestAccessToken(String code) {
         HttpEntity<MultiValueMap<String, String>> request = buildTokenRequestEntity(code);
 
-        log.info("### Kakao Token Request Params ###");
-        log.info("code={}", code);
-        log.info("client_id={}", kakaoProperties.getClientId());
-        log.info("redirect_uri={}", kakaoProperties.getRedirectUri());
-
         try {
             ResponseEntity<KakaoTokenResponse> response = restTemplate.exchange(
                     KAKAO_TOKEN_URL,
@@ -54,7 +49,6 @@ public class KakaoAuthClient {
             );
 
             log.info("Kakao Token API Response status={}", response.getStatusCode());
-            log.info("Kakao Token API Response body={}", response.getBody());
 
             // 1. HTTP 상태가 2xx 아닌 경우
             if (!response.getStatusCode().is2xxSuccessful()) {
@@ -80,8 +74,7 @@ public class KakaoAuthClient {
 
         } catch (HttpClientErrorException ex) {
             String responseBody = ex.getResponseBodyAsString();
-            log.error("Kakao Token Request Failed - Status: {}, Body: {}",
-                    ex.getStatusCode(), responseBody);
+            log.warn("Kakao Token Request Failed - Status: {} (response body masked)", ex.getStatusCode());
             String bodyLower = responseBody.toLowerCase(); // 소문자로 변환
             if (bodyLower.contains("invalid_grant")) {
                 if (bodyLower.contains("code expired")) {
@@ -98,7 +91,7 @@ public class KakaoAuthClient {
             }
             throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_CLIENT);
         } catch (HttpServerErrorException ex) {
-            log.error("HttpServerErrorException: status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            log.error("HttpServerErrorException: status={}", ex.getStatusCode());
             throw new KakaoException(KakaoErrorCode.TOKEN_REQUEST_FAILED_SERVER);
         } catch (ResourceAccessException ex) {
             log.error("Kakao Token API Connection Failed: {}", ex.getMessage());
