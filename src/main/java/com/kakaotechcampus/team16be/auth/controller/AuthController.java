@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,9 @@ public class AuthController {
     private final KakaoAuthService kakaoAuthService;
     private final UserService userService;
 
+    @Value("${front.redirect-uri}")
+    private String frontRedirectUri;
+
     @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리 후 토큰을 프론트로 전달")
     @GetMapping("/kakao-login")
     public void kakaoLogin(
@@ -36,8 +40,7 @@ public class AuthController {
         KakaoLoginResponse kakaoLoginResponse = kakaoAuthService.loginWithCode(code);
 
         // 프론트로 redirect + 토큰 전달
-        String redirectUrl = "http://localhost:5173/login?token="
-                + kakaoLoginResponse.accessToken(); // DTO에서 액세스 토큰 꺼내서 붙임
+        String redirectUrl = frontRedirectUri + "/login?token=" + kakaoLoginResponse.accessToken();
         response.sendRedirect(redirectUrl);
     }
 
