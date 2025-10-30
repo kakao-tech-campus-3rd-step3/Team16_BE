@@ -74,7 +74,7 @@ public class KakaoAuthClient {
 
         } catch (HttpClientErrorException ex) {
             String responseBody = ex.getResponseBodyAsString();
-            log.warn("Kakao Token Request Failed - Status: {} (response body masked)", ex.getStatusCode());
+            log.warn("Kakao Token Request Failed - Status: {}", ex.getStatusCode());
             String bodyLower = responseBody.toLowerCase(); // 소문자로 변환
             if (bodyLower.contains("invalid_grant")) {
                 if (bodyLower.contains("code expired")) {
