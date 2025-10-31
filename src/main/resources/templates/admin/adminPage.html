@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>학생증 인증 요청 관리</title>
+    <meta charset="UTF-8" />
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        img { width: 120px; border-radius: 8px; }
+        button { margin: 5px; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; }
+        .approve { background-color: #4CAF50; color: white; }
+        .reject { background-color: #F44336; color: white; }
+    </style>
+</head>
+<body>
+<h2>학생증 인증 요청 관리</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>닉네임</th>
+        <th>학생증 이미지</th>
+        <th>상태</th>
+        <th>조치</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="v : ${verifications}">
+        <td th:text="${v.userId}"></td>
+        <td th:text="${v.nickname}"></td>
+        <td><img th:src="${v.imageUrl}" alt="학생증"></td>
+        <td th:text="${v.verificationStatus}"></td>
+        <td>
+            <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
+                <input type="hidden" name="userId" th:value="${v.userId}" />
+                <input type="hidden" name="status" value="VERIFIED" />
+                <button type="submit" class="approve">승인</button>
+            </form>
+            <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
+                <input type="hidden" name="userId" th:value="${v.userId}" />
+                <input type="hidden" name="status" value="UNVERIFIED" />
+                <button type="submit" class="reject">거절</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -79,6 +79,10 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
     }
