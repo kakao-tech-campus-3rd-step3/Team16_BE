@@ -9,6 +9,7 @@ public record ResponseNotification(
         NotificationType notificationType,
         Long relatedGroupId,
         Long relatedUserId,
+        String nickname,
         String message,
         Boolean isRead
 
@@ -21,6 +22,7 @@ public record ResponseNotification(
                 notification.getNotificationType(),
                 notification.getRelatedGroup().getId(),
                 notification.getRelatedUser().getId(),
+                notification.getNickname(),
                 notification.getMessage(),
                 notification.getIsRead());
     }
