@@ -3,7 +3,6 @@ package com.kakaotechcampus.team16be.attend.domain;
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
-import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

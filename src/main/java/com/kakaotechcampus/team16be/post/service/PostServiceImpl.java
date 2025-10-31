@@ -1,18 +1,12 @@
 package com.kakaotechcampus.team16be.post.service;
 
-import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
-import com.kakaotechcampus.team16be.comment.service.CommentFacadeService;
-import com.kakaotechcampus.team16be.comment.service.CommentService;
-import com.kakaotechcampus.team16be.common.eventListener.IncreaseUserScore;
+import com.kakaotechcampus.team16be.common.eventListener.IncreaseScoreByPosting;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
-import com.kakaotechcampus.team16be.like.dto.PostLikeResponse;
-import com.kakaotechcampus.team16be.like.service.PostLikeService;
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.post.dto.CreatePostRequest;
-import com.kakaotechcampus.team16be.post.dto.GetPostResponse;
 import com.kakaotechcampus.team16be.post.dto.UpdatePostRequest;
 import com.kakaotechcampus.team16be.post.exception.PostErrorCode;
 import com.kakaotechcampus.team16be.post.exception.PostException;
@@ -26,7 +20,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +29,8 @@ public class PostServiceImpl implements PostService {
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
     private final ApplicationEventPublisher eventPublisher;
+
+    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
 
     @Override
     @Transactional
@@ -51,14 +46,16 @@ public class PostServiceImpl implements PostService {
                 createPostRequest.content(),
                 createPostRequest.imageUrls()
         );
-        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
+
+        LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
         boolean hasAlreadyPostedToday = postRepository.existsByAuthorAndCreatedAtAfter(user.getNickname(), startOfToday);
 
-        if (!hasAlreadyPostedToday) {
-            eventPublisher.publishEvent(new IncreaseUserScore(user));
-        }
-        return postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
+        if (!hasAlreadyPostedToday) {
+            eventPublisher.publishEvent(new IncreaseScoreByPosting(user));
+        }
+        return savedPost;
     }
 
     @Override

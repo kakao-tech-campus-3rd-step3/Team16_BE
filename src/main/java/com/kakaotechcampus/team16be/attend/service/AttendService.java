@@ -1,14 +1,9 @@
 package com.kakaotechcampus.team16be.attend.service;
 
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
-import com.kakaotechcampus.team16be.attend.dto.ResponseAttendsDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
-import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.user.domain.User;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 public interface AttendService {

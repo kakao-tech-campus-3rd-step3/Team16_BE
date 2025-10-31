@@ -151,16 +151,29 @@ public class UserService {
 
     @Transactional
     public void increaseUserScoreByAttendance(User user) {
-        user.increaseScoreByAttendance();
+      User managedUser = userRepository.findById(user.getId())
+                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
+      managedUser.increaseScoreByAttendance();
+      userRepository.save(managedUser);
     }
 
     @Transactional
     public void decreaseScoreByAbsent(User user) {
-        user.decreaseScoreByAbsent();
+
+      User managedUser = userRepository.findById(user.getId())
+                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
+      managedUser.decreaseScoreByAbsent();
+      userRepository.save(managedUser);
     }
 
     @Transactional
     public void increaseUserScoreByPosting(User user) {
-        user.increaseScoreByPosting();
+      User managedUser = userRepository.findById(user.getId())
+                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
+      managedUser.increaseScoreByPosting();
+      userRepository.save(managedUser);
     }
 }
