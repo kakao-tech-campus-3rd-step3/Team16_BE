@@ -66,7 +66,7 @@ jobs:
 
       # 7) 원격 타겟 디렉터리 보장
       - name: Ensure target dir on EC2
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -89,7 +89,7 @@ jobs:
 
       # 9) EC2에서 파일 존재 확인(루트에 존재해야 함)
       - name: Verify file transfer on EC2
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -104,7 +104,7 @@ jobs:
 
       # 10) 배포 & 실행 (심볼릭 링크 + 안전한 중지)
       - name: Deploy and Run on EC2
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
