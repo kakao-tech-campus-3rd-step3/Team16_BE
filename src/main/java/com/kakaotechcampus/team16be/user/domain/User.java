@@ -83,6 +83,12 @@ public class User extends BaseEntity {
         this.verificationStatus = verificationStatus;
     }
 
+    public void updateScore(Double score) {
+        if (score >= 0) {
+            this.score = score;
+        }
+    }
+
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
     }

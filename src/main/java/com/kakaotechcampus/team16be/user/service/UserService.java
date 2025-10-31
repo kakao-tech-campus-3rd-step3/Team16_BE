@@ -176,4 +176,19 @@ public class UserService {
       managedUser.increaseScoreByPosting();
       userRepository.save(managedUser);
     }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void updateUserScore(Long userId, Double newScore) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        if (newScore == null || newScore < 0) {
+            throw new UserException(UserErrorCode.INVALID_SCORE);
+        }
+        user.updateScore(newScore);
+    }
 }
