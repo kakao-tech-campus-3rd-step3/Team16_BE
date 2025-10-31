@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>유저 점수 관리</title>
+    <meta charset="UTF-8" />
+    <style>
+        /* --- 전체 레이아웃 --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #222;
+            text-align: center;
+        }
+
+        /* --- 네비게이션 버튼 --- */
+        .nav-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #fff;
+            background-color: #4CAF50;
+            transition: background-color 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* --- 테이블 --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        input[type=number] {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #fff;
+            background-color: #4CAF50;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* --- 반응형 --- */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            th {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+            }
+
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 700;
+            }
+
+            td:nth-of-type(1):before { content: "ID"; }
+            td:nth-of-type(2):before { content: "닉네임"; }
+            td:nth-of-type(3):before { content: "현재 점수"; }
+            td:nth-of-type(4):before { content: "점수 수정"; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>유저 점수 관리</h2>
+
+    <!-- 네비게이션 -->
+    <div class="nav-container">
+        <a th:href="@{/admin/student-verifications}" class="nav-btn">학생증 인증 관리</a>
+        <a th:href="@{/admin/scores}" class="nav-btn">유저 점수 관리</a>
+        <a th:href="@{/admin/groups}" class="nav-btn">그룹 안전 상태 관리</a>
+    </div>
+
+    <!-- 테이블 -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>닉네임</th>
+            <th>현재 점수</th>
+            <th>점수 수정</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.id}"></td>
+            <td th:text="${u.nickname}"></td>
+            <td th:text="${u.score}"></td>
+            <td>
+                <form th:action="@{/admin/scores/update}" method="post" style="display:inline-flex; gap:5px;">
+                    <input type="hidden" name="userId" th:value="${u.id}" />
+                    <input type="number" name="newScore" step="0.01" placeholder="새 점수 입력" />
+                    <button type="submit">변경</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

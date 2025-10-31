@@ -98,4 +98,8 @@ public class Group extends BaseEntity {
     public void changeLeader(User user) {
         this.leader = user;
     }
+
+    public void updateSafetyTag(SafetyTag safetyTag) {
+        this.safetyTag = safetyTag;
+    }
 }

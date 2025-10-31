@@ -35,14 +35,17 @@ public class Notification extends BaseEntity {
 
     private String message;
 
+    private String nickname;
+
     private Boolean isRead = false;
 
     @Builder
-    public Notification(User receiver, NotificationType notificationType, Group relatedGroup, User relatedUser, String message) {
+    public Notification(User receiver, NotificationType notificationType, Group relatedGroup, User relatedUser, String nickname ,String message) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.relatedGroup = relatedGroup;
         this.relatedUser = relatedUser;
+        this.nickname = nickname;
         this.message = message;
     }
 
@@ -52,6 +55,7 @@ public class Notification extends BaseEntity {
                 .notificationType(notificationType.notificationType)
                 .relatedGroup(relatedGroup)
                 .relatedUser(relatedUser)
+                .nickname(relatedUser.getNickname())
                 .message(notificationType.getMessage())
                 .build();
     }

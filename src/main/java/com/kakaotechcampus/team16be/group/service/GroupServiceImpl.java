@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.group.service;
 
 import com.kakaotechcampus.team16be.common.eventListener.ImageDeletedEvent;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
@@ -120,6 +121,14 @@ public class GroupServiceImpl implements GroupService {
         }
 
         return targetGroup;
+    }
+
+    @Transactional
+    public void updateSafetyTag(Long groupId, SafetyTag newSafetyTag) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
+
+        group.updateSafetyTag(newSafetyTag);
     }
 
     public boolean existGroupName(String groupName) {

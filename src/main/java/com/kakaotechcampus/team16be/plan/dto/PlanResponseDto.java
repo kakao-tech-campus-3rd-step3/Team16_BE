@@ -11,6 +11,7 @@ public record PlanResponseDto(
     Integer capacity,
     LocalDateTime startTime,
     LocalDateTime endTime,
+    String coverImageUrl,
     LocationDto location
 ) {
 
@@ -27,15 +28,16 @@ public record PlanResponseDto(
     }
   }
 
-  public static PlanResponseDto from(Plan plan) {
+  public static PlanResponseDto from(Plan plan,String fullUrl) {
     return new PlanResponseDto(
-        plan.getId(),
-        plan.getTitle(),
-        plan.getDescription(),
-        plan.getCapacity(),
-        plan.getStartTime(),
-        plan.getEndTime(),
-        LocationDto.from(plan.getLocation())
+            plan.getId(),
+            plan.getTitle(),
+            plan.getDescription(),
+            plan.getCapacity(),
+            plan.getStartTime(),
+            plan.getEndTime(),
+            fullUrl,
+            LocationDto.from(plan.getLocation())
     );
   }
 }

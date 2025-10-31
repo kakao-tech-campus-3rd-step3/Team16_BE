@@ -10,6 +10,10 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    private final static Double ATTENDANCE = 0.03;
+    private final static Double POSTING = 0.15;
+    private final static Double ABSENT = 5.00;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +39,7 @@ public class User extends BaseEntity {
     private String studentIdImageUrl;
 
     @Column(name = "score")
-    private Long score;
+    private Double score;
 
     protected User() {}
 
@@ -44,10 +48,11 @@ public class User extends BaseEntity {
         this.nickname = "익명";
         this.role = Role.USER;
         this.verificationStatus = VerificationStatus.UNVERIFIED;
+        this.score = 40.0;
     }
 
     @Builder
-    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl, Long score) {
+    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl) {
         this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;
@@ -55,7 +60,7 @@ public class User extends BaseEntity {
         this.role = role;
         this.verificationStatus = verificationStatus;
         this.studentIdImageUrl = studentIdImageUrl;
-        this.score = score;
+        this.score = 40.0;
     }
 
     public void updateStudentIdImageUrl(String fileName) {
@@ -74,7 +79,39 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
+    public void updateScore(Double score) {
+        if (score >= 0) {
+            this.score = score;
+        }
+    }
+
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
+    }
+
+    public void increaseScoreByAttendance() {
+        if (this.score == null) {
+            this.score = 40.0;
+        }
+        this.score += ATTENDANCE;
+    }
+
+    public void decreaseScoreByAbsent() {
+        if (this.score == null) {
+            this.score = 40.0;
+        }
+        this.score -= ABSENT;
+
+    }
+
+    public void increaseScoreByPosting() {
+      if (this.score == null){
+        this.score = 40.0;
+      }
+        this.score += POSTING;
     }
 }
