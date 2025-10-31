@@ -46,8 +46,11 @@ public class Plan extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
+    @Column(name = "cover_img")
+    private String coverImg;
+
     @Builder
-    public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location) {
+    public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime, String coverImg, Location location) {
         validateCapacity(capacity);
         validateTimeRange(startTime, endTime);
 
@@ -57,6 +60,7 @@ public class Plan extends BaseEntity {
         this.capacity = capacity;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.coverImg = coverImg;
         this.location = location;
     }
 
@@ -81,6 +85,8 @@ public class Plan extends BaseEntity {
         this.startTime = newStartTime;
         this.endTime = newEndTime;
 
+        this.coverImg = dto.coverImageUrl();
+
         if (dto.location() != null) {
             this.location = Location.builder()
                     .name(dto.location().name())
@@ -91,7 +97,7 @@ public class Plan extends BaseEntity {
     }
 
     public static Plan create(Group group, String title, String description,
-                              Integer capacity, LocalDateTime startTime, LocalDateTime endTime, Location location
+                              Integer capacity, LocalDateTime startTime, LocalDateTime endTime, String coverImg, Location location
     ) {
         return Plan.builder()
                 .group(group)
@@ -100,6 +106,7 @@ public class Plan extends BaseEntity {
                 .capacity(capacity)
                 .startTime(startTime)
                 .endTime(endTime)
+                .coverImg(coverImg)
                 .location(location)
                 .build();
     }
