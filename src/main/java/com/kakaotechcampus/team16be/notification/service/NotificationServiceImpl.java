@@ -73,6 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(targetGroup.getLeader())
                 .relatedGroup(targetGroup)
                 .relatedUser(targetUser)
+                .nickname(targetUser.getNickname())
                 .message("[" + targetGroup.getName() + "] 모임에 " + targetUser.getNickname() + "님이 가입을 요청했습니다.")
                 .build();
 
@@ -89,6 +90,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(joiner)
                 .relatedGroup(targetGroup)
                 .relatedUser(targetGroup.getLeader())
+                .nickname(joiner.getNickname())
                 .message("[" + targetGroup.getName() + "] 모임에 가입되었습니다.")
                 .build();
 
@@ -105,6 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(group.getLeader())
                 .relatedGroup(group)
                 .relatedUser(leftUser)
+                .nickname(leftUser.getNickname())
                 .message("[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..")
                 .build();
 
@@ -122,6 +125,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .receiver(member.getUser())
                     .relatedGroup(plan.getGroup())
                     .relatedUser(plan.getGroup().getLeader())
+                    .nickname(member.getUser().getNickname())
                     .message("[" + plan.getGroup().getName() + "] 모임의 일정이 변경되었습니다.")
                     .build();
 
@@ -138,6 +142,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(bannedUser)
                 .relatedGroup(group)
                 .relatedUser(group.getLeader())
+                .nickname(bannedUser.getNickname())
                 .message("[" + group.getName() + "] 모임에서 강퇴되었습니다.")
                 .build();
 
@@ -162,6 +167,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiver(joinUser)
                 .relatedGroup(targetGroup)
                 .relatedUser(targetGroup.getLeader())
+                .nickname(joinUser.getNickname())
                 .message("[" + targetGroup.getName() + "] 모임의 가입 요청이 거절되었습니다.")
                 .build();
 
