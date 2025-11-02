@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.admin.controller;
 
 import com.kakaotechcampus.team16be.admin.dto.AdminUserVerificationView;
 import com.kakaotechcampus.team16be.admin.service.AdminPageService;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -59,7 +60,7 @@ public class AdminPageController {
         return "redirect:/admin/scores";
     }
 
-    // 그룹 안전 태그(상태) 관리 페이지
+    // 그룹 안전 태그(상태) 관리 페이지 (점수를 변경하면 태그가 수정되게끔)
     @GetMapping("/groups")
     public String getGroupSafetyStatus(Model model) {
         model.addAttribute("groups", groupService.getAllGroups());
@@ -68,11 +69,12 @@ public class AdminPageController {
     }
 
     @PostMapping("/groups/update")
-    public String updateGroupSafetyTag(
+    public String updateGroupScore(
             @RequestParam("groupId") Long groupId,
-            @RequestParam("tag") SafetyTag tag
+            @RequestParam("newScore") Double newScore
     ) {
-        groupService.updateSafetyTag(groupId, tag);
+        Group group = groupService.getGroupById(groupId);
+        groupService.updateGroupScoreAndTag(group, newScore);
         return "redirect:/admin/groups";
     }
 }
