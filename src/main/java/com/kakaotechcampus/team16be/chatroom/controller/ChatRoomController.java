@@ -35,14 +35,14 @@ public class ChatRoomController {
     }
 
     @PutMapping("/{groupId}/chat/{chatRoomId}")
-    public ResponseEntity<ResponseChatRoomDto> updateChatRoom(@LoginUser User user, @PathVariable Long groupId, @RequestBody UpdateChatRoomDto updateChatRoomDto, @PathVariable Long chatRoomId) {
+    public ResponseEntity<ResponseChatRoomDto> updateChatRoom(@LoginUser User user, @PathVariable Long groupId, @RequestBody UpdateChatRoomDto updateChatRoomDto, @PathVariable String chatRoomId) {
         ChatRoom chatRoom = chatRoomService.updateChatRoom(user, groupId, updateChatRoomDto, chatRoomId);
 
         return ResponseEntity.ok(ResponseChatRoomDto.from(chatRoom));
     }
 
     @DeleteMapping("/{groupId}/chat/{chatRoomId}")
-    public ResponseEntity<Void> deleteChatRoom(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long chatRoomId) {
+    public ResponseEntity<Void> deleteChatRoom(@LoginUser User user, @PathVariable Long groupId, @PathVariable String chatRoomId) {
         chatRoomService.deleteChatRoom(user, groupId, chatRoomId);
 
         return ResponseEntity.ok().build();

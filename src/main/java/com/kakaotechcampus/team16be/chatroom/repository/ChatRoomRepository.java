@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
+public interface ChatRoomRepository extends CrudRepository<ChatRoom, String> {
     List<ChatRoom> findChatRoomsByGroup(Group group);
 
 }
