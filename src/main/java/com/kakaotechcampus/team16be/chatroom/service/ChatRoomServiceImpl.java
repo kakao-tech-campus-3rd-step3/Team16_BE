@@ -49,7 +49,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Transactional
     @Override
-    public ChatRoom updateChatRoom(User user, Long groupId, UpdateChatRoomDto updateChatRoomDto, Long chatRoomId) {
+    public ChatRoom updateChatRoom(User user, Long groupId, UpdateChatRoomDto updateChatRoomDto, String chatRoomId) {
         Group targetGroup  = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
 
@@ -61,12 +61,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomRepository.save(updatedRoom);
     }
 
-    public ChatRoom findChatRoomById(long chatRoomId) {
+    public ChatRoom findChatRoomById(String chatRoomId) {
         return chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new ChatRoomException(ChatRoomErrorCode.CHATROOM_NOT_FOUND));
     }
 
-    public void deleteChatRoom(User user, Long groupId, Long chatRoomId) {
+    public void deleteChatRoom(User user, Long groupId, String chatRoomId) {
         Group targetGroup  = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
 

@@ -12,8 +12,8 @@ public interface ChatRoomService {
 
     ChatRoom createChatRoom(User user, Long groupId, CreateChatRoomDto createChatRoomDto);
 
-    ChatRoom updateChatRoom(User user, Long groupId, UpdateChatRoomDto updateChatRoomDto, Long chatRoomId);
+    ChatRoom updateChatRoom(User user, Long groupId, UpdateChatRoomDto updateChatRoomDto, String chatRoomId);
 
-    void deleteChatRoom(User user, Long groupId, Long chatRoomId);
+    void deleteChatRoom(User user, Long groupId, String chatRoomId);
 
 }
