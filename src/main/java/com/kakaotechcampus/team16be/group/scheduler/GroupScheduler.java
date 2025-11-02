@@ -30,7 +30,6 @@ public class GroupScheduler {
       groupService.updateGroupScore(group,calculateScoreByMembers(group));
       groupService.updateGroupTag(group);
     }
-
   }
 
   private Double calculateScoreByMembers(Group group) {
