@@ -18,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Optional<Post> findByAuthorAndId(String author, Long id);
 
     boolean existsByAuthorAndCreatedAtAfter(String author, LocalDateTime startOfDay);
+
+    List<Post> findAllByOrderByCreatedAtDesc();
 }

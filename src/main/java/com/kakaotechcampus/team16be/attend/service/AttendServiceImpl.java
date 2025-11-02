@@ -6,7 +6,7 @@ import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
-import com.kakaotechcampus.team16be.common.eventListener.IncreaseScoreByAttendance;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseScoreByAttendance;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;

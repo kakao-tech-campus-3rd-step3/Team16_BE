@@ -65,4 +65,11 @@ public class PostController {
         return ResponseEntity.ok(PostIdResponse.from(post.getId()));
     }
 
+  @Operation(summary = "피드 게시글 반환", description = "모든 게시글을 시간순으로 조회합니다.")
+  @GetMapping("/posts/feeds")
+  public ResponseEntity<List<GetPostResponse>> getFeeds(@LoginUser User user) {
+      List<Post> posts = postService.getFeeds();
+      List<GetPostResponse> PostResponses = GetPostResponse.from(posts);
+      return ResponseEntity.ok(PostResponses);
+  }
 }

@@ -42,5 +42,4 @@ public class NotificationController {
         List<ResponseNotification> notifications = notificationService.getAllNotifications(user);
         return ResponseEntity.ok(notifications);
     }
-
 }

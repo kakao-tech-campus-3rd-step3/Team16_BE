@@ -10,9 +10,11 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-    private final static Double ATTENDANCE = 0.03;
+    private final static Double ATTENDANCE = 0.30;
     private final static Double POSTING = 0.15;
-    private final static Double ABSENT = 5.00;
+    private final static Double ABSENT = 1.00;
+    private final static Double COMMENT = 0.05;
+    private final static Double REPORT = 3.00;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +40,8 @@ public class User extends BaseEntity {
     @Column(name = "student_id_image_url", length = 512)
     private String studentIdImageUrl;
 
-    @Column(name = "score")
-    private Double score;
+    @Column(name = "score", nullable = false)
+    private Double score = 40.0;
 
     protected User() {}
 
@@ -94,24 +96,22 @@ public class User extends BaseEntity {
     }
 
     public void increaseScoreByAttendance() {
-        if (this.score == null) {
-            this.score = 40.0;
-        }
         this.score += ATTENDANCE;
     }
 
     public void decreaseScoreByAbsent() {
-        if (this.score == null) {
-            this.score = 40.0;
-        }
-        this.score -= ABSENT;
-
+      this.score -= ABSENT;
     }
 
     public void increaseScoreByPosting() {
-      if (this.score == null){
-        this.score = 40.0;
-      }
         this.score += POSTING;
+    }
+
+    public void increaseScoreByComment() {
+      this.score += COMMENT;
+    }
+
+    public void decreaseScoreByReport() {
+      this.score -= REPORT;
     }
 }

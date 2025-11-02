@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.post.service;
 
-import com.kakaotechcampus.team16be.common.eventListener.IncreaseScoreByPosting;
+import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseGroupScoreByPosting;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseUserScoreByPosting;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -15,6 +16,7 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -53,7 +55,8 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(post);
 
         if (!hasAlreadyPostedToday) {
-            eventPublisher.publishEvent(new IncreaseScoreByPosting(user));
+            eventPublisher.publishEvent(new IncreaseUserScoreByPosting(user));
+            eventPublisher.publishEvent(new IncreaseGroupScoreByPosting(targetGroup));
         }
         return savedPost;
     }
@@ -85,5 +88,10 @@ public class PostServiceImpl implements PostService {
     public Post findById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+    }
+
+    @Override
+    public List<Post> getFeeds() {
+      return postRepository.findAllByOrderByCreatedAtDesc();
     }
 }

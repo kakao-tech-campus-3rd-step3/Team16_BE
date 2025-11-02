@@ -29,4 +29,10 @@ public record GetPostResponse(
                 isLike
         );
     }
+
+  public static List<GetPostResponse> from(List<Post> posts) {
+    return posts.stream()
+                .map(post -> GetPostResponse.from(post, post.getImageUrls(), 0, false))
+                .toList();
+  }
 }

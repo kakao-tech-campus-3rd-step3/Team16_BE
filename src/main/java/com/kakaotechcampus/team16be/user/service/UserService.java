@@ -26,169 +26,152 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
-    private final GroupRepository groupRepository;
-    private final GroupMemberRepository groupMemberRepository;
+  private final UserRepository userRepository;
+  private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+  private final GroupRepository groupRepository;
+  private final GroupMemberRepository groupMemberRepository;
 
-    @Transactional
-    public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+  @Transactional
+  public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
+    User user = userRepository.findById(userId)
+                              .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        user.updateStudentIdImageUrl(request.fileName());
-        user.updateVerificationStatusPending();
+    user.updateStudentIdImageUrl(request.fileName());
+    user.updateVerificationStatusPending();
 
-        userRepository.save(user);
+    userRepository.save(user);
+  }
+
+  @Transactional(readOnly = true)
+  public StudentVerificationStatusResponse getVerificationStatus(Long userId) {
+    User user = userRepository.findById(userId)
+                              .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    return StudentVerificationStatusResponse.of(
+        true,
+        user.getVerificationStatus(),
+        null
+    );
+  }
+
+  @Transactional(readOnly = true)
+  public String getStudentIdImageUrl(User user) {
+    String fileName = user.getStudentIdImageUrl();
+    return s3UploadPresignedUrlService.getSecureUrl(fileName);
+  }
+
+  @Transactional
+  public void createProfileImage(Long userId, String fileName) {
+    User user = getUser(userId);
+    if (user.getProfileImageUrl() != null) {
+      throw new UserException(UserErrorCode.PROFILE_IMAGE_ALREADY_EXISTS);
     }
+    user.updateProfileImageUrl(fileName);
+    userRepository.save(user);
+  }
 
-    @Transactional(readOnly = true)
-    public StudentVerificationStatusResponse getVerificationStatus(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-        return StudentVerificationStatusResponse.of(
-                true,
-                user.getVerificationStatus(),
-                null
-        );
+  @Transactional
+  public void updateProfileImage(Long userId, String fileName) {
+    User user = getUser(userId);
+    user.updateProfileImageUrl(fileName);
+    userRepository.save(user);
+  }
+
+  @Transactional(readOnly = true)
+  public String getProfileImage(Long userId) {
+    User user = getUser(userId);
+    String profileImageUrl = user.getProfileImageUrl();
+    if (profileImageUrl == null) {
+      return null;
     }
+    return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
+  }
 
-    @Transactional(readOnly = true)
-    public String getStudentIdImageUrl(User user) {
-        String fileName = user.getStudentIdImageUrl();
-        return s3UploadPresignedUrlService.getSecureUrl(fileName);
-    }
+  private User getUser(Long userId) {
+    return userRepository.findById(userId)
+                         .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+  }
 
-    @Transactional
-    public void createProfileImage(Long userId, String fileName) {
-        User user = getUser(userId);
-        if (user.getProfileImageUrl() != null) {
-            throw new UserException(UserErrorCode.PROFILE_IMAGE_ALREADY_EXISTS);
-        }
-        user.updateProfileImageUrl(fileName);
-        userRepository.save(user);
-    }
+  @Transactional
+  public void deleteProfileImage(Long userId) {
+    User user = userRepository.findById(userId)
+                              .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    user.updateProfileImageUrl(null);
+  }
 
-    @Transactional
-    public void updateProfileImage(Long userId, String fileName) {
-        User user = getUser(userId);
-        user.updateProfileImageUrl(fileName);
-        userRepository.save(user);
-    }
+  @Transactional
+  public void createNickname(User user, UserNicknameRequest request) {
+    user.updateNickname(request.nickname());
+    userRepository.save(user);
+  }
 
-    @Transactional(readOnly = true)
-    public String getProfileImage(Long userId) {
-        User user = getUser(userId);
-        String profileImageUrl = user.getProfileImageUrl();
-        if (profileImageUrl == null) {
-            return null;
-        }
-        return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
-    }
+  @Transactional(readOnly = true)
+  public UserNicknameResponse getNickname(User user) {
+    return UserNicknameResponse.from(user.getNickname());
+  }
 
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
+  @Transactional
+  public void updateNickname(User user, UserNicknameRequest request) {
+    user.updateNickname(request.nickname());
+    userRepository.save(user);
+  }
 
-    @Transactional
-    public void deleteProfileImage(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-        user.updateProfileImageUrl(null);
-    }
+  @Transactional(readOnly = true)
+  public User findById(Long userId) {
+    return userRepository.findById(userId)
+                         .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+  }
 
-    @Transactional
-    public void createNickname(User user, UserNicknameRequest request) {
-        user.updateNickname(request.nickname());
-        userRepository.save(user);
-    }
+  @Transactional(readOnly = true)
+  public UserInfoResponse getUserInfo(Long userId) {
+    User user = userRepository.findById(userId)
+                              .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(userId);
+    List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(userId);
 
-    @Transactional(readOnly = true)
-    public UserNicknameResponse getNickname(User user) {
-        return UserNicknameResponse.from(user.getNickname());
-    }
+    Map<String, List<String>> groups = Map.of(
+        "leaderOf", leaderGroupIds,
+        "memberOf", memberGroupIds
+    );
 
-    @Transactional
-    public void updateNickname(User user, UserNicknameRequest request) {
-        user.updateNickname(request.nickname());
-        userRepository.save(user);
-    }
+    String profileImageUrl = s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+    return UserInfoResponse.of(user, groups, profileImageUrl);
+  }
 
-    @Transactional(readOnly = true)
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
+  @Transactional(readOnly = true)
+  public List<UserGroupHistoryResponse> getUserGroupHistory(Long userId) {
+    List<GroupMember> memberships = groupMemberRepository.findAllByUserIdAndStatusIn(
+        userId,
+        List.of(GroupMemberStatus.ACTIVE, GroupMemberStatus.LEFT, GroupMemberStatus.BANNED)
+    );
 
-    @Transactional(readOnly = true)
-    public UserInfoResponse getUserInfo(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-        List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(userId);
-        List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(userId);
+    return memberships.stream()
+                      .map(UserGroupHistoryResponse::from)
+                      .toList();
+  }
 
-        Map<String, List<String>> groups = Map.of(
-                "leaderOf", leaderGroupIds,
-                "memberOf", memberGroupIds
-        );
+  @Transactional
+  public void decreaseScoreByAbsent(User user) {
 
-        String profileImageUrl = s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
-        return UserInfoResponse.of(user, groups, profileImageUrl);
-    }
+    User managedUser = userRepository.findById(user.getId())
+                                     .orElseThrow(
+                                         () -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
-    @Transactional(readOnly = true)
-    public List<UserGroupHistoryResponse> getUserGroupHistory(Long userId) {
-        List<GroupMember> memberships = groupMemberRepository.findAllByUserIdAndStatusIn(
-                userId,
-                List.of(GroupMemberStatus.ACTIVE, GroupMemberStatus.LEFT, GroupMemberStatus.BANNED)
-        );
+    managedUser.decreaseScoreByAbsent();
+    userRepository.save(managedUser);
+  }
 
-        return memberships.stream()
-                .map(UserGroupHistoryResponse::from)
-                .toList();
-    }
+  @Transactional(readOnly = true)
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
 
-    @Transactional
-    public void increaseUserScoreByAttendance(User user) {
-      User managedUser = userRepository.findById(user.getId())
-                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-
-      managedUser.increaseScoreByAttendance();
-      userRepository.save(managedUser);
-    }
-
-    @Transactional
-    public void decreaseScoreByAbsent(User user) {
-
-      User managedUser = userRepository.findById(user.getId())
-                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-
-      managedUser.decreaseScoreByAbsent();
-      userRepository.save(managedUser);
-    }
-
-    @Transactional
-    public void increaseUserScoreByPosting(User user) {
-      User managedUser = userRepository.findById(user.getId())
-                                       .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-
-      managedUser.increaseScoreByPosting();
-      userRepository.save(managedUser);
-    }
-
-    @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Transactional
-    public void updateUserScore(Long userId, Double newScore) {
+  @Transactional
+  public void updateUserScore(Long userId, Double newScore) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
         if (newScore == null || newScore < 0) {
             throw new UserException(UserErrorCode.INVALID_SCORE);
         }
         user.updateScore(newScore);
-    }
+  }
 }

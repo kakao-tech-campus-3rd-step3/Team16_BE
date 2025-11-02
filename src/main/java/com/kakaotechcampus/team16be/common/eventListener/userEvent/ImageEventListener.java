@@ -1,4 +1,4 @@
-package com.kakaotechcampus.team16be.common.eventListener;
+package com.kakaotechcampus.team16be.common.eventListener.userEvent;
 
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import lombok.RequiredArgsConstructor;

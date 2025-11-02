@@ -8,98 +8,140 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
+
 
 @Entity
 @Getter
 @Table(name = "groups")
 public class Group extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  private final static Double REPORT = 3.00;
+  private final static Double PLANNING = 0.1;
+  private final static Double POSTING = 0.05;
+  private final static Double CAUTION_GROUP = 74.0;
+  private final static Double DANGER_GROUP = 62.0;
 
-    @NotBlank
-    private String name;
 
-    @NotBlank
-    private String intro;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String coverImageUrl;
+  @NotBlank
+  private String name;
 
-    private String category;
+  @NotBlank
+  private String intro;
 
-    @Min(1)
-    private Integer capacity;
+  private String coverImageUrl;
 
-    @Min(1)
-    private Integer currentCapacity = 1;
+  private String category;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private SafetyTag safetyTag = SafetyTag.SAFE;
+  @Min(1)
+  private Integer capacity;
 
-    private final SafetyTag safetyTagFinal = SafetyTag.SAFE;
+  @Min(1)
+  private Integer currentCapacity = 1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaderUserId", nullable = false)
-    private User leader;
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private SafetyTag safetyTag = SafetyTag.SAFE;
 
-    protected Group() {
-    }
+  private final SafetyTag safetyTagFinal = SafetyTag.SAFE;
 
-    @Builder
-    public Group(User user, String name, String intro, Integer capacity) {
-        this.leader = user;
-        this.name = name;
-        this.intro = intro;
-        this.capacity = capacity;
-        this.coverImageUrl="";
-    }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "leaderUserId", nullable = false)
+  private User leader;
 
-    public static Group createGroup(User user, String name, String intro, Integer capacity) {
-        return Group.builder().
+  @Column(name = "score", nullable = false)
+  private Double score = 80.0;
+
+
+  protected Group() {
+  }
+
+  @Builder
+  public Group(User user, String name, String intro, Integer capacity) {
+    this.leader = user;
+    this.name = name;
+    this.intro = intro;
+    this.capacity = capacity;
+    this.coverImageUrl="";
+    this.score = 80.0;
+  }
+
+  public static Group createGroup(User user, String name, String intro, Integer capacity) {
+    return Group.builder().
                 user(user).
                 name(name).
                 intro(intro).
                 capacity(capacity).
                 build();
-    }
+  }
 
-    public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
-        if (updatedCapacity != null && updatedCapacity <= 0) {
-            throw new GroupException(GroupErrorCode.WRONG_GROUP_CAPACITY);
-        }
-        if (updatedName != null) {
-            this.name = updatedName;
-        }
-        if (updatedIntro != null) {
-            this.intro = updatedIntro;
-        }
-        if (updatedCapacity != null) {
-            this.capacity = updatedCapacity;
-        }
-        return this;
+  public Group update(String updatedName, String updatedIntro, Integer updatedCapacity) {
+    if (updatedCapacity != null && updatedCapacity <= 0) {
+      throw new GroupException(GroupErrorCode.WRONG_GROUP_CAPACITY);
     }
-
-    public void changeCoverImage(String newImageUrl) {
-        this.coverImageUrl = newImageUrl;
+    if (updatedName != null) {
+      this.name = updatedName;
     }
-
-
-    public void checkLeader(User user) {
-        if (!(this.leader == user)) {
-            throw new GroupException(GroupErrorCode.WRONG_GROUP_LEADER);
-        }
+    if (updatedIntro != null) {
+      this.intro = updatedIntro;
     }
-
-    public void changeLeader(User user) {
-        this.leader = user;
+    if (updatedCapacity != null) {
+      this.capacity = updatedCapacity;
     }
+    return this;
+  }
 
-    public void updateSafetyTag(SafetyTag safetyTag) {
-        this.safetyTag = safetyTag;
+  public void changeCoverImage(String newImageUrl) {
+    this.coverImageUrl = newImageUrl;
+  }
+
+
+  public void checkLeader(User user) {
+    if (!(this.leader == user)) {
+      throw new GroupException(GroupErrorCode.WRONG_GROUP_LEADER);
     }
+  }
+
+  public void changeLeader(User user) {
+    this.leader = user;
+  }
+
+  public void decreaseScoreByReport(){
+    this.score -= REPORT;
+  }
+
+  public void increaseScoreByPosting(){
+    this.score += POSTING;
+  }
+
+  public void increaseScoreByPlanning(){
+    this.score += PLANNING;
+  }
+
+  public void groupScoreUpdate(Double avg) {
+    BigDecimal rounded = BigDecimal.valueOf(avg)
+                                   .setScale(2, RoundingMode.HALF_UP);
+    this.score = rounded.doubleValue();
+  }
+
+  public void updateSafetyTagByScore() {
+    if (this.score > CAUTION_GROUP) {
+      this.safetyTag = SafetyTag.SAFE;
+    } else if (this.score > DANGER_GROUP) {
+      this.safetyTag = SafetyTag.CAUTION;
+    } else {
+      this.safetyTag = SafetyTag.DANGER;
+    }
+  }
+
+  public void updateSafetyTag(SafetyTag safetyTag) {
+    this.safetyTag = safetyTag;
+  }
 }
