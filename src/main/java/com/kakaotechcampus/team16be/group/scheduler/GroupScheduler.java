@@ -52,4 +52,3 @@ public class GroupScheduler {
     return Math.max(0, Math.min(100, calculatedScore));
   }
 }
-
