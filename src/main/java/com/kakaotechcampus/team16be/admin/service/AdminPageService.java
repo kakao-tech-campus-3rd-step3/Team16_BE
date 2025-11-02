@@ -1,7 +1,13 @@
 package com.kakaotechcampus.team16be.admin.service;
 
+import com.kakaotechcampus.team16be.admin.dto.AdminReportResponseDto;
 import com.kakaotechcampus.team16be.admin.dto.AdminUserVerificationView;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.report.ReportRepository;
+import com.kakaotechcampus.team16be.report.domain.Report;
+import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
+import com.kakaotechcampus.team16be.report.exception.ReportErrorCode;
+import com.kakaotechcampus.team16be.report.exception.ReportException;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.domain.VerificationStatus;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +26,7 @@ public class AdminPageService {
 
     private final UserRepository userRepository;
     private final S3UploadPresignedUrlService s3Service;
+    private final ReportRepository reportRepository;
 
     @Transactional(readOnly = true)
     public List<AdminUserVerificationView> getAllVerificationRequests() {
@@ -37,6 +45,22 @@ public class AdminPageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
         user.updateVerificationStatus(VerificationStatus.valueOf(status));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminReportResponseDto> getAllReportsForAdmin() {
+        List<Report> reports = reportRepository.findAll();
+        return reports.stream()
+                .map(AdminReportResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateReportStatus(Long reportId, String status, User resolvedBy) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
+
+        report.updateStatus(status, resolvedBy);
     }
 
 }
