@@ -22,4 +22,6 @@ public interface PostService {
     Post updatePost(User user, Long postId, @Valid UpdatePostRequest updatePostRequest);
 
     Post findById(Long postId);
+
+    List<Post> getFeeds();
 }

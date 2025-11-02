@@ -29,4 +29,5 @@ public interface GroupMemberService {
     List<GroupMemberDto> getGroupMember(User user, Long groupId);
 
     List<GroupMember> getActiveMember(Group group);
+
 }

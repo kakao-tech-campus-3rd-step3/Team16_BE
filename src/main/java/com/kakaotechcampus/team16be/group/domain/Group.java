@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 @Getter
 @Table(name = "groups")
 public class Group extends BaseEntity {
+
+    private final static Double REPORT = 3.00;
+    private final static Double PLANING = 0.1;
+    private final static Double POSTING = 0.05;
+    private final static Double CAUTION_GROUP = 74.0;
+    private final static Double DANGER_GROUP = 62.0;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +56,10 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "leaderUserId", nullable = false)
     private User leader;
 
+    @Column(name = "score", nullable = false)
+    private Double score = 80.0;
+
+
     protected Group() {
     }
 
@@ -57,6 +70,7 @@ public class Group extends BaseEntity {
         this.intro = intro;
         this.capacity = capacity;
         this.coverImageUrl="";
+        this.score = 80.0;
     }
 
     public static Group createGroup(User user, String name, String intro, Integer capacity) {
@@ -88,7 +102,6 @@ public class Group extends BaseEntity {
         this.coverImageUrl = newImageUrl;
     }
 
-
     public void checkLeader(User user) {
         if (!(this.leader == user)) {
             throw new GroupException(GroupErrorCode.WRONG_GROUP_LEADER);
@@ -98,4 +111,32 @@ public class Group extends BaseEntity {
     public void changeLeader(User user) {
         this.leader = user;
     }
+
+    public void decreaseScoreByReport(){
+      this.score -= REPORT;
+    }
+
+    public void increaseScoreByPosting(){
+      this.score += POSTING;
+    }
+
+    public void increaseScoreByPlanning(){
+      this.score += PLANING;
+    }
+
+  public void groupScoreUpdate(Double avg) {
+    BigDecimal rounded = BigDecimal.valueOf(avg)
+                                   .setScale(2, RoundingMode.HALF_UP);
+    this.score = rounded.doubleValue();
+  }
+
+  public void updateSafetyTagByScore() {
+    if (this.score > CAUTION_GROUP) {
+      this.safetyTag = SafetyTag.SAFE;
+    } else if (this.score > DANGER_GROUP) {
+      this.safetyTag = SafetyTag.CAUTION;
+    } else {
+      this.safetyTag = SafetyTag.DANGER;
+    }
+  }
 }

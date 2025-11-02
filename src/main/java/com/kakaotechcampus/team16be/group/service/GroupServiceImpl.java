@@ -1,6 +1,6 @@
 package com.kakaotechcampus.team16be.group.service;
 
-import com.kakaotechcampus.team16be.common.eventListener.ImageDeletedEvent;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.ImageDeletedEvent;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
@@ -126,4 +126,19 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.existsGroupByName(groupName);
     }
 
+    public  List<Group> findAll() {
+      return groupRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupScore(Group group, Double avg) {
+      group.groupScoreUpdate(avg);
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupTag(Group group) {
+      group.updateSafetyTagByScore();
+    }
 }

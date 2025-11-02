@@ -10,6 +10,7 @@ public record UserInfoResponse(
         String id,
         String nickname,
         String profileImageUrl,
+        Double userScore,
         VerificationStatus studentVerifiedStatus,
         Map<String, List<String>> groups
 ) {
@@ -18,6 +19,7 @@ public record UserInfoResponse(
                 user.getId().toString(),
                 user.getNickname(),
                 profileImageUrl,
+                user.getScore(),
                 user.getVerificationStatus(),
                 groups
         );

@@ -55,5 +55,4 @@ public class Notification extends BaseEntity {
                 .message(notificationType.getMessage())
                 .build();
     }
-
 }

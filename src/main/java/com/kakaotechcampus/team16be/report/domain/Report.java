@@ -77,6 +77,9 @@ public class Report extends BaseEntity {
   }
 
   public void resolve(User resolvedUser, ReportStatus reportStatus){
+    if(reportStatus == null) {
+      throw new IllegalArgumentException("신고 상태는 null일 수 없습니다.");
+    }
     if(reportStatus == ReportStatus.PENDING){
       throw new IllegalArgumentException("신고 상태는 PENDING으로 변경할 수 없습니다.");
     }
@@ -91,5 +94,13 @@ public class Report extends BaseEntity {
     INAPPROPRIATE,
     FRAUD_OR_PRIVACY,
     OTHER
+  }
+
+  public ReportStatus getStatus() {
+    if (this.status == null) {
+      this.status = ReportStatus.PENDING;
+    }
+
+    return this.status;
   }
 }

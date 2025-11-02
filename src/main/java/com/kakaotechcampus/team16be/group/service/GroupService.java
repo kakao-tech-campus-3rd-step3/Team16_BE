@@ -22,4 +22,10 @@ public interface GroupService {
     Group findGroupById(Long groupId);
 
     Group updateGroupImage(User user, Long groupId, UpdateGroupDto updateGroupDto);
+
+  List<Group> findAll();
+
+  void updateGroupScore(Group group, Double avg);
+
+  void updateGroupTag(Group group);
 }
