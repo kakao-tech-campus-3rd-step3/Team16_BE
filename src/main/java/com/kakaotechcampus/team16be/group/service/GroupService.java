@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.group.service;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseGroupListDto;
 import com.kakaotechcampus.team16be.group.dto.ResponseSingleGroupDto;
@@ -28,4 +29,6 @@ public interface GroupService {
   void updateGroupScore(Group group, Double avg);
 
   void updateGroupTag(Group group);
+
+    void updateSafetyTag(Long groupId, SafetyTag newSafetyTag);
 }
