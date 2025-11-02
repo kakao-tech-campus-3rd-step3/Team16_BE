@@ -149,6 +149,7 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
     }
 
+    @Transactional
     @Override
     public void updateGroupScoreAndTag(Group group, Double newScore) {
         group.groupScoreUpdate(newScore);   // 점수 갱신
