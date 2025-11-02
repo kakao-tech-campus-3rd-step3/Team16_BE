@@ -31,7 +31,7 @@ public class GroupScoreEvent {
 
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseGroupScoreByPlanning(IncreaseGroupScoreByPosting event) {
+  public void increaseGroupScoreByPlanning(IncreaseScoreByPlanning event) {
     Group group = groupRepository.findById(event.group().getId())
                                  .orElseThrow(() -> new GroupException(GROUP_CANNOT_FOUND));
 

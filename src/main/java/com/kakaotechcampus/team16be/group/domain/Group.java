@@ -20,7 +20,7 @@ import lombok.Getter;
 public class Group extends BaseEntity {
 
   private final static Double REPORT = 3.00;
-  private final static Double PLANING = 0.1;
+  private final static Double PLANNING = 0.1;
   private final static Double POSTING = 0.05;
   private final static Double CAUTION_GROUP = 74.0;
   private final static Double DANGER_GROUP = 62.0;
@@ -122,7 +122,7 @@ public class Group extends BaseEntity {
   }
 
   public void increaseScoreByPlanning(){
-    this.score += PLANING;
+    this.score += PLANNING;
   }
 
   public void groupScoreUpdate(Double avg) {

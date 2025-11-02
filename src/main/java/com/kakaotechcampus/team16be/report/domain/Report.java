@@ -97,10 +97,6 @@ public class Report extends BaseEntity {
   }
 
   public ReportStatus getStatus() {
-    if (this.status == null) {
-      this.status = ReportStatus.PENDING;
-    }
-
-    return this.status;
+    return this.status != null ? this.status : ReportStatus.PENDING;
   }
 }

@@ -32,7 +32,7 @@ public class UserScoreEvent {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void increaseUserScoreByPosting(IncreaseUserScoreByPosting event) {
     User user = userRepository.findById(event.user().getId())
-                              .orElseThrow();
+                              .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
     user.increaseScoreByPosting();
     userRepository.saveAndFlush(user);

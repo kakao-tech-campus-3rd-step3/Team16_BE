@@ -25,6 +25,8 @@ import com.kakaotechcampus.team16be.report.domain.Report;
 import com.kakaotechcampus.team16be.report.exception.ReportErrorCode;
 import com.kakaotechcampus.team16be.report.exception.ReportException;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
+import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import java.util.List;
@@ -118,7 +120,12 @@ public class ReportServiceImpl implements ReportService{
             .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
 
         Group targetGroup = post.getGroup();
-        User targetUser = userRepository.findByNickname(post.getAuthor());
+        User targetUser = userRepository.findByNickname(post.getAuthor())
+            .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        if (targetUser == null) {
+          throw new UserException(UserErrorCode.USER_NOT_FOUND);
+        }
 
         eventPublisher.publishEvent(new DecreaseGroupScoreByReport(targetGroup));
         eventPublisher.publishEvent(new DecreaseScoreByReport(targetUser));

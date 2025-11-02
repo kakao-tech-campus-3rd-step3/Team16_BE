@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.plan.service;
 
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseGroupScoreByPosting;
+import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseScoreByPlanning;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -62,7 +63,7 @@ public class PlanServiceImpl implements PlanService {
                     .build();
     Plan savedPlan = planRepository.save(plan);
 
-    eventPublisher.publishEvent(new IncreaseGroupScoreByPosting(group));
+    eventPublisher.publishEvent(new IncreaseScoreByPlanning(group));
     return savedPlan.getId();
   }
 
