@@ -21,7 +21,7 @@ public class GroupScheduler {
   private static final Double BASE_USER_SCORE = 40.0;
   private static final Double MEMBER_SCORE_WEIGHT = 0.4;
 
-  @Scheduled(cron = "15 * * * * *")
+  @Scheduled(cron = "* 30 * * * *")
   @Transactional
   public void reflectGroupScore(){
     List<Group> allGroups = groupService.findAll();
