@@ -16,7 +16,7 @@ public interface GroupService {
 
     List<Group> getAllGroups();
 
-    void deleteGroup(User user,Long groupId);
+    void deleteGroup(User user, Long groupId);
 
     Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto);
 
@@ -24,11 +24,13 @@ public interface GroupService {
 
     Group updateGroupImage(User user, Long groupId, UpdateGroupDto updateGroupDto);
 
-  List<Group> findAll();
+    List<Group> findAll();
 
-  void updateGroupScore(Group group, Double avg);
+    void updateGroupScore(Group group, Double avg);
 
-  void updateGroupTag(Group group);
+    void updateGroupTag(Group group);
 
-    void updateSafetyTag(Long groupId, SafetyTag newSafetyTag);
+    Group getGroupById(Long groupId);
+
+    void updateGroupScoreAndTag(Group group, Double newScore);
 }

@@ -123,14 +123,6 @@ public class GroupServiceImpl implements GroupService {
         return targetGroup;
     }
 
-    @Transactional
-    public void updateSafetyTag(Long groupId, SafetyTag newSafetyTag) {
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
-
-        group.updateSafetyTag(newSafetyTag);
-    }
-
     public boolean existGroupName(String groupName) {
         return groupRepository.existsGroupByName(groupName);
     }
@@ -149,5 +141,18 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void updateGroupTag(Group group) {
       group.updateSafetyTagByScore();
+    }
+
+    @Transactional(readOnly = true)
+    public Group getGroupById(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupScoreAndTag(Group group, Double newScore) {
+        group.groupScoreUpdate(newScore);   // 점수 갱신
+        group.updateSafetyTagByScore();     // 태그 갱신
     }
 }

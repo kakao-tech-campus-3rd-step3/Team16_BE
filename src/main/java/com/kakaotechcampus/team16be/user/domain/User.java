@@ -43,7 +43,8 @@ public class User extends BaseEntity {
     @Column(name = "score", nullable = false)
     private Double score = 40.0;
 
-    protected User() {}
+    protected User() {
+    }
 
     public User(String kakaoId) {
         this.kakaoId = kakaoId;
@@ -100,7 +101,7 @@ public class User extends BaseEntity {
     }
 
     public void decreaseScoreByAbsent() {
-      this.score -= ABSENT;
+        this.score -= ABSENT;
     }
 
     public void increaseScoreByPosting() {
@@ -108,10 +109,10 @@ public class User extends BaseEntity {
     }
 
     public void increaseScoreByComment() {
-      this.score += COMMENT;
+        this.score += COMMENT;
     }
 
     public void decreaseScoreByReport() {
-      this.score -= REPORT;
+        this.score -= REPORT;
     }
 }

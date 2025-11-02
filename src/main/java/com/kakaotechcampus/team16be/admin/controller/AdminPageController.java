@@ -1,7 +1,10 @@
 package com.kakaotechcampus.team16be.admin.controller;
 
+import com.kakaotechcampus.team16be.admin.dto.AdminReportResponseDto;
 import com.kakaotechcampus.team16be.admin.dto.AdminUserVerificationView;
 import com.kakaotechcampus.team16be.admin.service.AdminPageService;
+import com.kakaotechcampus.team16be.common.annotation.LoginUser;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -59,7 +62,7 @@ public class AdminPageController {
         return "redirect:/admin/scores";
     }
 
-    // 그룹 안전 태그(상태) 관리 페이지
+    // 그룹 안전 태그(상태) 관리 페이지 (점수를 변경하면 태그가 수정되게끔)
     @GetMapping("/groups")
     public String getGroupSafetyStatus(Model model) {
         model.addAttribute("groups", groupService.getAllGroups());
@@ -68,11 +71,33 @@ public class AdminPageController {
     }
 
     @PostMapping("/groups/update")
-    public String updateGroupSafetyTag(
+    public String updateGroupScore(
             @RequestParam("groupId") Long groupId,
-            @RequestParam("tag") SafetyTag tag
+            @RequestParam("newScore") Double newScore
     ) {
-        groupService.updateSafetyTag(groupId, tag);
+        Group group = groupService.getGroupById(groupId);
+        groupService.updateGroupScoreAndTag(group, newScore);
         return "redirect:/admin/groups";
     }
+
+    // 신고 관리 페이지
+    @GetMapping("/reports")
+    public String getReportsPage(Model model) {
+        // 모든 신고 목록 조회
+        List<AdminReportResponseDto> reports = adminPageService.getAllReportsForAdmin();
+        model.addAttribute("reports", reports);
+        return "admin/adminReports"; // 새로운 Thymeleaf 템플릿
+    }
+
+    // 신고 상태 업데이트
+    @PostMapping("/reports/update")
+    public String updateReportStatus(
+            @RequestParam("reportId") Long reportId,
+            @RequestParam("status") String status,
+            @LoginUser User adminUser
+    ) {
+        adminPageService.updateReportStatus(reportId, status, adminUser);
+        return "redirect:/admin/reports";
+    }
+
 }

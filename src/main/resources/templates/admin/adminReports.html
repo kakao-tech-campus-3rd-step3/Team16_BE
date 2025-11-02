@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>그룹 안전 상태 관리</title>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <title>신고 관리 페이지</title>
     <style>
         /* --- 전체 레이아웃 --- */
         body {
@@ -75,25 +75,27 @@
             background-color: #fafafa;
         }
 
-        select {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
+        /* --- 버튼 스타일 --- */
         button {
-            padding: 6px 12px;
+            padding: 8px 14px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             color: #fff;
             background-color: #4CAF50;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         button:hover {
             background-color: #45a049;
+        }
+
+        select {
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
 
         /* --- 반응형 --- */
@@ -132,16 +134,18 @@
                 font-weight: 700;
             }
 
-            td:nth-of-type(1):before { content: "그룹 ID"; }
-            td:nth-of-type(2):before { content: "그룹 이름"; }
-            td:nth-of-type(3):before { content: "현재 상태"; }
-            td:nth-of-type(4):before { content: "상태 변경"; }
+            td:nth-of-type(1):before { content: "신고 ID"; }
+            td:nth-of-type(2):before { content: "대상 유형"; }
+            td:nth-of-type(3):before { content: "대상 ID"; }
+            td:nth-of-type(4):before { content: "신고 사유"; }
+            td:nth-of-type(5):before { content: "신고 상태"; }
+            td:nth-of-type(6):before { content: "처리"; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>그룹 안전 상태 관리</h2>
+    <h2>신고 관리 페이지</h2>
 
     <!-- 네비게이션 -->
     <div class="nav-container">
@@ -151,27 +155,37 @@
         <a th:href="@{/admin/reports}" class="nav-btn">신고 관리 페이지</a>
     </div>
 
-    <!-- 테이블 -->
+    <!-- 신고 테이블 -->
     <table>
         <thead>
         <tr>
-            <th>그룹 ID</th>
-            <th>그룹 이름</th>
-            <th>현재 상태</th>
-            <th>그룹 점수</th>
+            <th>신고 ID</th>
+            <th>대상 유형</th>
+            <th>대상 ID</th>
+            <th>신고 사유</th>
+            <th>신고 상태</th>
+            <th>처리</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="g : ${groups}">
-            <td th:text="${g.id}"></td>
-            <td th:text="${g.name}"></td>
-            <td th:text="${g.safetyTag}"></td>
+        <tr th:each="r : ${reports}">
+            <td th:text="${r.id}"></td>
+            <td th:text="${r.targetType}"></td>
+            <td th:text="${r.targetId}"></td>
+            <td th:text="${r.reason}"></td>
+            <td th:text="${r.status}"></td>
             <td>
-                <form th:action="@{/admin/groups/update}" method="post" style="display:inline-flex; gap:5px;">
-                    <input type="hidden" name="groupId" th:value="${g.id}" />
-                    <input type="number" name="newScore" th:value="${g.score}" min="0" max="100" step="0.01"/>
-                    <button type="submit">변경</button>
+                <form th:if="${r.status == 'PENDING'}"
+                      th:action="@{/admin/reports/update}" method="post" style="display:inline;">
+                    <input type="hidden" name="reportId" th:value="${r.id}" />
+                    <select name="status">
+                        <option value="RESOLVED">승인</option>
+                        <option value="REJECTED">거절</option>
+                    </select>
+                    <button type="submit">처리</button>
                 </form>
+
+                <span th:if="${r.status != 'PENDING'}">처리 완료</span>
             </td>
         </tr>
         </tbody>

@@ -23,18 +23,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "신고 관련 API", description = "일반 유저용 신고 관련 API")
 public class UserReportController {
 
-  private final ReportService reportService;
+    private final ReportService reportService;
 
-  @Operation(summary = "신고 생성", description = "사용자가 특정 대상(모임, 게시글, 댓글)에 대해 신고를 생성합니다.")
-  @PostMapping("/{targetType}/{targetId}")
-  public ResponseEntity<ReportResponseDto> createReport(
-      @LoginUser User reporter,
-      @PathVariable TargetType targetType,
-      @PathVariable Long targetId,
-      @RequestBody ReportRequestDto reportRequestDto
-  ){
-    return ResponseEntity.status(HttpStatus.CREATED).body(reportService.createReport(reporter, targetType, targetId, reportRequestDto));
-  }
+    @Operation(summary = "신고 생성", description = "사용자가 특정 대상(모임, 게시글, 댓글)에 대해 신고를 생성합니다.")
+    @PostMapping("/{targetType}/{targetId}")
+    public ResponseEntity<ReportResponseDto> createReport(
+            @LoginUser User reporter,
+            @PathVariable TargetType targetType,
+            @PathVariable Long targetId,
+            @RequestBody ReportRequestDto reportRequestDto
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(reportService.createReport(reporter, targetType, targetId, reportRequestDto));
+    }
 
-  //READ, UPDATE, DELETE는 관리자용으로 따로 관리
+    //READ, UPDATE, DELETE는 관리자용으로 따로 관리
 }
