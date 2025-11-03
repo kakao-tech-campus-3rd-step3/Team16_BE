@@ -44,14 +44,18 @@ public class PostFacadeService {
                 .map(s3UploadPresignedUrlService::getPublicUrl)
                 .toList();
         User author = userService.findByNickName(post.getAuthor());
+        String authorProfileImageUrl = author.getProfileImageUrl();
+        String authorProfilePublicUrl = (authorProfileImageUrl != null && !authorProfileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(authorProfileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
 
-        return GetPostResponse.from(post, author,fullURLs, commentCount, postLikeResponse.isLiked());
+
+
+        return GetPostResponse.from(post, author,authorProfilePublicUrl,fullURLs, commentCount, postLikeResponse.isLiked());
     }
 
     @Transactional(readOnly = true)
     public List<GetPostResponse> getAllPosts(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
-        List<Post> posts = postRepository.findByGroup(targetGroup);
+        List<Post> posts = postRepository.findByGroupOrderByCreatedAtDesc(targetGroup);
 
         return posts.stream()
                 .map(post -> {
@@ -61,7 +65,17 @@ public class PostFacadeService {
                     Integer commentCount = commentFacadeService.getCommentsByPostId(post.getId()).size();
                     PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
                     User author = userService.findByNickName(post.getAuthor());
-                    return GetPostResponse.from(post, author, fullURLs, commentCount,postLikeResponse.isLiked());
+                    String authorProfileKey = author.getProfileImageUrl();
+                    String authorProfilePublicUrl = (authorProfileKey != null && !authorProfileKey.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(authorProfileKey) : s3UploadPresignedUrlService.getPublicUrl("");
+
+                    return GetPostResponse.from(
+                            post,
+                            author,
+                            authorProfilePublicUrl,
+                            fullURLs,
+                            commentCount,
+                            postLikeResponse.isLiked()
+                    );
                 })
                 .toList();
     }
@@ -78,7 +92,9 @@ public class PostFacadeService {
                     Integer commentCount = commentFacadeService.getCommentsByPostId(post.getId()).size();
                     PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
                     User author = userService.findByNickName(post.getAuthor());
-                    return GetPostResponse.from(post,author, fullURLs, commentCount,postLikeResponse.isLiked());
+                    String profileImageUrl = author.getProfileImageUrl();
+                    String authorProfilePublicUrl = (profileImageUrl != null && !profileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(profileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
+                    return GetPostResponse.from(post,author, authorProfilePublicUrl,fullURLs, commentCount,postLikeResponse.isLiked());
                 })
                 .toList();
     }
