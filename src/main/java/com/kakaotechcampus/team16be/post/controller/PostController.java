@@ -9,6 +9,7 @@ import com.kakaotechcampus.team16be.post.dto.UpdatePostRequest;
 import com.kakaotechcampus.team16be.post.service.PostFacadeService;
 import com.kakaotechcampus.team16be.post.service.PostService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostFacadeService postFacadeService;
+
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
     @PostMapping("/posts")
@@ -68,8 +70,8 @@ public class PostController {
   @Operation(summary = "피드 게시글 반환", description = "모든 게시글을 시간순으로 조회합니다.")
   @GetMapping("/posts/feeds")
   public ResponseEntity<List<GetPostResponse>> getFeeds(@LoginUser User user) {
-      List<Post> posts = postService.getFeeds();
-      List<GetPostResponse> PostResponses = GetPostResponse.from(posts);
-      return ResponseEntity.ok(PostResponses);
+      List<GetPostResponse> posts = postFacadeService.getFeeds(user);
+
+      return ResponseEntity.ok(posts);
   }
 }

@@ -174,4 +174,9 @@ public class UserService {
         }
         user.updateScore(newScore);
     }
+
+    public User findByNickName(String author) {
+        return userRepository.findByNickname(author)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
 }

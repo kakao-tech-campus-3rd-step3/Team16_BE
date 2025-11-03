@@ -20,4 +20,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     boolean existsByAuthorAndCreatedAtAfter(String author, LocalDateTime startOfDay);
 
     List<Post> findAllByOrderByCreatedAtDesc();
+
+    List<Post> findByGroupOrderByCreatedAtDesc(Group group);
 }

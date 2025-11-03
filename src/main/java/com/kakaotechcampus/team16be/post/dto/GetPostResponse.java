@@ -1,13 +1,16 @@
 package com.kakaotechcampus.team16be.post.dto;
 
 import com.kakaotechcampus.team16be.post.domain.Post;
+import com.kakaotechcampus.team16be.user.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record GetPostResponse(
         Long postId,
+        Long authorId,
         String authorNickname,
+        String authorProfileImageUrl,
         String title,
         String content,
         List<String> imageUrls,
@@ -16,10 +19,12 @@ public record GetPostResponse(
         LocalDateTime createdAt,
         boolean isLike
 ) {
-    public static GetPostResponse from(Post post, List<String> fullURLs, Integer commentCount, boolean isLike) {
+    public static GetPostResponse from(Post post, User author, String authorProfileImageUrl, List<String> fullURLs, Integer commentCount, boolean isLike) {
         return new GetPostResponse(
                 post.getId(),
-                post.getAuthor(),
+                author.getId(),
+                author.getNickname(),
+                authorProfileImageUrl,
                 post.getTitle(),
                 post.getContent(),
                 fullURLs,
@@ -30,9 +35,5 @@ public record GetPostResponse(
         );
     }
 
-  public static List<GetPostResponse> from(List<Post> posts) {
-    return posts.stream()
-                .map(post -> GetPostResponse.from(post, post.getImageUrls(), 0, false))
-                .toList();
-  }
+
 }

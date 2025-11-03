@@ -1,7 +1,9 @@
 package com.kakaotechcampus.team16be.comment.service;
 
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.comment.domain.Comment;
 import com.kakaotechcampus.team16be.comment.dto.ChildCommentRequest;
+import com.kakaotechcampus.team16be.comment.dto.CommentResponse;
 import com.kakaotechcampus.team16be.comment.dto.ParentCommentRequest;
 import com.kakaotechcampus.team16be.comment.repository.CommentRepository;
 import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseScoreByComment;
@@ -23,6 +25,7 @@ public class CommentFacadeService {
     private final PostService postService;
     private final CommentService commentService;
     private final ApplicationEventPublisher eventPublisher;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
 
 
     @Transactional
@@ -53,9 +56,30 @@ public class CommentFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsByPostId(Long postId) {
+    public List<CommentResponse> getCommentsByPostId(Long postId) {
         Post post = postService.findById(postId);
-        return commentRepository.findAllByPost(post);
+
+
+        List<Comment> allComments = commentRepository.findAllByPostWithUserAndParent(post);
+
+        return allComments.stream()
+                .map(comment -> {
+                    String profileImageKey = comment.getUser().getProfileImageUrl();
+                    String publicUrl = (profileImageKey != null && !profileImageKey.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(profileImageKey) : s3UploadPresignedUrlService.getPublicUrl("");
+                    Long parentId = (comment.getParentComment() != null) ? comment.getParentComment().getId() : null;
+
+                    return new CommentResponse(
+                            comment.getId(),
+                            comment.getUser().getId(),
+                            comment.getUser().getNickname(),
+                            publicUrl,
+                            comment.getContent(),
+                            comment.getCreatedAt().toString(),
+                            comment.getUpdatedAt().toString(),
+                            parentId
+                    );
+                })
+                .toList();
     }
 
 }
