@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,12 @@ public class Post extends BaseEntity {
     @Column(length = 1000)
     private String content;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "post_image_urls",
+            joinColumns = @JoinColumn(name = "post_id")
+    )
+    @Column(name = "image_url", length = 1000)
     private List<String> imageUrls = new ArrayList<>();
 
     private Long likeCount = 0L;
@@ -45,7 +52,7 @@ public class Post extends BaseEntity {
         this.imageUrls = imageUrls;
     }
 
-    public static Post createPost(String userNickname,Group group, String title, String content, List<String> imageUrls) {
+    public static Post createPost(String userNickname, Group group, String title, String content, List<String> imageUrls) {
         return com.kakaotechcampus.team16be.post.domain.Post.builder()
                 .author(userNickname)
                 .group(group)
