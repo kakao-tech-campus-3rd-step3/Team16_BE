@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.group.domain;
 
+import ch.qos.logback.core.util.StringUtil;
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
 import com.kakaotechcampus.team16be.group.exception.GroupException;
@@ -66,21 +67,25 @@ public class Group extends BaseEntity {
     }
 
     @Builder
-    public Group(User user, String name, String intro, Integer capacity) {
+    public Group(User user, String name, String intro, Integer capacity,String fileName) {
         this.leader = user;
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
-        this.coverImageUrl = "";
+        if (StringUtil.isNullOrEmpty(fileName)) {
+            this.coverImageUrl = "";
+        }else
+            this.coverImageUrl = fileName;
         this.score = 80.0;
     }
 
-    public static Group createGroup(User user, String name, String intro, Integer capacity) {
+    public static Group createGroup(User user, String name, String intro, Integer capacity, String fileName) {
         return Group.builder().
                 user(user).
                 name(name).
                 intro(intro).
                 capacity(capacity).
+                fileName(fileName).
                 build();
     }
 

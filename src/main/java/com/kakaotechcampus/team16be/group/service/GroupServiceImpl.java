@@ -46,7 +46,7 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);
         }
 
-        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
+        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity, createGroupDto.fileName());
         groupRepository.save(createdGroup);
 
         GroupMember leaderMember = GroupMember.create(createdGroup, leader);
