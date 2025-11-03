@@ -12,6 +12,7 @@ import com.kakaotechcampus.team16be.post.exception.PostErrorCode;
 import com.kakaotechcampus.team16be.post.exception.PostException;
 import com.kakaotechcampus.team16be.post.repository.PostRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class PostFacadeService {
     private final CommentFacadeService commentFacadeService;
     private final PostLikeService postLikeService;
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+    private final UserService userService;
 
 
     @Transactional(readOnly = true)
@@ -41,8 +43,9 @@ public class PostFacadeService {
         List<String> fullURLs = post.getImageUrls().stream()
                 .map(s3UploadPresignedUrlService::getPublicUrl)
                 .toList();
+        User author = userService.findByNickName(post.getAuthor());
 
-        return GetPostResponse.from(post, fullURLs, commentCount, postLikeResponse.isLiked());
+        return GetPostResponse.from(post, author,fullURLs, commentCount, postLikeResponse.isLiked());
     }
 
     @Transactional(readOnly = true)
@@ -57,7 +60,25 @@ public class PostFacadeService {
                             .toList();
                     Integer commentCount = commentFacadeService.getCommentsByPostId(post.getId()).size();
                     PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
-                    return GetPostResponse.from(post, fullURLs, commentCount,postLikeResponse.isLiked());
+                    User author = userService.findByNickName(post.getAuthor());
+                    return GetPostResponse.from(post, author, fullURLs, commentCount,postLikeResponse.isLiked());
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetPostResponse> getFeeds(User user) {
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+
+        return posts.stream()
+                .map(post -> {
+                    List<String> fullURLs = post.getImageUrls().stream()
+                            .map(s3UploadPresignedUrlService::getPublicUrl)
+                            .toList();
+                    Integer commentCount = commentFacadeService.getCommentsByPostId(post.getId()).size();
+                    PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
+                    User author = userService.findByNickName(post.getAuthor());
+                    return GetPostResponse.from(post,author, fullURLs, commentCount,postLikeResponse.isLiked());
                 })
                 .toList();
     }
