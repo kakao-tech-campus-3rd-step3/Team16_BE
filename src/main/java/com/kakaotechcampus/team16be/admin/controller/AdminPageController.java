@@ -9,7 +9,10 @@ import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,9 +97,14 @@ public class AdminPageController {
     public String updateReportStatus(
             @RequestParam("reportId") Long reportId,
             @RequestParam("status") String status,
-            @LoginUser User adminUser
+            HttpSession session
     ) {
-        adminPageService.updateReportStatus(reportId, status, adminUser);
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+        if (isAdmin == null || !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("관리자 권한이 필요합니다.").toString();
+        }
+        adminPageService.updateReportStatus(reportId, status);
         return "redirect:/admin/reports";
     }
 
