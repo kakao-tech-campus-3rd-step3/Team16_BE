@@ -26,6 +26,6 @@ public record ResponseNotification(
                 notification.getNickname(),
                 notification.getMessage(),
                 notification.isReviewed(),
-                notification.getIsRead());
+                notification.isRead());
     }
 }
