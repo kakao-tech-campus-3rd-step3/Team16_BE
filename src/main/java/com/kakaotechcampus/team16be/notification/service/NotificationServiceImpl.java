@@ -110,7 +110,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<MemberReview> memberReview = memberReviewService.findByReviewByGroupAndReviewee(group, leftUser);
         boolean checkReview = false;
         if (!memberReview.isEmpty()) {
-            checkReview=true;
+            checkReview = true;
         }
         String message = "[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..";
         Notification notification = Notification.createReviewNotification(group.getLeader(), checkReview, group, leftUser, message);
