@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_LEFT;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,16 +39,18 @@ public class Notification extends BaseEntity {
 
     private String nickname;
 
-    private Boolean isRead = false;
+    @Column(nullable = false)
+    private boolean isReviewed = false;
 
     @Builder
-    public Notification(User receiver, NotificationType notificationType, Group relatedGroup, User relatedUser, String nickname ,String message) {
+    public Notification(User receiver, boolean isReviewed, NotificationType notificationType, Group relatedGroup, User relatedUser, String nickname ,String message) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.relatedGroup = relatedGroup;
         this.relatedUser = relatedUser;
         this.nickname = nickname;
         this.message = message;
+        this.isReviewed = isReviewed;
     }
 
     public static Notification createNotification(User receiver, Notification notificationType, Group relatedGroup, User relatedUser) {
@@ -58,5 +62,21 @@ public class Notification extends BaseEntity {
                 .nickname(relatedUser.getNickname())
                 .message(notificationType.getMessage())
                 .build();
+    }
+
+    public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup, User relatedUser, String message) {
+        return Notification.builder()
+                .receiver(receiver)
+                .notificationType(GROUP_JOIN_LEFT)
+                .relatedGroup(relatedGroup)
+                .relatedUser(relatedUser)
+                .nickname(relatedUser.getNickname())
+                .isReviewed(checkReview)
+                .message(message)
+                .build();
+    }
+
+    public void markAsReviewed() {
+        this.isReviewed = true;
     }
 }

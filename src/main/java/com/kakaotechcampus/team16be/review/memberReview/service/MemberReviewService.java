@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.review.memberReview.service;
 
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
 import com.kakaotechcampus.team16be.review.memberReview.dto.CreateMemberReviewDto;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -13,4 +14,6 @@ public interface MemberReviewService {
     List<MemberReview> getAllReviewsByGroup(User user, Long groupId);
 
     List<MemberReview> getAllReviews(Long userId);
+
+    List<MemberReview> findByReviewByGroupAndReviewee(Group group, User leftUser);
 }

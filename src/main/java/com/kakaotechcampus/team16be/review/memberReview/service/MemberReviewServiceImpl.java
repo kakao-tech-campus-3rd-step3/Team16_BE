@@ -64,4 +64,9 @@ public class MemberReviewServiceImpl implements MemberReviewService {
         User reviewee = userService.findById(userId);
         return memberReviewRepository.findByreviewee(reviewee);
     }
+
+    @Override
+    public List<MemberReview> findByReviewByGroupAndReviewee(Group group, User leftUser) {
+        return memberReviewRepository.findByRevieweeAndGroup(leftUser, group);
+    }
 }

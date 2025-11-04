@@ -4,7 +4,6 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
-import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
@@ -69,7 +68,6 @@ public class GroupMemberFacade {
         Group group = groupService.findGroupById(groupId);
 
         User user = userService.findById(userId);
-
         GroupMember member = groupMemberService.findByGroupAndUser(group, user);
 
         GroupMember.checkLeftGroup(member);
