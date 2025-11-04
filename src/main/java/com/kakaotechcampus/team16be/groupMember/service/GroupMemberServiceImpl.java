@@ -129,7 +129,12 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 .map(member -> {
                     User memberUser = member.getUser();
                     String originalUrl = memberUser.getProfileImageUrl();
-                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+                    String publicUrl;
+                    if (originalUrl==null||originalUrl.isEmpty()) {
+                        publicUrl = s3UploadPresignedUrlService.getPublicUrl("");
+                    } else {
+                        publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+                    }
 
                     return new GroupMemberDto(
                             member.getId(),
