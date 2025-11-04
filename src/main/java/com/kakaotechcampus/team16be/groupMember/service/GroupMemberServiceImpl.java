@@ -122,7 +122,6 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     @Transactional(readOnly = true)
     public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
-        validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
         List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup,ACTIVE);
 
@@ -130,11 +129,17 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 .map(member -> {
                     User memberUser = member.getUser();
                     String originalUrl = memberUser.getProfileImageUrl();
-                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+                    String publicUrl;
+                    if (originalUrl == null || originalUrl.isEmpty()) {
+                        publicUrl = s3UploadPresignedUrlService.getPublicUrl("");
+                    } else {
+                        publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+                    }
 
                     return new GroupMemberDto(
                             member.getId(),
                             member.getGroup().getName(),
+                            memberUser.getId(),
                             memberUser.getNickname(),
                             member.getRole(),
                             publicUrl

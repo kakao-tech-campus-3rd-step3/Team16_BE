@@ -8,6 +8,7 @@ import java.util.List;
 public record GroupMemberDto(
         Long id,
         String groupName,
+        Long userId,
         String nickname,
         GroupRole groupRole,
         String profileImageUrl
@@ -18,6 +19,7 @@ public record GroupMemberDto(
                 .map(member -> new GroupMemberDto(
                         member.getId(),
                         member.getGroup().getName(),
+                        member.getUser().getId(),
                         member.getUser().getNickname(),
                         member.getRole(),
                         member.getUser().getProfileImageUrl()
