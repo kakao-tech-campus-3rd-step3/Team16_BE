@@ -41,9 +41,8 @@ public class Webconfig implements WebMvcConfigurer {
 
         registry.addInterceptor(adminCheckInterceptor)
                 .addPathPatterns(
-                        "/api/admin/**",
-                        "/admin/**"
-                        ); // 관리자만 접근
+                        "/api/admin/**"
+                ); // 관리자만 접근
 
     }
 
