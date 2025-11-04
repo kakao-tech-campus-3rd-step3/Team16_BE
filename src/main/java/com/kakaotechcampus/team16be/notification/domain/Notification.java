@@ -39,9 +39,8 @@ public class Notification extends BaseEntity {
 
     private String nickname;
 
+    @Column(nullable = false)
     private boolean isReviewed = false;
-
-    private Boolean isRead = false;
 
     @Builder
     public Notification(User receiver, boolean isReviewed, NotificationType notificationType, Group relatedGroup, User relatedUser, String nickname ,String message) {
