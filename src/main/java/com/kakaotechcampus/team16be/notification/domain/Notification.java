@@ -42,8 +42,19 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private boolean isReviewed = false;
 
+    @Column(nullable = false)
+    private boolean isRead = false;
+
     @Builder
-    public Notification(User receiver, boolean isReviewed, NotificationType notificationType, Group relatedGroup, User relatedUser, String nickname ,String message) {
+    public Notification(User receiver,
+                        boolean isReviewed,
+                        NotificationType notificationType,
+                        Group relatedGroup,
+                        User relatedUser,
+                        String nickname,
+                        String message,
+                        boolean isRead
+    ) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.relatedGroup = relatedGroup;
@@ -51,6 +62,7 @@ public class Notification extends BaseEntity {
         this.nickname = nickname;
         this.message = message;
         this.isReviewed = isReviewed;
+        this.isRead = isRead;
     }
 
     public static Notification createNotification(User receiver, Notification notificationType, Group relatedGroup, User relatedUser) {
