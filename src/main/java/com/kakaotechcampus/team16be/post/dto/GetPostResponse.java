@@ -8,6 +8,7 @@ import java.util.List;
 
 public record GetPostResponse(
         Long postId,
+        Long groupId,
         Long authorId,
         String authorNickname,
         String authorProfileImageUrl,
@@ -22,6 +23,7 @@ public record GetPostResponse(
     public static GetPostResponse from(Post post, User author, String authorProfileImageUrl, List<String> fullURLs, Integer commentCount, boolean isLike) {
         return new GetPostResponse(
                 post.getId(),
+                post.getGroup().getId(),
                 author.getId(),
                 author.getNickname(),
                 authorProfileImageUrl,
