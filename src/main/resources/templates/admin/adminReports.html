@@ -20,7 +20,7 @@
             padding: 20px;
             background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -134,12 +134,29 @@
                 font-weight: 700;
             }
 
-            td:nth-of-type(1):before { content: "신고 ID"; }
-            td:nth-of-type(2):before { content: "대상 유형"; }
-            td:nth-of-type(3):before { content: "대상 ID"; }
-            td:nth-of-type(4):before { content: "신고 사유"; }
-            td:nth-of-type(5):before { content: "신고 상태"; }
-            td:nth-of-type(6):before { content: "처리"; }
+            td:nth-of-type(1):before {
+                content: "신고 ID";
+            }
+
+            td:nth-of-type(2):before {
+                content: "대상 유형";
+            }
+
+            td:nth-of-type(3):before {
+                content: "대상 ID";
+            }
+
+            td:nth-of-type(4):before {
+                content: "신고 사유";
+            }
+
+            td:nth-of-type(5):before {
+                content: "신고 상태";
+            }
+
+            td:nth-of-type(6):before {
+                content: "처리";
+            }
         }
     </style>
 </head>
@@ -164,6 +181,7 @@
             <th>대상 ID</th>
             <th>신고 사유</th>
             <th>신고 상태</th>
+            <th>처리자</th>
             <th>처리</th>
         </tr>
         </thead>
@@ -174,10 +192,11 @@
             <td th:text="${r.targetId}"></td>
             <td th:text="${r.reason}"></td>
             <td th:text="${r.status}"></td>
+            <td th:text="${r.resolvedByNickname != null ? r.resolvedByNickname : '-'}"></td>
             <td>
                 <form th:if="${r.status == 'PENDING'}"
                       th:action="@{/admin/reports/update}" method="post" style="display:inline;">
-                    <input type="hidden" name="reportId" th:value="${r.id}" />
+                    <input type="hidden" name="reportId" th:value="${r.id}"/>
                     <select name="status">
                         <option value="RESOLVED">승인</option>
                         <option value="REJECTED">거절</option>

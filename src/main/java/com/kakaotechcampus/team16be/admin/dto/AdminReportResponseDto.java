@@ -12,9 +12,10 @@ public class AdminReportResponseDto {
     private final String targetType;
     private final Long targetId;
     private final String createdAt;
+    private final String resolvedByNickname;
 
     private AdminReportResponseDto(Long id, String reporterNickname, String reason, String status,
-                                   String targetType, Long targetId, String createdAt) {
+                                   String targetType, Long targetId, String createdAt, String resolvedByNickname) {
         this.id = id;
         this.reporterNickname = reporterNickname;
         this.reason = reason;
@@ -22,9 +23,14 @@ public class AdminReportResponseDto {
         this.targetType = targetType;
         this.targetId = targetId;
         this.createdAt = createdAt;
+        this.resolvedByNickname = resolvedByNickname;
     }
 
     public static AdminReportResponseDto from(Report report) {
+        String resolvedByNick = report.getResolvedBy() != null
+                ? report.getResolvedBy().getNickname()
+                : "관리자"; // null이면 관리자 표시
+
         return new AdminReportResponseDto(
                 report.getId(),
                 report.getReporter().getNickname(),
@@ -32,7 +38,8 @@ public class AdminReportResponseDto {
                 report.getStatus().name(),
                 report.getTargetType().name(),
                 report.getTargetId(),
-                report.getCreatedAt().toString()
+                report.getCreatedAt().toString(),
+                resolvedByNick
         );
     }
 }

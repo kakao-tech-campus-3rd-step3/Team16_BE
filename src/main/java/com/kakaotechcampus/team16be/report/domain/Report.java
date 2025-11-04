@@ -94,6 +94,7 @@ public class Report extends BaseEntity {
         this.resolvedAt = LocalDateTime.now();
     }
 
+
     public enum ReasonCode {
         RELIGION_SUSPECT,
         NOT_HEALTHY_PURPOSE,
@@ -106,9 +107,9 @@ public class Report extends BaseEntity {
         return this.status != null ? this.status : ReportStatus.PENDING;
     }
 
-    public void updateStatus(String newStatus, User resolvedBy) {
-        this.status = ReportStatus.valueOf(newStatus);
-        this.resolvedBy = resolvedBy;
+    public void updateStatusAsAdmin(String status) {
+        this.status = ReportStatus.valueOf(status);
+        this.resolvedBy = null; // 시스템(관리자)에 의해 처리됨
         this.resolvedAt = LocalDateTime.now();
     }
 }

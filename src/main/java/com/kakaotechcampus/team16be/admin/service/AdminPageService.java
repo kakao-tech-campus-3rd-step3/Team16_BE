@@ -56,11 +56,10 @@ public class AdminPageService {
     }
 
     @Transactional
-    public void updateReportStatus(Long reportId, String status, User resolvedBy) {
+    public void updateReportStatus(Long reportId, String status) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException(ReportErrorCode.REPORT_NOT_FOUND));
-
-        report.updateStatus(status, resolvedBy);
+        report.updateStatusAsAdmin(status);
     }
 
 }
