@@ -9,6 +9,7 @@ import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,6 @@ public class GroupMemberFacade {
         Group group = groupService.findGroupById(groupId);
 
         User user = userService.findById(userId);
-
         GroupMember member = groupMemberService.findByGroupAndUser(group, user);
 
         GroupMember.checkLeftGroup(member);

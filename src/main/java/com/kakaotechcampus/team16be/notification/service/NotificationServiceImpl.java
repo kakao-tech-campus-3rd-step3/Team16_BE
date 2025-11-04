@@ -9,6 +9,8 @@ import com.kakaotechcampus.team16be.notification.exception.NotificationException
 import com.kakaotechcampus.team16be.notification.repository.EmitterRepository;
 import com.kakaotechcampus.team16be.notification.repository.NotificationRepository;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
+import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
+import com.kakaotechcampus.team16be.review.memberReview.service.MemberReviewService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final MemberReviewService memberReviewService;
 
     public SseEmitter connectNotification(User user) {
 
@@ -102,14 +105,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void createGroupLeaveNotification(User leftUser, Group group) {
-        Notification notification = Notification.builder()
-                .notificationType(GROUP_JOIN_LEFT)
-                .receiver(group.getLeader())
-                .relatedGroup(group)
-                .relatedUser(leftUser)
-                .nickname(leftUser.getNickname())
-                .message("[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..")
-                .build();
+
+        System.out.println("createGroupLeaveNotification called");
+        List<MemberReview> memberReview = memberReviewService.findByReviewByGroupAndReviewee(group, leftUser);
+        boolean checkReview = false;
+        if (!memberReview.isEmpty()) {
+            checkReview=true;
+        }
+        String message = "[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..";
+        Notification notification = Notification.createReviewNotification(group.getLeader(), checkReview, group, leftUser, message);
 
         notificationRepository.save(notification);
 
@@ -155,6 +159,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional(readOnly = true)
     public List<ResponseNotification> getAllNotifications(User user) {
         List<Notification> notifications = notificationRepository.findAllByReceiverOrderByCreatedAtDesc((user));
+
+        for (Notification notification : notifications) {
+            if (!memberReviewService.findByReviewByGroupAndReviewee(notification.getRelatedGroup(), notification.getRelatedUser()).isEmpty()) {
+                notification.markAsReviewed();
+            }
+        }
         return notifications.stream()
                 .map(ResponseNotification::from)
                 .toList();

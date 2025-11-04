@@ -11,6 +11,7 @@ public record ResponseNotification(
         Long relatedUserId,
         String nickname,
         String message,
+        Boolean isReviewed,
         Boolean isRead
 
 ) {
@@ -24,6 +25,7 @@ public record ResponseNotification(
                 notification.getRelatedUser().getId(),
                 notification.getNickname(),
                 notification.getMessage(),
+                notification.isReviewed(),
                 notification.getIsRead());
     }
 }

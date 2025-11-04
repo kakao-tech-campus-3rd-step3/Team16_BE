@@ -128,7 +128,6 @@ public class S3UploadPresignedUrlService {
 
     public ImageUrlDto executePostImg(User user, Long groupId, ImageFileExtension fileExtension) {
         Group targetGroup = groupService.findGroupById(groupId);
-        targetGroup.checkLeader(user);
 
         String postUUID = UUID.randomUUID().toString();
         String valueFileExtension = fileExtension.getUploadExtension();
