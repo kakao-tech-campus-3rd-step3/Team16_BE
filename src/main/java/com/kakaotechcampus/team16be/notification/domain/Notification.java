@@ -65,7 +65,7 @@ public class Notification extends BaseEntity {
                 .build();
     }
 
-    public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup, User relatedUser,String message) {
+    public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup, User relatedUser, String message) {
         return Notification.builder()
                 .receiver(receiver)
                 .notificationType(GROUP_JOIN_LEFT)
