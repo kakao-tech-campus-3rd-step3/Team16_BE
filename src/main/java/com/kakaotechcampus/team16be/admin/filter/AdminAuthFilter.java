@@ -18,8 +18,17 @@ public class AdminAuthFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        // 로그인 페이지와 리소스는 필터 제외
-        if (uri.startsWith("/admin/login") || uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/images")) {
+        // 로그인 페이지, 정적 리소스, API 요청은 필터 제외
+        if (uri.startsWith("/admin/login") ||
+                uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/images") ||
+                uri.startsWith("/api")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // preflight 요청(OPTIONS)은 인증 없이 통과
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            res.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(request, response);
             return;
         }
