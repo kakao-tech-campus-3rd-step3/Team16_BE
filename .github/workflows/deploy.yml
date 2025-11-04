@@ -2,9 +2,9 @@ name: Deploy to EC2 with GitHub Actions
 
 on:
   push:
-    branches: [develop]
+    branches: [ develop ]
   pull_request:
-    branches: [develop]
+    branches: [ develop ]
 
 jobs:
   build-and-deploy:
@@ -127,6 +127,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             export DEFAULT_IMG=${{ secrets.DEFAULT_IMG }}
             export FRONT_REDIRECT_URI=${{ secrets.FRONT_REDIRECT_URI }}
+            export ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
             
             APP_DIR="/home/${USER}/Team16_BE"
             JAR_NAME="${{ steps.find_jar.outputs.JAR_NAME }}"
