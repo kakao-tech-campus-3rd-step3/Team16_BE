@@ -10,6 +10,12 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    private final static Double ATTENDANCE = 0.30;
+    private final static Double POSTING = 0.15;
+    private final static Double ABSENT = 1.00;
+    private final static Double COMMENT = 0.05;
+    private final static Double REPORT = 3.00;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,20 +40,22 @@ public class User extends BaseEntity {
     @Column(name = "student_id_image_url", length = 512)
     private String studentIdImageUrl;
 
-    @Column(name = "score")
-    private Long score;
+    @Column(name = "score", nullable = false)
+    private Double score = 40.0;
 
-    protected User() {}
+    protected User() {
+    }
 
     public User(String kakaoId) {
         this.kakaoId = kakaoId;
         this.nickname = "익명";
         this.role = Role.USER;
         this.verificationStatus = VerificationStatus.UNVERIFIED;
+        this.score = 40.0;
     }
 
     @Builder
-    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl, Long score) {
+    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl) {
         this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;
@@ -55,7 +63,7 @@ public class User extends BaseEntity {
         this.role = role;
         this.verificationStatus = verificationStatus;
         this.studentIdImageUrl = studentIdImageUrl;
-        this.score = score;
+        this.score = 40.0;
     }
 
     public void updateStudentIdImageUrl(String fileName) {
@@ -74,7 +82,37 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
+    public void updateScore(Double score) {
+        if (score >= 0) {
+            this.score = score;
+        }
+    }
+
     public boolean isStudentVerified() {
         return this.verificationStatus == VerificationStatus.VERIFIED;
+    }
+
+    public void increaseScoreByAttendance() {
+        this.score += ATTENDANCE;
+    }
+
+    public void decreaseScoreByAbsent() {
+        this.score -= ABSENT;
+    }
+
+    public void increaseScoreByPosting() {
+        this.score += POSTING;
+    }
+
+    public void increaseScoreByComment() {
+        this.score += COMMENT;
+    }
+
+    public void decreaseScoreByReport() {
+        this.score -= REPORT;
     }
 }

@@ -54,6 +54,9 @@ dependencies {
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
 tasks.named('test') {

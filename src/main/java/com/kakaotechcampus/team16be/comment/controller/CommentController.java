@@ -47,8 +47,8 @@ public class CommentController {
     public ResponseEntity<List<CommentResponse>> getAllComments(
             @PathVariable Long postId
     ) {
-        List<Comment> comments = commentFacadeService.getCommentsByPostId(postId);
-        return ResponseEntity.ok(CommentResponse.from(comments));
+        List<CommentResponse> comments = commentFacadeService.getCommentsByPostId(postId);
+        return ResponseEntity.ok(comments);
     }
 
     @Operation(summary = "댓글 수정", description = "특정 댓글을 수정합니다.")

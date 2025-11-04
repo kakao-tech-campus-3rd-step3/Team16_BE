@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>학생증 인증 요청 관리</title>
+    <meta charset="UTF-8" />
+    <style>
+        /* --- 전체 레이아웃 --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #222;
+            text-align: center;
+        }
+
+        /* --- 네비게이션 버튼 --- */
+        .nav-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #fff;
+            background-color: #4CAF50;
+            transition: background-color 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* --- 테이블 --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        /* --- 이미지 --- */
+        .thumbnail {
+            width: 120px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- 액션 버튼 --- */
+        .approve, .reject {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .approve {
+            background-color: #4CAF50;
+        }
+
+        .approve:hover {
+            background-color: #45a049;
+        }
+
+        .reject {
+            background-color: #F44336;
+        }
+
+        .reject:hover {
+            background-color: #e53935;
+        }
+
+        /* --- 모달 --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        #caption {
+            text-align: center;
+            color: #fff;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        /* --- 반응형 --- */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            th {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+            }
+
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 700;
+            }
+
+            td:nth-of-type(1):before { content: "ID"; }
+            td:nth-of-type(2):before { content: "닉네임"; }
+            td:nth-of-type(3):before { content: "학생증 이미지"; }
+            td:nth-of-type(4):before { content: "상태"; }
+            td:nth-of-type(5):before { content: "조치"; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>학생증 인증 요청 관리</h2>
+
+    <!-- 네비게이션 -->
+    <div class="nav-container">
+        <a th:href="@{/admin/student-verifications}" class="nav-btn">학생증 인증 관리</a>
+        <a th:href="@{/admin/scores}" class="nav-btn">유저 점수 관리</a>
+        <a th:href="@{/admin/groups}" class="nav-btn">그룹 안전 상태 관리</a>
+        <a th:href="@{/admin/reports}" class="nav-btn">신고 관리 페이지</a>
+    </div>
+
+    <!-- 테이블 -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>닉네임</th>
+            <th>학생증 이미지</th>
+            <th>상태</th>
+            <th>조치</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="v : ${verifications}">
+            <td th:text="${v.userId}"></td>
+            <td th:text="${v.nickname}"></td>
+            <td>
+                <img th:src="${v.imageUrl}" alt="학생증" class="thumbnail" onclick="openModal(this)">
+            </td>
+            <td th:text="${v.verificationStatus}"></td>
+            <td>
+                <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" th:value="${v.userId}" />
+                    <input type="hidden" name="status" value="VERIFIED" />
+                    <button type="submit" class="approve">승인</button>
+                </form>
+                <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" th:value="${v.userId}" />
+                    <input type="hidden" name="status" value="UNVERIFIED" />
+                    <button type="submit" class="reject">거절</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 모달 -->
+<div id="imgModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg">
+    <div id="caption"></div>
+</div>
+
+<script>
+    function openModal(img) {
+        const modal = document.getElementById("imgModal");
+        const modalImg = document.getElementById("modalImg");
+        const captionText = document.getElementById("caption");
+
+        modal.style.display = "block";
+        modalImg.src = img.src;
+        captionText.innerHTML = img.alt;
+    }
+
+    function closeModal() {
+        document.getElementById("imgModal").style.display = "none";
+    }
+</script>
+</body>
+</html>

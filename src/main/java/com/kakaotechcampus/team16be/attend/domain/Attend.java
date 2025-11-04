@@ -3,7 +3,6 @@ package com.kakaotechcampus.team16be.attend.domain;
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
-import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,25 +56,28 @@ public class Attend extends BaseEntity {
         this.attendStatus = checkAttendStatus(plan);
     }
 
-    private AttendStatus checkAttendStatus(Plan plan) {
+    public static Attend attendPlan(GroupMember groupMember,Plan plan) {
+        AttendStatus status = checkAttendStatus(plan);
+
+        return Attend.absentBuilder()
+                .groupMember(groupMember)
+                .plan(plan)
+                .attendStatus(status)
+                .build();
+    }
+
+    private static AttendStatus checkAttendStatus(Plan plan) {
         LocalDateTime now = LocalDateTime.now();
 
         if (now.isBefore(plan.getStartTime())) {
             return AttendStatus.PRESENT;
-        } else if (!now.isAfter(plan.getEndTime())) {
+        } else if (now.isBefore(plan.getEndTime())) {
             return AttendStatus.LATE;
         } else {
             return AttendStatus.ABSENT;
         }
     }
 
-
-    public static Attend attendPlan(GroupMember groupMember,Plan plan) {
-        return Attend.builder()
-                .groupMember(groupMember)
-                .plan(plan)
-                .build();
-    }
 
     public static Attend absentPlan(GroupMember groupMember, Plan plan) {
         return Attend.absentBuilder()

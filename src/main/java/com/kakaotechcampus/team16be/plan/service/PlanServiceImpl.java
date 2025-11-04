@@ -1,5 +1,8 @@
 package com.kakaotechcampus.team16be.plan.service;
 
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseGroupScoreByPosting;
+import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseScoreByPlanning;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -18,6 +21,7 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,8 @@ public class PlanServiceImpl implements PlanService {
     private final GroupService groupService;
     private final NotificationService notificationService;
     private final GroupMemberService groupMemberService;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+    private final ApplicationEventPublisher eventPublisher;
 
   @Override
   @Transactional
@@ -52,10 +58,12 @@ public class PlanServiceImpl implements PlanService {
                     .capacity(planRequestDto.capacity())
                     .startTime(planRequestDto.startTime())
                     .endTime(planRequestDto.endTime())
+                    .coverImg(planRequestDto.coverImageUrl())
                     .location(location)
                     .build();
-
     Plan savedPlan = planRepository.save(plan);
+
+    eventPublisher.publishEvent(new IncreaseScoreByPlanning(group));
     return savedPlan.getId();
   }
 
@@ -63,15 +71,21 @@ public class PlanServiceImpl implements PlanService {
   public PlanResponseDto getPlan(Long groupId, Long planId) {
     Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
                               .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
-    return PlanResponseDto.from(plan);
+
+    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+
+    return PlanResponseDto.from(plan, fullUrl);
   }
 
   @Override
   public List<PlanResponseDto> getAllPlans(Long groupId) {
     return planRepository.findByGroupId(groupId)
-                         .stream()
-                         .map(PlanResponseDto::from)
-                         .toList();
+            .stream()
+            .map(plan -> {
+              String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+              return PlanResponseDto.from(plan, fullUrl);
+            })
+            .toList();
   }
 
   @Override
@@ -108,10 +122,8 @@ public class PlanServiceImpl implements PlanService {
   }
 
   public Plan findById(Long userId) {
-
     return planRepository.findById(userId)
                          .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
-
   }
 
     @Transactional

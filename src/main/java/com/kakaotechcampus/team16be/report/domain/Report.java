@@ -14,7 +14,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,68 +30,85 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "reports") //report 예약어로 인한 이름 변경.
 public class Report extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "reporter_id", nullable = false)
-  private User reporter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reporter_id", nullable = false)
+    private User reporter;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "target_type", nullable = false)
-  private TargetType targetType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "target_type", nullable = false)
+    private TargetType targetType;
 
-  @Column(name = "target_id", nullable = false)
-  private Long targetId;
+    @Column(name = "target_id", nullable = false)
+    private Long targetId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "reason_code", nullable = false)
-  private ReasonCode reasonCode;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reason_code", nullable = false)
+    private ReasonCode reasonCode;
 
-  @Column(name = "reason", nullable = false)
-  private String reason;
+    @Column(name = "reason", nullable = false)
+    private String reason;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false)
-  private ReportStatus status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ReportStatus status;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "resolved_by")
-  private User resolvedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_by")
+    private User resolvedBy;
 
-  @Column(name = "resolved_at")
-  private LocalDateTime resolvedAt;
+    @Column(name = "resolved_at")
+    private LocalDateTime resolvedAt;
 
-  @Builder
-  public Report(User reporter, TargetType targetType, Long targetId, ReasonCode reasonCode, String reason){
-    if(reporter == null || targetType == null || targetId == null)
-      throw new IllegalArgumentException("필수 값이 누락되었습니다.");
-    if(reason == null || reason.isBlank())
-      throw new IllegalArgumentException("신고 사유가 비어 있습니다.");
+    @Builder
+    public Report(User reporter, TargetType targetType, Long targetId, ReasonCode reasonCode, String reason) {
+        if (reporter == null || targetType == null || targetId == null)
+            throw new IllegalArgumentException("필수 값이 누락되었습니다.");
+        if (reason == null || reason.isBlank())
+            throw new IllegalArgumentException("신고 사유가 비어 있습니다.");
 
-    this.reporter = reporter;
-    this.targetType = targetType;
-    this.targetId = targetId;
-    this.reasonCode = reasonCode;
-    this.reason = reason;
-    this.status = ReportStatus.PENDING;
-  }
-
-  public void resolve(User resolvedUser, ReportStatus reportStatus){
-    if(reportStatus == ReportStatus.PENDING){
-      throw new IllegalArgumentException("신고 상태는 PENDING으로 변경할 수 없습니다.");
+        this.reporter = reporter;
+        this.targetType = targetType;
+        this.targetId = targetId;
+        this.reasonCode = reasonCode;
+        this.reason = reason;
+        this.status = ReportStatus.PENDING;
     }
-    this.status = reportStatus;
-    this.resolvedBy = resolvedUser;
-    this.resolvedAt = LocalDateTime.now();
-  }
 
-  public enum ReasonCode{
-    RELIGION_SUSPECT,
-    NOT_HEALTHY_PURPOSE,
-    INAPPROPRIATE,
-    FRAUD_OR_PRIVACY,
-    OTHER
-  }
+    public void resolve(User resolvedUser, ReportStatus reportStatus) {
+        if (reportStatus == null) {
+            throw new IllegalArgumentException("신고 상태는 null일 수 없습니다.");
+        }
+        if (reportStatus == ReportStatus.PENDING) {
+            throw new IllegalArgumentException("신고 상태는 PENDING으로 변경할 수 없습니다.");
+        }
+        // 이미 처리된 신고면 다시 변경 불가
+        if (this.status == ReportStatus.RESOLVED || this.status == ReportStatus.REJECTED) {
+            throw new IllegalStateException("이미 처리된 신고는 다시 수정할 수 없습니다.");
+        }
+        this.status = reportStatus;
+        this.resolvedBy = resolvedUser;
+        this.resolvedAt = LocalDateTime.now();
+    }
+
+    public enum ReasonCode {
+        RELIGION_SUSPECT,
+        NOT_HEALTHY_PURPOSE,
+        INAPPROPRIATE,
+        FRAUD_OR_PRIVACY,
+        OTHER
+    }
+
+    public ReportStatus getStatus() {
+        return this.status != null ? this.status : ReportStatus.PENDING;
+    }
+
+    public void updateStatus(String newStatus, User resolvedBy) {
+        this.status = ReportStatus.valueOf(newStatus);
+        this.resolvedBy = resolvedBy;
+        this.resolvedAt = LocalDateTime.now();
+    }
 }

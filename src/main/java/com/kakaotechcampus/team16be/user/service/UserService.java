@@ -149,4 +149,34 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
+    public void decreaseScoreByAbsent(User user) {
+
+        User managedUser = userRepository.findById(user.getId())
+                .orElseThrow(
+                        () -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
+        managedUser.decreaseScoreByAbsent();
+        userRepository.save(managedUser);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void updateUserScore(Long userId, Double newScore) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        if (newScore == null || newScore < 0) {
+            throw new UserException(UserErrorCode.INVALID_SCORE);
+        }
+        user.updateScore(newScore);
+    }
+
+    public User findByNickName(String author) {
+        return userRepository.findByNickname(author)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
 }

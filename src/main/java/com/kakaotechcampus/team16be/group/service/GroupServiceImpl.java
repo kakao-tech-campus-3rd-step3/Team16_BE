@@ -1,7 +1,8 @@
 package com.kakaotechcampus.team16be.group.service;
 
-import com.kakaotechcampus.team16be.common.eventListener.ImageDeletedEvent;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.ImageDeletedEvent;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
@@ -45,7 +46,7 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupException(GroupErrorCode.GROUP_NAME_DUPLICATE);
         }
 
-        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity);
+        Group createdGroup = Group.createGroup(leader, groupName, groupIntro, groupCapacity, createGroupDto.fileName());
         groupRepository.save(createdGroup);
 
         GroupMember leaderMember = GroupMember.create(createdGroup, leader);
@@ -126,4 +127,32 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.existsGroupByName(groupName);
     }
 
+    public  List<Group> findAll() {
+      return groupRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupScore(Group group, Double avg) {
+      group.groupScoreUpdate(avg);
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupTag(Group group) {
+      group.updateSafetyTagByScore();
+    }
+
+    @Transactional(readOnly = true)
+    public Group getGroupById(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
+    }
+
+    @Transactional
+    @Override
+    public void updateGroupScoreAndTag(Group group, Double newScore) {
+        group.groupScoreUpdate(newScore);   // 점수 갱신
+        group.updateSafetyTagByScore();     // 태그 갱신
+    }
 }

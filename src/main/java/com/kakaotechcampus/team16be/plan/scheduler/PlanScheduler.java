@@ -8,6 +8,7 @@ import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
+import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +26,7 @@ public class PlanScheduler {
     private final PlanService planService;
     private final AttendService attendService;
     private final GroupMemberService groupMemberService;
+    private final UserService userService;
 
     @Scheduled(cron = "0 */1 * * * *")
     @Transactional
@@ -48,6 +50,9 @@ public class PlanScheduler {
                     .toList();
 
             if (!absentAttendees.isEmpty()) {
+                for (Attend absentAttendee : absentAttendees) {
+                    userService.decreaseScoreByAbsent(absentAttendee.getGroupMember().getUser());
+                }
                 attendService.saveAll(absentAttendees);
             }
         }

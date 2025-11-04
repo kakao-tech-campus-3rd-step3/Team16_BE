@@ -6,7 +6,9 @@ import java.util.List;
 
 public record CommentResponse(
         Long commentId,
+        Long commentUserId,
         String userNickname,
+        String userProfileImageUrl,
         String content,
         String createdAt,
         String updatedAt,
@@ -16,7 +18,9 @@ public record CommentResponse(
         return comments.stream()
                 .map(comment -> new CommentResponse(
                         comment.getId(),
+                        comment.getUser().getId(),
                         comment.getUser().getNickname(),
+                        comment.getUser().getProfileImageUrl(),
                         comment.getContent(),
                         comment.getCreatedAt().toString(),
                         comment.getUpdatedAt().toString(),

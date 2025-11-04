@@ -131,6 +131,7 @@ public class S3UploadPresignedUrlService {
         targetGroup.checkLeader(user);
 
         String postUUID = UUID.randomUUID().toString();
+        System.out.println(postUUID);
         String valueFileExtension = fileExtension.getUploadExtension();
         String valueType = String.valueOf(ImageUploadType.POST);
         String fileName = createPostFileName(groupId, postUUID, valueFileExtension, valueType);
