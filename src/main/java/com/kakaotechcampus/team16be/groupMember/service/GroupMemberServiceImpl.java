@@ -122,7 +122,6 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     @Transactional(readOnly = true)
     public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
-        validateGroupMember(user, groupId);
         Group targetGroup = groupService.findGroupById(groupId);
         List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup,ACTIVE);
 
@@ -135,6 +134,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                     return new GroupMemberDto(
                             member.getId(),
                             member.getGroup().getName(),
+                            memberUser.getId(),
                             memberUser.getNickname(),
                             member.getRole(),
                             publicUrl
