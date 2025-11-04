@@ -156,7 +156,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ResponseNotification> getAllNotifications(User user) {
         List<Notification> notifications = notificationRepository.findAllByReceiverOrderByCreatedAtDesc((user));
 
