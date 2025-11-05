@@ -21,7 +21,8 @@ public class AdminAuthFilter implements Filter {
         // 로그인 페이지, 정적 리소스, API 요청은 필터 제외
         if (uri.startsWith("/admin/login") ||
                 uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/images") ||
-                uri.startsWith("/api")) {
+                uri.startsWith("/api") ||
+                uri.startsWith("/healthcheck") || uri.startsWith("/actuator/health")) {
             chain.doFilter(request, response);
             return;
         }
