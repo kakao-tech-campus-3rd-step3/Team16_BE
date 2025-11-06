@@ -70,14 +70,14 @@ public class GroupMemberFacade {
                 throw new GroupMemberException(GroupMemberErrorCode.ALREADY_JOIN_REQUESTED);
             } else if (status.isCanceled() || status.isLeft()) {
                 existingMember.updateIntroAndStatus(intro, GroupMemberStatus.PENDING);
-                notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
+                notificationService.createGroupSignNotification(signedUser, targetGroup);
                 return groupMemberRepository.save(existingMember);
             }
         }
 
         // 기존 레코드가 없으면 새로 생성
         GroupMember signMember = GroupMember.sign(signedUser, targetGroup, intro);
-        notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
+        notificationService.createGroupSignNotification(signedUser, targetGroup);
         return groupMemberRepository.save(signMember);
     }
 

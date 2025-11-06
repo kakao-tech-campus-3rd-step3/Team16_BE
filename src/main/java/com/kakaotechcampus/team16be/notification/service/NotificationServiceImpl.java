@@ -156,7 +156,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ResponseNotification> getAllNotifications(User user) {
         List<Notification> notifications = notificationRepository.findAllByReceiverOrderByCreatedAtDesc((user));
 
@@ -171,6 +171,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
     public void createGroupRejectNotification(User joinUser, Group targetGroup) {
         Notification notification = Notification.builder()
                 .notificationType(GROUP_JOIN_REJECT)

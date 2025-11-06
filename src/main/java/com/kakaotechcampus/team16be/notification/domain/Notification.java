@@ -65,17 +65,6 @@ public class Notification extends BaseEntity {
         this.isRead = isRead;
     }
 
-    public static Notification createNotification(User receiver, Notification notificationType, Group relatedGroup, User relatedUser) {
-        return Notification.builder()
-                .receiver(receiver)
-                .notificationType(notificationType.notificationType)
-                .relatedGroup(relatedGroup)
-                .relatedUser(relatedUser)
-                .nickname(relatedUser.getNickname())
-                .message(notificationType.getMessage())
-                .build();
-    }
-
     public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup, User relatedUser, String message) {
         return Notification.builder()
                 .receiver(receiver)
