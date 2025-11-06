@@ -179,4 +179,10 @@ public class GroupMember extends BaseEntity {
         }
         this.status = CANCELED;
     }
+
+    public void updateIntroAndStatus(String intro, GroupMemberStatus groupMemberStatus) {
+        this.intro = intro;
+        this.status = groupMemberStatus;
+        this.touchUpdatedAt();
+    }
 }
