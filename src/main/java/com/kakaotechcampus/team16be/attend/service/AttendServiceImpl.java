@@ -58,8 +58,10 @@ public class AttendServiceImpl implements AttendService {
         Attend attend;
         if (existingAttend.isPresent()) {
             attend = existingAttend.get();
+
             if (attend.getAttendStatus() == AttendStatus.HOLDING) {
-                attend.updateStatus(AttendStatus.PRESENT);
+                AttendStatus attendStatus = Attend.checkAttendStatus(plan);
+                attend.updateStatus(attendStatus);
             } else {
                 throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
             }

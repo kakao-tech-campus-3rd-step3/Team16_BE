@@ -18,6 +18,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +59,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {
 
-        List<Group> findGroups = groupRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        List<Group> findGroups = groupRepository.findAll(Sort.by(Direction.DESC, "score"));
 
         if (findGroups.isEmpty()) {
             throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);

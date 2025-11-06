@@ -82,7 +82,7 @@ public class Attend extends BaseEntity {
                 .build();
     }
 
-    private static AttendStatus checkAttendStatus(Plan plan) {
+    public static AttendStatus checkAttendStatus(Plan plan) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (now.isBefore(plan.getStartTime())) {

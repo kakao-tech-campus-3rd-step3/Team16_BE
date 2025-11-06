@@ -7,7 +7,8 @@ public record ResponseGroupListDto(
         String name,
         String intro,
         String safetyTag,
-        String coverImageUrl
+        String coverImageUrl,
+        Double score
 ) {
 
     public static ResponseGroupListDto from(Group group, String coverImageUrl) {
@@ -16,7 +17,8 @@ public record ResponseGroupListDto(
                 group.getName(),
                 group.getIntro(),
                 group.getSafetyTag().name(),
-                coverImageUrl);
+                coverImageUrl,
+                group.getScore()
+        );
     }
-
 }
