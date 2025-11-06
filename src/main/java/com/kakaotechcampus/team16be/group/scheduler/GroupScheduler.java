@@ -44,7 +44,7 @@ public class GroupScheduler {
                 .average()
                 .orElse(BASE_USER_SCORE);
 
-        double scoreDifference = avgMemberScore - BASE_USER_SCORE;
+        double scoreDifference = avgMemberScore - (BASE_USER_SCORE+35);
 
         double calculatedScore = BASE_GROUP_SCORE + (scoreDifference * MEMBER_SCORE_WEIGHT);
 
