@@ -1,6 +1,10 @@
 package com.kakaotechcampus.team16be.planParticipant.service;
 
+import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
+import com.kakaotechcampus.team16be.attend.service.AttendService;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
+import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.planParticipant.PlanParticipantRepository;
@@ -25,6 +29,8 @@ public class PlanParticipantServiceImpl implements PlanParticipantService {
   private final UserService userService;
   private final PlanService planService;
     private final AttendRepository attendRepository;
+    private final GroupMemberService groupMemberService;
+
 
   @Override
   public Long attendPlan(Long userId, Long planId) {
@@ -37,6 +43,11 @@ public class PlanParticipantServiceImpl implements PlanParticipantService {
 
     PlanParticipant newParticipant = PlanParticipant.create(plan, user);
     planParticipantRepository.save(newParticipant);
+
+      GroupMember groupMember = groupMemberService.findByGroupAndUser(plan.getGroup(), user);
+      Attend attend = Attend.attendPlanHolding(groupMember, plan);
+      attendRepository.save(attend);
+
 
     return newParticipant.getId();
   }

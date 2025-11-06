@@ -60,7 +60,7 @@ public class AttendServiceImpl implements AttendService{
         Attend attend;
         if (existingAttend.isPresent()) {
             attend = existingAttend.get();
-            if (attend.getAttendStatus() == AttendStatus.PENDING) {
+            if (attend.getAttendStatus() == AttendStatus.HOLDING) {
                 attend.updateStatus(AttendStatus.PRESENT);
             } else {
                 throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
@@ -140,23 +140,5 @@ public class AttendServiceImpl implements AttendService{
         attendRepository.saveAll(absentAttendees);
     }
 
-    @Override
-    public void attendPending(GroupMember targetGroupMember, Plan plan) {
-
-        Attend attend = Attend.pendingAttendPlan(targetGroupMember, plan);
-
-        attendRepository.save(attend);
-    }
-
-    @Override
-    public List<Attend> findAllByPlanAndStatus(Plan plan, AttendStatus attendStatus) {
-        return attendRepository.findAllByPlanAndAttendStatus(plan, attendStatus);
-    }
-
-    @Transactional
-    @Override
-    public List<Object[]> findMissingAttendEntriesForActiveMembers(LocalDateTime now) {
-        return attendRepository.findMissingAttendEntriesForActiveMembers(now);
-    }
 
 }
