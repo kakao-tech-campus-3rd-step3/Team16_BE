@@ -48,7 +48,7 @@ public class PlanController {
     public ResponseEntity<PlanResponseDto> getPlan(
             @PathVariable Long groupId,
             @PathVariable Long planId) {
-        return ResponseEntity.status(HttpStatus.OK).body(planService.getPlan(groupId, planId));
+        return ResponseEntity.status(HttpStatus.OK).body(attendFacadeService.getPlan(groupId, planId));
     }
 
     @Operation(summary = "그룹 일정 전체 조회", description = "특정 그룹 내 모든 일정을 조회합니다.")
@@ -56,7 +56,7 @@ public class PlanController {
     public ResponseEntity<List<PlanResponseDto>> getAllPlans(
             @PathVariable Long groupId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(planService.getAllPlans(groupId));
+        return ResponseEntity.status(HttpStatus.OK).body(attendFacadeService.getAllPlans(groupId));
     }
 
     @Operation(summary = "일정 수정", description = "특정 그룹 내 일정을 수정합니다.")

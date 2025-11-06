@@ -1,15 +1,23 @@
 package com.kakaotechcampus.team16be.plan.service;
 
 import com.kakaotechcampus.team16be.attend.service.AttendService;
+import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseScoreByPlanning;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
+import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Location;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
+import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
+import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
+import com.kakaotechcampus.team16be.plan.exception.PlanException;
+import com.kakaotechcampus.team16be.planParticipant.dto.PlanParticipantResponseDto;
+import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -21,9 +29,11 @@ public class PlanFacadeServiceImpl {
 
     final ApplicationEventPublisher eventPublisher;
     private final GroupService groupService;
-    private final GroupMemberService groupMemberService;
     private final PlanRepository planRepository;
-    private final AttendService attendService;
+    private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
+    private final PlanParticipantService planParticipantService;
+
+
 
     @Transactional
     public Long createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
@@ -52,5 +62,29 @@ public class PlanFacadeServiceImpl {
 
         eventPublisher.publishEvent(new IncreaseScoreByPlanning(group));
         return savedPlan.getId();
+    }
+
+    public List<PlanResponseDto> getAllPlans(Long groupId) {
+        return planRepository.findByGroupId(groupId)
+                .stream()
+                .map(plan -> {
+                    Long headCount = planParticipantService.countByPlanId(plan.getId());
+                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+                    return PlanResponseDto.from(plan, fullUrl, headCount);
+                })
+                .toList();
+    }
+
+    public PlanResponseDto getPlan(Long groupId, Long planId) {
+        Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
+                .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+
+        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+
+        Long headCount = planParticipantService.countByPlanId(plan.getId());
+
+
+
+        return PlanResponseDto.from(plan, fullUrl, headCount);
     }
 }

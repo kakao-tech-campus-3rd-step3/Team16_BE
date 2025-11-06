@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -59,7 +60,7 @@ public class Attend extends BaseEntity {
         this.groupMember = groupMember;
         this.plan = plan;
         this.attendStatus = attendStatus;
-        this.attendTime = LocalDateTime.now();
+        this.attendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
 
@@ -68,7 +69,7 @@ public class Attend extends BaseEntity {
         this.groupMember = groupMember;
         this.plan = plan;
         this.attendStatus = checkAttendStatus(plan);
-        this.attendTime = LocalDateTime.now();
+        this.attendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     public static Attend attendPlan(GroupMember groupMember, Plan plan) {
@@ -82,7 +83,7 @@ public class Attend extends BaseEntity {
     }
 
     private static AttendStatus checkAttendStatus(Plan plan) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (now.isBefore(plan.getStartTime())) {
             return AttendStatus.PRESENT;
@@ -103,7 +104,7 @@ public class Attend extends BaseEntity {
 
 
     public void updateStatus(AttendStatus attendStatus) {
-        this.attendTime = LocalDateTime.now();
+        this.attendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         this.attendStatus = attendStatus;
     }
 }

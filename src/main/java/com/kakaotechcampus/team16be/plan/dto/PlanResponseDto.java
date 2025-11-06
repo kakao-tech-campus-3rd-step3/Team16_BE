@@ -9,18 +9,20 @@ public record PlanResponseDto(
         String title,
         String description,
         Integer capacity,
+        Long headCount,
         LocalDateTime startTime,
         LocalDateTime endTime,
         String coverImageUrl,
         LocationDto location
 ) {
 
-    public static PlanResponseDto from(Plan plan, String fullUrl) {
+    public static PlanResponseDto from(Plan plan, String fullUrl,Long headCount) {
         return new PlanResponseDto(
                 plan.getId(),
                 plan.getTitle(),
                 plan.getDescription(),
                 plan.getCapacity(),
+                headCount,
                 plan.getStartTime(),
                 plan.getEndTime(),
                 fullUrl,

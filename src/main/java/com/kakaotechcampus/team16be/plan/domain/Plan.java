@@ -124,7 +124,7 @@ public class Plan extends BaseEntity {
     }
 
     private void validateCapacity(Integer capacity) {
-        if (capacity == null || capacity <= 0) {
+        if (capacity == null || capacity < 0) {
             throw new PlanException(PlanErrorCode.INVALID_CAPACITY);
         }
     }
