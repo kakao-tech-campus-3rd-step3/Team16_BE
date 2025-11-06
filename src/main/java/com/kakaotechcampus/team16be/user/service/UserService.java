@@ -225,8 +225,6 @@ public class UserService {
         reportRepository.deleteAllByReporterId(userId);
         reportRepository.deleteAllByTargetId(userId);
         postRepository.deleteAllByAuthorId(userId);
-        List<GroupMember> memberships = groupMemberRepository.findAllByUser(user);
-        groupMemberRepository.deleteAll(memberships);
         userRepository.delete(user);
     }
 }
