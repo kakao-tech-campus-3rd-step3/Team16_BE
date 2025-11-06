@@ -115,7 +115,7 @@ public class GroupMemberFacade {
 
     }
 
-
+    @Transactional
     public GroupMember rejectJoin(User user, Long groupId, Long userId) {
         Group targetGroup = groupService.findGroupById(groupId);
         targetGroup.checkLeader(user);
