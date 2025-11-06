@@ -69,7 +69,9 @@ public class PlanFacadeServiceImpl {
                 .stream()
                 .map(plan -> {
                     Long headCount = planParticipantService.countByPlanId(plan.getId());
-                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+                    String fullUrl = (plan.getCoverImg() != null && !plan.getCoverImg().isEmpty())
+                            ? s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg())
+                            : s3UploadPresignedUrlService.getPublicUrl("");
                     return PlanResponseDto.from(plan, fullUrl, headCount);
                 })
                 .toList();
@@ -79,7 +81,9 @@ public class PlanFacadeServiceImpl {
         Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
                 .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
-        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg());
+        String fullUrl = (plan.getCoverImg() != null && !plan.getCoverImg().isEmpty())
+                ? s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg())
+                : s3UploadPresignedUrlService.getPublicUrl("");
 
         Long headCount = planParticipantService.countByPlanId(plan.getId());
 
