@@ -10,19 +10,16 @@ import java.util.stream.Collectors;
 
 public record ResponseAttendsDto(
         String userName,
-        @Schema(
-        description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)")
+        @Schema(description = "출석 상태 (PRESENT: 출석, LATE: 지각, ABSENT: 결석)")
         AttendStatus attendStatus,
         LocalDateTime attendAt) {
-
-
 
     public static List<ResponseAttendsDto> from(List<Attend> allAttends) {
         return allAttends.stream()
                 .map(attend -> new ResponseAttendsDto(
                         attend.getGroupMember().getUser().getNickname(),
                         attend.getAttendStatus(),
-                        attend.getCreatedAt()
+                        attend.getAttendTime()
                 ))
                 .collect(Collectors.toList());
     }
@@ -31,7 +28,7 @@ public record ResponseAttendsDto(
         return new ResponseAttendsDto(
                 attend.getGroupMember().getUser().getNickname(),
                 attend.getAttendStatus(),
-                attend.getCreatedAt()
+                attend.getAttendTime()
         );
     }
 }

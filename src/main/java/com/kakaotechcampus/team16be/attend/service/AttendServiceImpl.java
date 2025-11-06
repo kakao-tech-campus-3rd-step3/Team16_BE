@@ -36,27 +36,39 @@ public class AttendServiceImpl implements AttendService{
 
     private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
 
+
     @Transactional
     @Override
     public Attend attendGroup(User user, Long groupId, RequestAttendDto requestAttendDto) {
         Group targetGroup = groupService.findGroupById(groupId);
+
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
+
         Plan plan = planService.findByGroupIdAndPlanId(groupId, requestAttendDto.planId());
 
         Optional<Attend> existingAttend = attendRepository.findByPlanAndGroupMember(plan, groupMember);
 
+        Attend attend;
         if (existingAttend.isPresent()) {
-            throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
+            attend = existingAttend.get();
+            if (attend.getAttendStatus() == AttendStatus.PENDING) {
+                attend.updateStatus(AttendStatus.PRESENT);
+            } else {
+                throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
+            }
+        } else {
+            attend = Attend.attendPlan(groupMember, plan);
         }
+
         LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
         boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
 
-        Attend attend = Attend.attendPlan(groupMember, plan);
         Attend savedAttend = attendRepository.save(attend);
 
         if (!hasAlreadyAttendedToday) {
             eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
         }
+
         return savedAttend;
     }
 
@@ -109,6 +121,25 @@ public class AttendServiceImpl implements AttendService{
     @Override
     public void saveAll(List<Attend> absentAttendees) {
         attendRepository.saveAll(absentAttendees);
+    }
+
+    @Override
+    public void attendPending(GroupMember targetGroupMember, Plan plan) {
+
+        Attend attend = Attend.pendingAttendPlan(targetGroupMember, plan);
+
+        attendRepository.save(attend);
+    }
+
+    @Override
+    public List<Attend> findAllByPlanAndStatus(Plan plan, AttendStatus attendStatus) {
+        return attendRepository.findAllByPlanAndAttendStatus(plan, attendStatus);
+    }
+
+    @Transactional
+    @Override
+    public List<Object[]> findMissingAttendEntriesForActiveMembers(LocalDateTime now) {
+        return attendRepository.findMissingAttendEntriesForActiveMembers(now);
     }
 
 }

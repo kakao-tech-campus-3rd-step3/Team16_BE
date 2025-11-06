@@ -39,35 +39,6 @@ public class PlanServiceImpl implements PlanService {
     private final ApplicationEventPublisher eventPublisher;
 
   @Override
-  @Transactional
-  public Long createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
-
-    Group group = groupService.findGroupById(groupId);
-    group.checkLeader(user);
-
-    Location location = Location.builder()
-                                .name(planRequestDto.location().name())
-                                .latitude(planRequestDto.location().latitude())
-                                .longitude(planRequestDto.location().longitude())
-                                .build();
-
-    Plan plan = Plan.builder()
-                    .group(group)
-                    .title(planRequestDto.title())
-                    .description(planRequestDto.description())
-                    .capacity(planRequestDto.capacity())
-                    .startTime(planRequestDto.startTime())
-                    .endTime(planRequestDto.endTime())
-                    .coverImg(planRequestDto.coverImageUrl())
-                    .location(location)
-                    .build();
-    Plan savedPlan = planRepository.save(plan);
-
-    eventPublisher.publishEvent(new IncreaseScoreByPlanning(group));
-    return savedPlan.getId();
-  }
-
-  @Override
   public PlanResponseDto getPlan(Long groupId, Long planId) {
     Plan plan = planRepository.findByGroupIdAndId(groupId, planId)
                               .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
