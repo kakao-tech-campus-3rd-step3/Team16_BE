@@ -158,7 +158,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void updateGroupScoreAndTag(Group group, Double newScore) {
-        group.groupScoreUpdate(newScore);g
+        group.groupScoreUpdate(newScore);
         group.updateSafetyTagByScore();
     }
 }
