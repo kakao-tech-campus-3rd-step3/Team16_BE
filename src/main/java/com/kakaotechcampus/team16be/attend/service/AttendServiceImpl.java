@@ -14,6 +14,8 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
+import com.kakaotechcampus.team16be.planParticipant.dto.PlanParticipantResponseDto;
+import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +35,7 @@ public class AttendServiceImpl implements AttendService{
     private final PlanService planService;
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
+    private final PlanParticipantService planParticipantService;
     private final ApplicationEventPublisher eventPublisher;
 
     private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
@@ -46,6 +49,11 @@ public class AttendServiceImpl implements AttendService{
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, user);
 
         Plan plan = planService.findByGroupIdAndPlanId(groupId, requestAttendDto.planId());
+
+        List<PlanParticipantResponseDto> allParticipants = planParticipantService.getAllParticipants(plan.getId());
+        if (allParticipants.isEmpty()) {
+            throw new AttendException(AttendErrorCode.ATTEND_NOT_FOUND);
+        }
 
         Optional<Attend> existingAttend = attendRepository.findByPlanAndGroupMember(plan, groupMember);
 
