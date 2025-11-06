@@ -161,4 +161,9 @@ public class GroupServiceImpl implements GroupService {
         group.groupScoreUpdate(newScore);
         group.updateSafetyTagByScore();
     }
+
+    @Override
+    public void checkGroupLeader(User user, Group targetGroup) {
+        targetGroup.checkLeader(user);
+    }
 }

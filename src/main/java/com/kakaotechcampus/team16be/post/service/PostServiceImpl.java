@@ -64,6 +64,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(User user, Long postId) {
+
         Post post = findByAuthorAndId(user, postId);
         postRepository.delete(post);
     }

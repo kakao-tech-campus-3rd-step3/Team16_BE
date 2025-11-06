@@ -33,4 +33,6 @@ public interface GroupService {
     Group getGroupById(Long groupId);
 
     void updateGroupScoreAndTag(Group group, Double newScore);
+
+    void checkGroupLeader(User user, Group targetGroup);
 }

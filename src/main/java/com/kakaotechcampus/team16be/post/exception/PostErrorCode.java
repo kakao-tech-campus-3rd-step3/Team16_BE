@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum PostErrorCode implements ErrorCode {
 
-    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST-001", "해당 게시글을 찾을 수 없습니다.");
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST-001", "해당 게시글을 찾을 수 없습니다."),
+    UNAUTHORIZED_POST_DELETION(HttpStatus.FORBIDDEN, "POST-002", "게시글 삭제 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String code;
