@@ -24,8 +24,8 @@ public class Group extends BaseEntity {
     private final static Double REPORT = 3.00;
     private final static Double PLANNING = 0.1;
     private final static Double POSTING = 0.05;
-    private final static Double CAUTION_GROUP = 74.0;
-    private final static Double DANGER_GROUP = 62.0;
+    private final static Double CAUTION_GROUP = 72.0;
+    private final static Double DANGER_GROUP = 45.0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,14 +63,14 @@ public class Group extends BaseEntity {
     }
 
     @Builder
-    public Group(User user, String name, String intro, Integer capacity,String fileName) {
+    public Group(User user, String name, String intro, Integer capacity, String fileName) {
         this.leader = user;
         this.name = name;
         this.intro = intro;
         this.capacity = capacity;
         if (StringUtil.isNullOrEmpty(fileName)) {
             this.coverImageUrl = "";
-        }else
+        } else
             this.coverImageUrl = fileName;
         this.score = 80.0;
     }

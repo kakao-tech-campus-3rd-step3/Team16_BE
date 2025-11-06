@@ -115,4 +115,13 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인된 유저의 모든 정보를 DB에서 삭제합니다. 연관된 모든 데이터(게시글, 댓글, 그룹 정보 등)도 함께 삭제됩니다.")
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Void> withdrawUser(
+            @LoginUser User user
+    ) {
+        userService.withdrawUser(user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
 }

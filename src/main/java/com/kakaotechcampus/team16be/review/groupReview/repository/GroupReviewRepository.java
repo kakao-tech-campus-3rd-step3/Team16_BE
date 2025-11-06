@@ -9,9 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GroupReviewRepository extends JpaRepository<GroupReview,Integer> {
+public interface GroupReviewRepository extends JpaRepository<GroupReview, Integer> {
 
     List<GroupReview> findAllByUser(User user);
 
     List<GroupReview> findAllByGroup(Group group);
+
+    void deleteAllByUserId(Long userId);
 }

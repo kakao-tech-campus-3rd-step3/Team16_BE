@@ -1,12 +1,24 @@
 package com.kakaotechcampus.team16be.user.service;
 
+import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.comment.repository.CommentRepository;
+import com.kakaotechcampus.team16be.groundrule.GroundRuleRepository;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
+import com.kakaotechcampus.team16be.like.repository.PostLikeRepository;
+import com.kakaotechcampus.team16be.notification.repository.NotificationRepository;
+import com.kakaotechcampus.team16be.plan.PlanRepository;
+import com.kakaotechcampus.team16be.planParticipant.PlanParticipantRepository;
+import com.kakaotechcampus.team16be.post.repository.PostRepository;
+import com.kakaotechcampus.team16be.report.ReportRepository;
+import com.kakaotechcampus.team16be.review.groupReview.repository.GroupReviewRepository;
+import com.kakaotechcampus.team16be.review.memberReview.repository.MemberReviewRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.dto.UserGroupHistoryResponse;
 import com.kakaotechcampus.team16be.user.dto.UserInfoResponse;
@@ -30,6 +42,17 @@ public class UserService {
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final CommentRepository commentRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final AttendRepository attendRepository;
+    private final PlanParticipantRepository planParticipantRepository;
+    private final PlanRepository planRepository;
+    private final GroupReviewRepository groupReviewRepository;
+    private final MemberReviewRepository memberReviewRepository;
+    private final NotificationRepository notificationRepository;
+    private final ReportRepository reportRepository;
+    private final GroundRuleRepository groundRuleRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
@@ -179,4 +202,30 @@ public class UserService {
         return userRepository.findByNickname(author)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
+
+    @Transactional
+    public void withdrawUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        // 유저가 리더인 그룹이 있는지 확인
+        List<Group> leadGroups = groupRepository.findAllByLeader(user);
+        if (!leadGroups.isEmpty()) {
+            throw new UserException(UserErrorCode.CANNOT_WITHDRAW_LEADER);
+        }
+
+        commentRepository.deleteAllByUserId(userId);
+        postLikeRepository.deleteAllByUserId(userId);
+        attendRepository.deleteAllByUser(user);
+        planParticipantRepository.deleteAllByUserId(userId);
+        groupMemberRepository.deleteAllByUserId(userId);
+        groupReviewRepository.deleteAllByUserId(userId);
+        memberReviewRepository.deleteAllByUserId(userId);
+        notificationRepository.deleteAllByReceiverId(userId);
+        notificationRepository.deleteAllByRelatedUserId(userId);
+        reportRepository.deleteAllByReporterId(userId);
+        reportRepository.deleteAllByTargetId(userId);
+        postRepository.deleteAllByAuthorId(userId);
+        userRepository.delete(user);
+    }
 }
+
