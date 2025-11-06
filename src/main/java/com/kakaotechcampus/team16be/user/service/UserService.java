@@ -7,6 +7,14 @@ import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
+import com.kakaotechcampus.team16be.like.repository.PostLikeRepository;
+import com.kakaotechcampus.team16be.notification.repository.NotificationRepository;
+import com.kakaotechcampus.team16be.plan.PlanRepository;
+import com.kakaotechcampus.team16be.planParticipant.PlanParticipantRepository;
+import com.kakaotechcampus.team16be.post.repository.PostRepository;
+import com.kakaotechcampus.team16be.report.ReportRepository;
+import com.kakaotechcampus.team16be.review.groupReview.repository.GroupReviewRepository;
+import com.kakaotechcampus.team16be.review.memberReview.repository.MemberReviewRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.dto.UserGroupHistoryResponse;
 import com.kakaotechcampus.team16be.user.dto.UserInfoResponse;
@@ -178,5 +186,32 @@ public class UserService {
     public User findByNickName(String author) {
         return userRepository.findByNickname(author)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void withdrawUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        // 유저가 리더인 그룹이 있는지 확인
+        List<Group> leadGroups = groupRepository.findAllByLeader(user);
+        if (!leadGroups.isEmpty()) {
+            throw new UserException(UserErrorCode.CANNOT_WITHDRAW_LEADER);
+        }
+
+        commentRepository.deleteAllByUserId(userId);
+        postLikeRepository.deleteAllByUserId(userId);
+        attendRepository.deleteAllByUser(user);
+        planParticipantRepository.deleteAllByUserId(userId);
+        groupMemberRepository.deleteAllByUserId(userId);
+        groupReviewRepository.deleteAllByUserId(userId);
+        memberReviewRepository.deleteAllByUserId(userId);
+        notificationRepository.deleteAllByReceiverId(userId);
+        notificationRepository.deleteAllByRelatedUserId(userId);
+        reportRepository.deleteAllByReporterId(userId);
+        reportRepository.deleteAllByTargetId(userId);
+        postRepository.deleteAllByAuthorId(userId);
+        List<GroupMember> memberships = groupMemberRepository.findAllByUser(user);
+        groupMemberRepository.deleteAll(memberships);
+        userRepository.delete(user);
     }
 }
