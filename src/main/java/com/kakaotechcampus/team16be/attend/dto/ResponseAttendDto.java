@@ -13,17 +13,17 @@ public class ResponseAttendDto {
     private final String code;
     private final String message;
 
+    private ResponseAttendDto(int status, String code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
+    }
+
     public static ResponseAttendDto success(HttpStatus status, String message) {
         return new ResponseAttendDto(status.value(), "", message);
     }
 
     public static ResponseAttendDto error(GroupMemberErrorCode errorCode) {
         return new ResponseAttendDto(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage());
-    }
-
-    private ResponseAttendDto(int status, String code, String message) {
-        this.status = status;
-        this.code = code;
-        this.message = message;
     }
 }

@@ -1,5 +1,10 @@
 package com.kakaotechcampus.team16be.notification.service;
 
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.CHANGE_GROUP_PLAN;
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_BANNED;
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_REJECT;
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_REQUEST;
+
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.notification.domain.Notification;
@@ -12,16 +17,13 @@ import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.review.memberReview.domain.MemberReview;
 import com.kakaotechcampus.team16be.review.memberReview.service.MemberReviewService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.io.IOException;
-import java.util.List;
-
-import static com.kakaotechcampus.team16be.notification.domain.NotificationType.*;
 
 @Slf4j
 @Service
@@ -113,7 +115,8 @@ public class NotificationServiceImpl implements NotificationService {
             checkReview = true;
         }
         String message = "[" + group.getName() + "]모임에서 " + leftUser.getNickname() + "님이 탈퇴했습니다..";
-        Notification notification = Notification.createReviewNotification(group.getLeader(), checkReview, group, leftUser, message);
+        Notification notification = Notification.createReviewNotification(group.getLeader(), checkReview, group,
+                leftUser, message);
 
         notificationRepository.save(notification);
 
@@ -161,7 +164,8 @@ public class NotificationServiceImpl implements NotificationService {
         List<Notification> notifications = notificationRepository.findAllByReceiverOrderByCreatedAtDesc((user));
 
         for (Notification notification : notifications) {
-            if (!memberReviewService.findByReviewByGroupAndReviewee(notification.getRelatedGroup(), notification.getRelatedUser()).isEmpty()) {
+            if (!memberReviewService.findByReviewByGroupAndReviewee(notification.getRelatedGroup(),
+                    notification.getRelatedUser()).isEmpty()) {
                 notification.markAsReviewed();
             }
         }

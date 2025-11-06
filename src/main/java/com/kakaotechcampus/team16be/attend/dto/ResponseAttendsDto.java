@@ -3,7 +3,6 @@ package com.kakaotechcampus.team16be.attend.dto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

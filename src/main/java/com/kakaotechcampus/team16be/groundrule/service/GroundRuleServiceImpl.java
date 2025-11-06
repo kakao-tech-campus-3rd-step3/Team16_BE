@@ -18,80 +18,81 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GroundRuleServiceImpl implements GroundRuleService {
 
-  private final GroundRuleRepository groundRuleRepository;
-  private final GroupService groupService;
-  private final static int MAX_GROUND_RULES = 5;
+    private final static int MAX_GROUND_RULES = 5;
+    private final GroundRuleRepository groundRuleRepository;
+    private final GroupService groupService;
 
-  @Override
-  @Transactional
-  public GroundRuleResponseDto saveGroundRule(Long groupId, GroundRuleRequestDto groundRuleRequestDto) {
+    @Override
+    @Transactional
+    public GroundRuleResponseDto saveGroundRule(Long groupId, GroundRuleRequestDto groundRuleRequestDto) {
 
-    Group group = groupService.findGroupById(groupId);
+        Group group = groupService.findGroupById(groupId);
 
-    if(!canAddGroundRule(groupId)){
-      throw new GroundRuleException(GroundRuleErrorCode.RULE_NOT_ADD);
+        if (!canAddGroundRule(groupId)) {
+            throw new GroundRuleException(GroundRuleErrorCode.RULE_NOT_ADD);
+        }
+
+        GroundRule groundRule = GroundRule.create(group, groundRuleRequestDto.content());
+        GroundRule saved = groundRuleRepository.save(groundRule);
+        return toDto(saved);
     }
 
-    GroundRule groundRule = GroundRule.create(group, groundRuleRequestDto.content());
-    GroundRule saved = groundRuleRepository.save(groundRule);
-    return toDto(saved);
-  }
+    @Override
+    public GroundRuleResponseDto getGroundRule(Long groupId, Long ruleId) {
 
-  @Override
-  public GroundRuleResponseDto getGroundRule(Long groupId, Long ruleId) {
+        GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
+        return toDto(groundRule);
+    }
 
-    GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
-    return toDto(groundRule);
-  }
+    @Override
+    public List<GroundRuleResponseDto> getAllGroundRules(Long groupId) {
 
-  @Override
-  public List<GroundRuleResponseDto> getAllGroundRules(Long groupId) {
+        groupService.findGroupById(groupId);
+        return groundRuleRepository.findAllByGroupId(groupId)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
 
-    groupService.findGroupById(groupId);
-    return groundRuleRepository.findAllByGroupId(groupId)
-        .stream()
-        .map(this::toDto)
-        .toList();
-  }
+    @Override
+    @Transactional
+    public GroundRuleResponseDto updateGroundRule(Long groupId, Long ruleId,
+                                                  GroundRuleRequestDto groundRuleRequestDto) {
 
-  @Override
-  @Transactional
-  public GroundRuleResponseDto updateGroundRule(Long groupId, Long ruleId, GroundRuleRequestDto groundRuleRequestDto) {
+        GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
+        groundRule.changeContent(groundRuleRequestDto.content());
+        return toDto(groundRule);
+    }
 
-    GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
-    groundRule.changeContent(groundRuleRequestDto.content());
-    return toDto(groundRule);
-  }
+    @Override
+    @Transactional
+    public void deleteGroundRule(Long groupId, Long ruleId) {
 
-  @Override
-  @Transactional
-  public void deleteGroundRule(Long groupId, Long ruleId) {
+        GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
+        groundRuleRepository.delete(groundRule);
+    }
 
-    GroundRule groundRule = findGroundRuleWithValidation(groupId, ruleId);
-    groundRuleRepository.delete(groundRule);
-  }
+    private GroundRuleResponseDto toDto(GroundRule groundRule) {
 
-  private GroundRuleResponseDto toDto(GroundRule groundRule) {
+        return new GroundRuleResponseDto(
+                groundRule.getId(),
+                groundRule.getContent(),
+                groundRule.getCreatedAt(),
+                groundRule.getUpdatedAt()
+        );
+    }
 
-    return new GroundRuleResponseDto(
-        groundRule.getId(),
-        groundRule.getContent(),
-        groundRule.getCreatedAt(),
-        groundRule.getUpdatedAt()
-    );
-  }
+    private GroundRule findGroundRuleWithValidation(Long groupId, Long ruleId) {
 
-  private GroundRule findGroundRuleWithValidation(Long groupId, Long ruleId){
+        GroundRule groundRule = groundRuleRepository.findById(ruleId)
+                .orElseThrow(() -> new GroundRuleException(GroundRuleErrorCode.RULE_NOT_FOUND));
 
-    GroundRule groundRule =  groundRuleRepository.findById(ruleId)
-                                                 .orElseThrow(() -> new GroundRuleException(GroundRuleErrorCode.RULE_NOT_FOUND));
+        groundRule.validateAccess(groupId);
+        return groundRule;
+    }
 
-    groundRule.validateAccess(groupId);
-    return groundRule;
-  }
-
-  private boolean canAddGroundRule(Long groupId){
-    long count = groundRuleRepository.countByGroupId(groupId);
-    return count < MAX_GROUND_RULES;
-  }
+    private boolean canAddGroundRule(Long groupId) {
+        long count = groundRuleRepository.countByGroupId(groupId);
+        return count < MAX_GROUND_RULES;
+    }
 }

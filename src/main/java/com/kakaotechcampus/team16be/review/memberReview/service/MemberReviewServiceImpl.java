@@ -1,5 +1,8 @@
 package com.kakaotechcampus.team16be.review.memberReview.service;
 
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.ACTIVE;
+import static com.kakaotechcampus.team16be.review.common.exception.ReviewErrorCode.ACTIVE_CANNOT_REVIEW;
+
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -11,14 +14,10 @@ import com.kakaotechcampus.team16be.review.memberReview.dto.CreateMemberReviewDt
 import com.kakaotechcampus.team16be.review.memberReview.repository.MemberReviewRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.ACTIVE;
-import static com.kakaotechcampus.team16be.review.common.exception.ReviewErrorCode.ACTIVE_CANNOT_REVIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +32,8 @@ public class MemberReviewServiceImpl implements MemberReviewService {
     @Transactional
     @Override
     public MemberReview createReview(User user, CreateMemberReviewDto createReviewDto) {
-       Group targetGroup = groupService.findGroupById(createReviewDto.getGroupId());
-       User reviewee = userService.findById(createReviewDto.getRevieweeId());
+        Group targetGroup = groupService.findGroupById(createReviewDto.getGroupId());
+        User reviewee = userService.findById(createReviewDto.getRevieweeId());
 
         GroupMember groupMember = groupMemberService.findByGroupAndUser(targetGroup, reviewee);
 
@@ -45,7 +44,7 @@ public class MemberReviewServiceImpl implements MemberReviewService {
 
         String content = createReviewDto.getContent();
         Evaluation evaluation = createReviewDto.getEvaluation();
-        MemberReview memberReview = MemberReview.create(user, reviewee, targetGroup, content,evaluation);
+        MemberReview memberReview = MemberReview.create(user, reviewee, targetGroup, content, evaluation);
 
         return memberReviewRepository.save(memberReview);
     }

@@ -17,34 +17,34 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class GroupScoreEvent {
 
-  private final GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseGroupScoreByPosting(IncreaseGroupScoreByPosting event) {
-    Group group = groupRepository.findById(event.group().getId())
-                                 .orElseThrow(() -> new GroupException(GROUP_CANNOT_FOUND));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseGroupScoreByPosting(IncreaseGroupScoreByPosting event) {
+        Group group = groupRepository.findById(event.group().getId())
+                .orElseThrow(() -> new GroupException(GROUP_CANNOT_FOUND));
 
-    group.increaseScoreByPosting();
-    groupRepository.saveAndFlush(group);
-  }
+        group.increaseScoreByPosting();
+        groupRepository.saveAndFlush(group);
+    }
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseGroupScoreByPlanning(IncreaseScoreByPlanning event) {
-    Group group = groupRepository.findById(event.group().getId())
-                                 .orElseThrow(() -> new GroupException(GROUP_CANNOT_FOUND));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseGroupScoreByPlanning(IncreaseScoreByPlanning event) {
+        Group group = groupRepository.findById(event.group().getId())
+                .orElseThrow(() -> new GroupException(GROUP_CANNOT_FOUND));
 
-    group.increaseScoreByPlanning();
-    groupRepository.saveAndFlush(group);
-  }
+        group.increaseScoreByPlanning();
+        groupRepository.saveAndFlush(group);
+    }
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void decreaseGroupScoreByReport(DecreaseGroupScoreByReport event) {
-    Group targetGroup = event.targetGroup();
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void decreaseGroupScoreByReport(DecreaseGroupScoreByReport event) {
+        Group targetGroup = event.targetGroup();
 
-    targetGroup.decreaseScoreByReport();
-    groupRepository.saveAndFlush(targetGroup);
-  }
+        targetGroup.decreaseScoreByReport();
+        groupRepository.saveAndFlush(targetGroup);
+    }
 }

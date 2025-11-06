@@ -5,11 +5,9 @@ import com.kakaotechcampus.team16be.report.dto.ReportResolveRequestDto;
 import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
 import com.kakaotechcampus.team16be.report.service.ReportService;
 import com.kakaotechcampus.team16be.user.domain.User;
-
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

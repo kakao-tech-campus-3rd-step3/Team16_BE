@@ -10,30 +10,25 @@ import com.kakaotechcampus.team16be.aws.dto.ImageUrlDto;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.user.domain.User;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class S3UploadPresignedUrlService {
 
-    @Value("${cloud.aws.s3.default-image-url}")
-    private String defaultCoverImageUrl;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
     private final AmazonS3Client amazonS3Client;
     private final GroupService groupService;
+    @Value("${cloud.aws.s3.default-image-url}")
+    private String defaultCoverImageUrl;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public ImageUrlDto execute(
             Long userId, ImageFileExtension fileExtension, ImageUploadType type
@@ -143,7 +138,7 @@ public class S3UploadPresignedUrlService {
         return ImageUrlDto.of(url.toString(), fileName);
     }
 
-    private String createPostFileName(Long groupId, String postUUID, String fileExtension,String valueType) {
+    private String createPostFileName(Long groupId, String postUUID, String fileExtension, String valueType) {
         return valueType + "/" + groupId + "/" + postUUID + "/" + UUID.randomUUID() + "." + fileExtension;
     }
 }

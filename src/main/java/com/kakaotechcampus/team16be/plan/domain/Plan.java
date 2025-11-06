@@ -5,8 +5,18 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
 import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
 import com.kakaotechcampus.team16be.plan.exception.PlanException;
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,7 +60,8 @@ public class Plan extends BaseEntity {
     private String coverImg;
 
     @Builder
-    public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime, LocalDateTime endTime, String coverImg, Location location) {
+    public Plan(Group group, String title, String description, Integer capacity, LocalDateTime startTime,
+                LocalDateTime endTime, String coverImg, Location location) {
         validateCapacity(capacity);
         validateTimeRange(startTime, endTime);
 
@@ -62,6 +73,22 @@ public class Plan extends BaseEntity {
         this.endTime = endTime;
         this.coverImg = coverImg;
         this.location = location;
+    }
+
+    public static Plan create(Group group, String title, String description,
+                              Integer capacity, LocalDateTime startTime, LocalDateTime endTime, String coverImg,
+                              Location location
+    ) {
+        return Plan.builder()
+                .group(group)
+                .title(title)
+                .description(description)
+                .capacity(capacity)
+                .startTime(startTime)
+                .endTime(endTime)
+                .coverImg(coverImg)
+                .location(location)
+                .build();
     }
 
     public void changePlan(PlanRequestDto dto) {
@@ -94,21 +121,6 @@ public class Plan extends BaseEntity {
                     .longitude(dto.location().longitude())
                     .build();
         }
-    }
-
-    public static Plan create(Group group, String title, String description,
-                              Integer capacity, LocalDateTime startTime, LocalDateTime endTime, String coverImg, Location location
-    ) {
-        return Plan.builder()
-                .group(group)
-                .title(title)
-                .description(description)
-                .capacity(capacity)
-                .startTime(startTime)
-                .endTime(endTime)
-                .coverImg(coverImg)
-                .location(location)
-                .build();
     }
 
     private void validateCapacity(Integer capacity) {

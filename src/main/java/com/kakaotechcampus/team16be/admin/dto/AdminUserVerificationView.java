@@ -5,4 +5,5 @@ public record AdminUserVerificationView(
         String nickname,
         String imageUrl,
         String verificationStatus
-) {}
+) {
+}

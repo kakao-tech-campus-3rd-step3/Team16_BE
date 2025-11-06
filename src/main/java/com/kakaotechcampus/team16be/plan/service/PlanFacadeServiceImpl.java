@@ -4,15 +4,12 @@ import com.kakaotechcampus.team16be.attend.service.AttendService;
 import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseScoreByPlanning;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
-import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Location;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
 import com.kakaotechcampus.team16be.user.domain.User;
-import java.time.ZoneId;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -22,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PlanFacadeServiceImpl {
 
+    final ApplicationEventPublisher eventPublisher;
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
     private final PlanRepository planRepository;
     private final AttendService attendService;
-    final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long createPlan(User user, Long groupId, PlanRequestDto planRequestDto) {
@@ -50,7 +47,6 @@ public class PlanFacadeServiceImpl {
                 .coverImg(planRequestDto.coverImageUrl())
                 .location(location)
                 .build();
-
 
         Plan savedPlan = planRepository.save(plan);
 

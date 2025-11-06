@@ -3,7 +3,6 @@ package com.kakaotechcampus.team16be.user.dto;
 import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
-
 import java.time.format.DateTimeFormatter;
 
 public record UserGroupHistoryResponse(

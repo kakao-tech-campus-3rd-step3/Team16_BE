@@ -8,21 +8,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtProvider {
 
+    private static final int ACCESS_TOKEN_EXPIRATION = 60 * 60 * 24 * 365;//테스트 편의를 위해 1년으로 설정
     @Value("${jwt.secret}")
     private String secret;
-
-    private static final int ACCESS_TOKEN_EXPIRATION = 60 * 60 * 24 * 365;//테스트 편의를 위해 1년으로 설정
-
     private SecretKey secretKey;
 
     @PostConstruct
@@ -33,6 +30,7 @@ public class JwtProvider {
 
     /**
      * JWT 토큰 생성
+     *
      * @param user 토큰에 담을 User 정보
      * @return JWT 문자열
      */
@@ -52,6 +50,7 @@ public class JwtProvider {
 
     /**
      * JWT 파싱 및 검증
+     *
      * @param token 클라이언트가 전달한 JWT
      * @return Claims payload
      */

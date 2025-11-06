@@ -5,7 +5,6 @@ import com.kakaotechcampus.team16be.admin.dto.AdminUserVerificationView;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.report.ReportRepository;
 import com.kakaotechcampus.team16be.report.domain.Report;
-import com.kakaotechcampus.team16be.report.dto.ReportResponseDto;
 import com.kakaotechcampus.team16be.report.exception.ReportErrorCode;
 import com.kakaotechcampus.team16be.report.exception.ReportException;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -13,12 +12,11 @@ import com.kakaotechcampus.team16be.user.domain.VerificationStatus;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

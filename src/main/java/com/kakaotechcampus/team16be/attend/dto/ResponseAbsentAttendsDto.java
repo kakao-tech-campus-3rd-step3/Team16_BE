@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.attend.dto;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
-
 import java.util.List;
 
 public record ResponseAbsentAttendsDto(Long userId, String nickname) {

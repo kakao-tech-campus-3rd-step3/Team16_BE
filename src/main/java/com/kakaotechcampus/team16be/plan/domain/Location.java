@@ -15,23 +15,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Location {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-  @Column(name = "latitude", nullable = false)
-  private Double latitude;
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
 
-  @Column(name = "longitude", nullable = false)
-  private Double longitude;
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
 
-  @Builder
-  public Location(String name, Double latitude, Double longitude) {
-    this.name = name;
-    this.latitude = latitude;
-    this.longitude = longitude;
-  }
+    @Builder
+    public Location(String name, Double latitude, Double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.user.dto;
 
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.domain.VerificationStatus;
-
 import java.util.List;
 import java.util.Map;
 

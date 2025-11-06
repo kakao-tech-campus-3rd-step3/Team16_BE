@@ -18,7 +18,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
 
         // preflight 요청은 통과
         if (CorsUtils.isPreFlightRequest(request)) {

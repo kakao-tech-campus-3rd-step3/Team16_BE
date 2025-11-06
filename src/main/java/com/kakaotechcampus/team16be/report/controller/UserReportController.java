@@ -33,7 +33,8 @@ public class UserReportController {
             @PathVariable Long targetId,
             @RequestBody ReportRequestDto reportRequestDto
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reportService.createReport(reporter, targetType, targetId, reportRequestDto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(reportService.createReport(reporter, targetType, targetId, reportRequestDto));
     }
 
     //READ, UPDATE, DELETE는 관리자용으로 따로 관리

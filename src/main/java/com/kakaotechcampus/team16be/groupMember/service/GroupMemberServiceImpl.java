@@ -1,5 +1,10 @@
 package com.kakaotechcampus.team16be.groupMember.service;
 
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.ACTIVE;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.LEFT;
+import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.PENDING;
+import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.GROUP_MEMBER_NOT_FOUND;
+
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
@@ -10,14 +15,10 @@ import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus.*;
-import static com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode.GROUP_MEMBER_NOT_FOUND;
 
 
 @Service
@@ -123,7 +124,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Transactional(readOnly = true)
     public List<GroupMemberDto> getGroupMember(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
-        List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup,ACTIVE);
+        List<GroupMember> members = groupMemberRepository.findAllByGroupAndStatus(targetGroup, ACTIVE);
 
         return members.stream()
                 .map(member -> {

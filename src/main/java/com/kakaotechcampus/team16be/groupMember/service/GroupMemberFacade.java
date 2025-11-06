@@ -10,11 +10,10 @@ import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,7 +89,6 @@ public class GroupMemberFacade {
         GroupMember member = groupMemberService.findByGroupAndUser(group, user);
 
         GroupMember.checkLeftGroup(member);
-
 
         member.leaveGroup();
         notificationService.createGroupLeaveNotification(user, group);

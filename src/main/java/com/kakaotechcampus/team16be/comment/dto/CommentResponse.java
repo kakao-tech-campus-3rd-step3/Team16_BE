@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.comment.dto;
 
 import com.kakaotechcampus.team16be.comment.domain.Comment;
-
 import java.util.List;
 
 public record CommentResponse(

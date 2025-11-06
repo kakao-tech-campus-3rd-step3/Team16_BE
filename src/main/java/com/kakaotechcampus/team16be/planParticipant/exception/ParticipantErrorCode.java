@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ParticipantErrorCode {
 
-  PARTICIPANT_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTICIPANT-001", "이미 참가신청 하였습니다.");
+    PARTICIPANT_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTICIPANT-001", "이미 참가신청 하였습니다.");
 
-  private final HttpStatus httpStatus;
-  private final String code;
-  private final String message;
+    private final HttpStatus httpStatus;
+    private final String code;
+    private final String message;
 }

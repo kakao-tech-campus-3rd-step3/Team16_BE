@@ -5,7 +5,6 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.dto.GroupMemberDto;
 import com.kakaotechcampus.team16be.groupMember.dto.SignResponseDto;
 import com.kakaotechcampus.team16be.user.domain.User;
-
 import java.util.List;
 
 public interface GroupMemberService {

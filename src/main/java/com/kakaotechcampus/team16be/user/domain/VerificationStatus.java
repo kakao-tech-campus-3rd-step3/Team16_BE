@@ -5,3 +5,4 @@ public enum VerificationStatus {
     PENDING,
     VERIFIED
 }
+

@@ -16,7 +16,11 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-
+    private static void hasAuthority(User user, Comment comment) {
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new CommentException(CommentErrorCode.COMMENT_NOT_AUTHORIZED);
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -34,12 +38,6 @@ public class CommentServiceImpl implements CommentService {
         comment.updateContent(commentUpdateRequest.content());
 
         return comment.getId();
-    }
-
-    private static void hasAuthority(User user, Comment comment) {
-        if (!comment.getUser().getId().equals(user.getId())) {
-            throw new CommentException(CommentErrorCode.COMMENT_NOT_AUTHORIZED);
-        }
     }
 
     @Override

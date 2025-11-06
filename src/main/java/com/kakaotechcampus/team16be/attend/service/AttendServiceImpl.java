@@ -1,8 +1,8 @@
 package com.kakaotechcampus.team16be.attend.service;
 
+import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
-import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
@@ -20,26 +20,24 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AttendServiceImpl implements AttendService{
+public class AttendServiceImpl implements AttendService {
 
+    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
     private final AttendRepository attendRepository;
     private final PlanService planService;
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
     private final PlanParticipantService planParticipantService;
     private final ApplicationEventPublisher eventPublisher;
-
-    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
-
 
     @Transactional
     @Override
@@ -70,11 +68,10 @@ public class AttendServiceImpl implements AttendService{
         }
 
         LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
-        boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
-
+        boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user,
+                startOfToday);
 
         Attend savedAttend = attendRepository.save(attend);
-
 
         if (hasAlreadyAttendedToday) {
             if (savedAttend.getAttendStatus().equals(AttendStatus.PRESENT)) {

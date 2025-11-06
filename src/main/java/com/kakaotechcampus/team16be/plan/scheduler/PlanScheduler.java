@@ -10,30 +10,27 @@ import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantServi
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class PlanScheduler {
 
+    private static final int SCHEDULE_RATE_SECONDS = 60;
+    private static final int SCHEDULE_RATE_MILLISECONDS = SCHEDULE_RATE_SECONDS * 1000;
     private final PlanService planService;
     private final AttendService attendService;
     private final UserService userService;
     private final PlanParticipantService planParticipantService;
-
-
-    private static final int SCHEDULE_RATE_SECONDS = 60;
-    private static final int SCHEDULE_RATE_MILLISECONDS = SCHEDULE_RATE_SECONDS * 1000;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MILLISECONDS)
     @Transactional
