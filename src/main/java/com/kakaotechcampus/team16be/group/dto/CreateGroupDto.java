@@ -9,7 +9,6 @@ public record CreateGroupDto(
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$", message = "특수문자를 사용할 수 없습니다.")
         String name,
 
-
         @NotBlank
         String intro,
 

@@ -48,12 +48,21 @@ public class UserScoreEvent {
     userRepository.saveAndFlush(user);
   }
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void decreaseUserScoreByReport(DecreaseScoreByReport event){
-    User targetUser = event.targetUser();
+   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+   @Transactional(propagation = Propagation.REQUIRES_NEW)
+   public void decreaseUserScoreByReport(DecreaseScoreByReport event){
+     User targetUser = event.targetUser();
 
-    targetUser.decreaseScoreByReport();
-    userRepository.saveAndFlush(targetUser);
-  }
+     targetUser.decreaseScoreByReport();
+     userRepository.saveAndFlush(targetUser);
+   }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void decreaseUserScoreByAbsent(DecreaseScoreByAbsent event) {
+        User targetUser = event.user();
+
+        targetUser.decreaseScoreByAbsent();
+        userRepository.saveAndFlush(targetUser);
+    }
 }

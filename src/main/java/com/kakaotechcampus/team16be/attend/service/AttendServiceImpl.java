@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.DecreaseScoreByAbsent;
 import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseScoreByAttendance;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
@@ -63,10 +64,18 @@ public class AttendServiceImpl implements AttendService{
         LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
         boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
 
+
         Attend savedAttend = attendRepository.save(attend);
 
-        if (!hasAlreadyAttendedToday) {
-            eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
+
+        if (hasAlreadyAttendedToday) {
+            if (savedAttend.getAttendStatus().equals(AttendStatus.PRESENT)) {
+                eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
+            }
+            if (savedAttend.getAttendStatus().equals(AttendStatus.ABSENT)) {
+                eventPublisher.publishEvent(new DecreaseScoreByAbsent(user));
+            }
+
         }
 
         return savedAttend;

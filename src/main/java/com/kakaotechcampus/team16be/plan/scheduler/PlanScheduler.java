@@ -12,6 +12,7 @@ import com.kakaotechcampus.team16be.plan.service.PlanService;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ public class PlanScheduler {
     private final AttendService attendService;
     private final GroupMemberService groupMemberService;
     private final UserService userService;
+
 
     @Scheduled(cron = "15 * * * * *")
     @Transactional
