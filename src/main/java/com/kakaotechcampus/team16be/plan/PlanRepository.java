@@ -11,9 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
-  Optional<Plan> findByGroupIdAndId(Long groupId, Long planId);
-
-  List<Plan> findByGroupId(Long groupId);
-
+    Optional<Plan> findByGroupIdAndId(Long groupId, Long planId);
+    List<Plan> findByGroupId(Long groupId);
     List<Plan> findAllByEndTimeBetween(LocalDateTime start, LocalDateTime end);
 }

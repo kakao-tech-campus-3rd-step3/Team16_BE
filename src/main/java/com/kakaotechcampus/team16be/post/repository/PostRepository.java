@@ -4,6 +4,7 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDateTime;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -20,7 +21,9 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     boolean existsByAuthorAndCreatedAtAfter(User author, LocalDateTime startOfDay);
 
+    @EntityGraph(attributePaths = {"author"})
     List<Post> findAllByOrderByCreatedAtDesc();
 
+    @EntityGraph(attributePaths = {"author"})
     List<Post> findByGroupOrderByCreatedAtDesc(Group group);
 }
