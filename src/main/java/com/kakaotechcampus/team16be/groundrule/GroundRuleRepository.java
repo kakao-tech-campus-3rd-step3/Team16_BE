@@ -14,5 +14,5 @@ public interface GroundRuleRepository extends JpaRepository<GroundRule, Long> {
     List<GroundRule> findAllByGroupId(Long groupId);
 
     long countByGroupId(Long groupId);
-    
+
 }

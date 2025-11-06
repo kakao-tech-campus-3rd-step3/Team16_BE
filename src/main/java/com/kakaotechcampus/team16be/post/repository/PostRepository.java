@@ -18,8 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Post> findByIdAndGroup(Long id, Group group);
 
-    List<Post> findByGroup(Group group);
-
     Optional<Post> findByAuthorAndId(User author, Long id);
 
     boolean existsByAuthorAndCreatedAtAfter(User author, LocalDateTime startOfDay);

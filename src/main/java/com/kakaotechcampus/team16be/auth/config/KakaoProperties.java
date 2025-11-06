@@ -14,12 +14,12 @@ public class KakaoProperties {
         return clientId;
     }
 
-    public String getRedirectUri() {
-        return redirectUri;
-    }
-
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public String getRedirectUri() {
+        return redirectUri;
     }
 
     public void setRedirectUri(String redirectUri) {

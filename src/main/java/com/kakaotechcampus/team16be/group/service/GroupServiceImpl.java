@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.group.service;
 
 import com.kakaotechcampus.team16be.common.eventListener.userEvent.ImageDeletedEvent;
 import com.kakaotechcampus.team16be.group.domain.Group;
-import com.kakaotechcampus.team16be.group.domain.SafetyTag;
 import com.kakaotechcampus.team16be.group.dto.CreateGroupDto;
 import com.kakaotechcampus.team16be.group.dto.UpdateGroupDto;
 import com.kakaotechcampus.team16be.group.exception.GroupErrorCode;
@@ -14,14 +13,13 @@ import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -60,7 +58,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {
 
-      List<Group> findGroups = groupRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        List<Group> findGroups = groupRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
         if (findGroups.isEmpty()) {
             throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);
@@ -74,7 +72,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteGroup(User user, Long groupId) {
         User leader = userRepository.findById(user.getId())
-                                    .orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
         Group targetGroup = findGroupById(groupId);
         targetGroup.checkLeader(leader);
@@ -88,7 +86,7 @@ public class GroupServiceImpl implements GroupService {
         Group targetGroup = findGroupById(groupId);
 
         User leader = userRepository.findById(user.getId())
-                                    .orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
         targetGroup.checkLeader(leader);
 
@@ -102,7 +100,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
-                              .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
+                .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
     }
 
 
@@ -111,7 +109,7 @@ public class GroupServiceImpl implements GroupService {
     public Group updateGroupImage(User user, Long groupId, UpdateGroupDto UpdateGroupDto) {
         Group targetGroup = findGroupById(groupId);
         User leader = userRepository.findById(user.getId())
-                                    .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
         targetGroup.checkLeader(leader);
 
@@ -121,8 +119,7 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        if (isImageChanged && oldImgUrl != null && !oldImgUrl.isEmpty())
-        {
+        if (isImageChanged && oldImgUrl != null && !oldImgUrl.isEmpty()) {
             eventPublisher.publishEvent(new ImageDeletedEvent(oldImgUrl));
         }
 
@@ -133,20 +130,20 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.existsGroupByName(groupName);
     }
 
-    public  List<Group> findAll() {
-      return groupRepository.findAll();
+    public List<Group> findAll() {
+        return groupRepository.findAll();
     }
 
     @Transactional
     @Override
     public void updateGroupScore(Group group, Double avg) {
-      group.groupScoreUpdate(avg);
+        group.groupScoreUpdate(avg);
     }
 
     @Transactional
     @Override
     public void updateGroupTag(Group group) {
-      group.updateSafetyTagByScore();
+        group.updateSafetyTagByScore();
     }
 
     @Transactional(readOnly = true)

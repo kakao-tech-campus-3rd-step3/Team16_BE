@@ -13,17 +13,18 @@ public class ResponseGroupDto {
     private final String code;
     private final String message;
 
+    private ResponseGroupDto(int status, String code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
+    }
+
     public static ResponseGroupDto success(HttpStatus status, String message) {
         return new ResponseGroupDto(status.value(), "", message);
     }
 
     public static ResponseGroupDto error(GroupErrorCode groupErrorCode) {
-        return new ResponseGroupDto(groupErrorCode.getStatus().value(), groupErrorCode.getCode(), groupErrorCode.getMessage());
-    }
-
-    private ResponseGroupDto(int status, String code, String message) {
-        this.status = status;
-        this.code = code;
-        this.message = message;
+        return new ResponseGroupDto(groupErrorCode.getStatus().value(), groupErrorCode.getCode(),
+                groupErrorCode.getMessage());
     }
 }

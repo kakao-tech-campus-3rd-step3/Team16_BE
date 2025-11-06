@@ -1,6 +1,6 @@
 package com.kakaotechcampus.team16be.common.eventListener.userEvent;
 
-import static com.kakaotechcampus.team16be.user.exception.UserErrorCode.*;
+import static com.kakaotechcampus.team16be.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.exception.UserException;
@@ -16,46 +16,46 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class UserScoreEvent {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseUserScoreByAttendance(IncreaseScoreByAttendance event) {
-    User user = userRepository.findById(event.user().getId())
-                              .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseUserScoreByAttendance(IncreaseScoreByAttendance event) {
+        User user = userRepository.findById(event.user().getId())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-    user.increaseScoreByAttendance();
-    userRepository.saveAndFlush(user);
-  }
+        user.increaseScoreByAttendance();
+        userRepository.saveAndFlush(user);
+    }
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseUserScoreByPosting(IncreaseUserScoreByPosting event) {
-    User user = userRepository.findById(event.user().getId())
-                              .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseUserScoreByPosting(IncreaseUserScoreByPosting event) {
+        User user = userRepository.findById(event.user().getId())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-    user.increaseScoreByPosting();
-    userRepository.saveAndFlush(user);
-  }
+        user.increaseScoreByPosting();
+        userRepository.saveAndFlush(user);
+    }
 
-  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseUserScoreByComment(IncreaseScoreByComment event){
-    User user = userRepository.findById(event.user().getId())
-                              .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void increaseUserScoreByComment(IncreaseScoreByComment event) {
+        User user = userRepository.findById(event.user().getId())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-    user.increaseScoreByComment();
-    userRepository.saveAndFlush(user);
-  }
+        user.increaseScoreByComment();
+        userRepository.saveAndFlush(user);
+    }
 
-   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-   @Transactional(propagation = Propagation.REQUIRES_NEW)
-   public void decreaseUserScoreByReport(DecreaseScoreByReport event){
-     User targetUser = event.targetUser();
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void decreaseUserScoreByReport(DecreaseScoreByReport event) {
+        User targetUser = event.targetUser();
 
-     targetUser.decreaseScoreByReport();
-     userRepository.saveAndFlush(targetUser);
-   }
+        targetUser.decreaseScoreByReport();
+        userRepository.saveAndFlush(targetUser);
+    }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)

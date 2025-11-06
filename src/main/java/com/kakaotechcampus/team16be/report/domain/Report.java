@@ -14,9 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,10 +63,12 @@ public class Report extends BaseEntity {
 
     @Builder
     public Report(User reporter, TargetType targetType, Long targetId, ReasonCode reasonCode, String reason) {
-        if (reporter == null || targetType == null || targetId == null)
+        if (reporter == null || targetType == null || targetId == null) {
             throw new IllegalArgumentException("필수 값이 누락되었습니다.");
-        if (reason == null || reason.isBlank())
+        }
+        if (reason == null || reason.isBlank()) {
             throw new IllegalArgumentException("신고 사유가 비어 있습니다.");
+        }
 
         this.reporter = reporter;
         this.targetType = targetType;
@@ -94,15 +94,6 @@ public class Report extends BaseEntity {
         this.resolvedAt = LocalDateTime.now();
     }
 
-
-    public enum ReasonCode {
-        RELIGION_SUSPECT,
-        NOT_HEALTHY_PURPOSE,
-        INAPPROPRIATE,
-        FRAUD_OR_PRIVACY,
-        OTHER
-    }
-
     public ReportStatus getStatus() {
         return this.status != null ? this.status : ReportStatus.PENDING;
     }
@@ -111,5 +102,13 @@ public class Report extends BaseEntity {
         this.status = ReportStatus.valueOf(status);
         this.resolvedBy = null; // 시스템(관리자)에 의해 처리됨
         this.resolvedAt = LocalDateTime.now();
+    }
+
+    public enum ReasonCode {
+        RELIGION_SUSPECT,
+        NOT_HEALTHY_PURPOSE,
+        INAPPROPRIATE,
+        FRAUD_OR_PRIVACY,
+        OTHER
     }
 }

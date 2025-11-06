@@ -9,12 +9,16 @@ import com.kakaotechcampus.team16be.review.groupReview.service.GroupReviewServic
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/groups/reviews")
@@ -27,7 +31,8 @@ public class GroupReviewController {
 
     @Operation(summary = "그룹 리뷰 생성", description = "탈퇴한 회원이 특정 그룹에 대한 리뷰를 작성합니다.")
     @PostMapping
-    public ResponseEntity<ResponseReviewDto> createGroupReview(@LoginUser User user, @RequestBody CreateGroupReviewDto createGroupReviewDto) {
+    public ResponseEntity<ResponseReviewDto> createGroupReview(@LoginUser User user,
+                                                               @RequestBody CreateGroupReviewDto createGroupReviewDto) {
         groupReviewService.createReview(user, createGroupReviewDto);
 
         return ResponseEntity.ok(ResponseReviewDto.success(HttpStatus.OK, "그룹 리뷰를 성공적으로 생성했습니다."));
@@ -35,8 +40,9 @@ public class GroupReviewController {
 
     @Operation(summary = "그룹 리뷰 조회", description = "특정 그룹에 작성된 모든 리뷰를 조회합니다.")
     @GetMapping("/{groupId}")
-    public ResponseEntity<List<ResponseGroupReviewListDto>> getAllGroupReviews(@LoginUser User user, @PathVariable Long groupId) {
-        List<GroupReview> reviews = groupReviewService.getAllReviews(user,groupId);
+    public ResponseEntity<List<ResponseGroupReviewListDto>> getAllGroupReviews(@LoginUser User user,
+                                                                               @PathVariable Long groupId) {
+        List<GroupReview> reviews = groupReviewService.getAllReviews(user, groupId);
         List<ResponseGroupReviewListDto> result = ResponseGroupReviewListDto.from(reviews);
 
         return ResponseEntity.ok(result);

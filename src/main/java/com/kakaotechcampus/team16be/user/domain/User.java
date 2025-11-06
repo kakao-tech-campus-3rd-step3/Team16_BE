@@ -1,7 +1,14 @@
 package com.kakaotechcampus.team16be.user.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -55,7 +62,8 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role, VerificationStatus verificationStatus, String studentIdImageUrl) {
+    public User(Long id, String kakaoId, String nickname, String profileImageUrl, Role role,
+                VerificationStatus verificationStatus, String studentIdImageUrl) {
         this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;

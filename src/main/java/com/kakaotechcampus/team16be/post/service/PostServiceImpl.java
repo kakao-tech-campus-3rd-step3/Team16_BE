@@ -27,12 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
     private final PostRepository postRepository;
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
     private final ApplicationEventPublisher eventPublisher;
-
-    private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
 
     @Override
     @Transactional
@@ -93,6 +92,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getFeeds() {
-      return postRepository.findAllByOrderByCreatedAtDesc();
+        return postRepository.findAllByOrderByCreatedAtDesc();
     }
 }

@@ -1,15 +1,23 @@
 package com.kakaotechcampus.team16be.notification.domain;
 
+import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_LEFT;
+
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.user.domain.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static com.kakaotechcampus.team16be.notification.domain.NotificationType.GROUP_JOIN_LEFT;
 
 @Entity
 @Getter
@@ -65,7 +73,8 @@ public class Notification extends BaseEntity {
         this.isRead = isRead;
     }
 
-    public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup, User relatedUser, String message) {
+    public static Notification createReviewNotification(User receiver, boolean checkReview, Group relatedGroup,
+                                                        User relatedUser, String message) {
         return Notification.builder()
                 .receiver(receiver)
                 .notificationType(GROUP_JOIN_LEFT)

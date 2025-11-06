@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.review.groupReview.dto;
 
 import com.kakaotechcampus.team16be.review.groupReview.domain.GroupReview;
-
 import java.util.List;
 
 public record ResponseGroupReviewListDto(String contents) {

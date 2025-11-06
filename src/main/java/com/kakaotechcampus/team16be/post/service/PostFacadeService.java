@@ -13,11 +13,10 @@ import com.kakaotechcampus.team16be.post.exception.PostException;
 import com.kakaotechcampus.team16be.post.repository.PostRepository;
 import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +44,12 @@ public class PostFacadeService {
                 .toList();
         User author = post.getAuthor();
         String authorProfileImageUrl = author.getProfileImageUrl();
-        String authorProfilePublicUrl = (authorProfileImageUrl != null && !authorProfileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(authorProfileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
+        String authorProfilePublicUrl = (authorProfileImageUrl != null && !authorProfileImageUrl.isEmpty())
+                ? s3UploadPresignedUrlService.getPublicUrl(authorProfileImageUrl)
+                : s3UploadPresignedUrlService.getPublicUrl("");
 
-
-        return GetPostResponse.from(post, author, authorProfilePublicUrl, fullURLs, commentCount, postLikeResponse.isLiked());
+        return GetPostResponse.from(post, author, authorProfilePublicUrl, fullURLs, commentCount,
+                postLikeResponse.isLiked());
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +66,9 @@ public class PostFacadeService {
                     PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
                     User author = post.getAuthor();
                     String authorProfileKey = author.getProfileImageUrl();
-                    String authorProfilePublicUrl = (authorProfileKey != null && !authorProfileKey.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(authorProfileKey) : s3UploadPresignedUrlService.getPublicUrl("");
+                    String authorProfilePublicUrl = (authorProfileKey != null && !authorProfileKey.isEmpty())
+                            ? s3UploadPresignedUrlService.getPublicUrl(authorProfileKey)
+                            : s3UploadPresignedUrlService.getPublicUrl("");
 
                     return GetPostResponse.from(
                             post,
@@ -92,7 +95,9 @@ public class PostFacadeService {
                     PostLikeResponse postLikeResponse = postLikeService.getPostLikeInfo(user, post.getId());
                     User author = post.getAuthor();
                     String profileImageUrl = author.getProfileImageUrl();
-                    String authorProfilePublicUrl = (profileImageUrl != null && !profileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(profileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
+                    String authorProfilePublicUrl = (profileImageUrl != null && !profileImageUrl.isEmpty())
+                            ? s3UploadPresignedUrlService.getPublicUrl(profileImageUrl)
+                            : s3UploadPresignedUrlService.getPublicUrl("");
 
                     return GetPostResponse.from(
                             post,

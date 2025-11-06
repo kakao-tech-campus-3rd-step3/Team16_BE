@@ -6,24 +6,24 @@ import lombok.Getter;
 @Getter
 public class GroundRuleException extends BaseException {
 
-  private final GroundRuleErrorCode errorCode;
+    private final GroundRuleErrorCode errorCode;
 
-  public GroundRuleException(GroundRuleErrorCode errorCode) {
-    this.errorCode = errorCode;
-  }
+    public GroundRuleException(GroundRuleErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  @Override
-  public String getMessage() {
-    return errorCode.getMessage();
-  }
+    @Override
+    public String getMessage() {
+        return errorCode.getMessage();
+    }
 
-  @Override
-  public String getCode() {
-    return errorCode.getCode();
-  }
+    @Override
+    public String getCode() {
+        return errorCode.getCode();
+    }
 
-  @Override
-  public int getStatus() {
-    return errorCode.getStatus().value();
-  }
+    @Override
+    public int getStatus() {
+        return errorCode.getStatus().value();
+    }
 }

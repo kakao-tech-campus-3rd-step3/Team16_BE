@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.group.dto;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
-
 import java.time.LocalDateTime;
 
 public record ResponseSingleGroupDto(

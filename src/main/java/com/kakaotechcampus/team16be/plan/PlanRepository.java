@@ -1,7 +1,6 @@
 package com.kakaotechcampus.team16be.plan;
 
 import com.kakaotechcampus.team16be.plan.domain.Plan;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

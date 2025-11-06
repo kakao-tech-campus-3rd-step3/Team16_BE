@@ -10,12 +10,11 @@ import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseScore
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.post.service.PostService;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,20 +51,21 @@ public class CommentFacadeService {
 
         eventPublisher.publishEvent(new IncreaseScoreByComment(user));
 
-      return saveComment.getId();
+        return saveComment.getId();
     }
 
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         Post post = postService.findById(postId);
 
-
         List<Comment> allComments = commentRepository.findAllByPostWithUserAndParent(post);
 
         return allComments.stream()
                 .map(comment -> {
                     String profileImageKey = comment.getUser().getProfileImageUrl();
-                    String publicUrl = (profileImageKey != null && !profileImageKey.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(profileImageKey) : s3UploadPresignedUrlService.getPublicUrl("");
+                    String publicUrl = (profileImageKey != null && !profileImageKey.isEmpty())
+                            ? s3UploadPresignedUrlService.getPublicUrl(profileImageKey)
+                            : s3UploadPresignedUrlService.getPublicUrl("");
                     Long parentId = (comment.getParentComment() != null) ? comment.getParentComment().getId() : null;
 
                     return new CommentResponse(

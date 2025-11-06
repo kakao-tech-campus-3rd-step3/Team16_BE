@@ -232,11 +232,11 @@
 
     <!-- 네비게이션 -->
     <div class="nav-container">
-        <a th:href="@{/admin/student-verifications}" class="nav-btn">학생증 인증 관리</a>
-        <a th:href="@{/admin/scores}" class="nav-btn">유저 점수 관리</a>
-        <a th:href="@{/admin/groups}" class="nav-btn">그룹 안전 상태 관리</a>
-        <a th:href="@{/admin/reports}" class="nav-btn">신고 관리 페이지</a>
-        <a th:href="@{/admin/logout}" class="nav-btn logout-btn">로그아웃</a>
+        <a class="nav-btn" th:href="@{/admin/student-verifications}">학생증 인증 관리</a>
+        <a class="nav-btn" th:href="@{/admin/scores}">유저 점수 관리</a>
+        <a class="nav-btn" th:href="@{/admin/groups}">그룹 안전 상태 관리</a>
+        <a class="nav-btn" th:href="@{/admin/reports}">신고 관리 페이지</a>
+        <a class="nav-btn logout-btn" th:href="@{/admin/logout}">로그아웃</a>
     </div>
 
     <!-- 테이블 -->
@@ -255,19 +255,19 @@
             <td th:text="${v.userId}"></td>
             <td th:text="${v.nickname}"></td>
             <td>
-                <img th:src="${v.imageUrl}" alt="학생증" class="thumbnail" onclick="openModal(this)">
+                <img alt="학생증" class="thumbnail" onclick="openModal(this)" th:src="${v.imageUrl}">
             </td>
             <td th:text="${v.verificationStatus}"></td>
             <td>
-                <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
-                    <input type="hidden" name="userId" th:value="${v.userId}"/>
-                    <input type="hidden" name="status" value="VERIFIED"/>
-                    <button type="submit" class="approve">승인</button>
+                <form method="post" style="display:inline;" th:action="@{/admin/student-verifications/update}">
+                    <input name="userId" th:value="${v.userId}" type="hidden"/>
+                    <input name="status" type="hidden" value="VERIFIED"/>
+                    <button class="approve" type="submit">승인</button>
                 </form>
-                <form th:action="@{/admin/student-verifications/update}" method="post" style="display:inline;">
-                    <input type="hidden" name="userId" th:value="${v.userId}"/>
-                    <input type="hidden" name="status" value="UNVERIFIED"/>
-                    <button type="submit" class="reject">거절</button>
+                <form method="post" style="display:inline;" th:action="@{/admin/student-verifications/update}">
+                    <input name="userId" th:value="${v.userId}" type="hidden"/>
+                    <input name="status" type="hidden" value="UNVERIFIED"/>
+                    <button class="reject" type="submit">거절</button>
                 </form>
             </td>
         </tr>
@@ -276,7 +276,7 @@
 </div>
 
 <!-- 모달 -->
-<div id="imgModal" class="modal">
+<div class="modal" id="imgModal">
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImg">
     <div id="caption"></div>

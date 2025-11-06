@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>그룹 안전 상태 관리</title>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <style>
         /* --- 전체 레이아웃 --- */
         body {
@@ -20,7 +20,7 @@
             padding: 20px;
             background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -132,10 +132,21 @@
                 font-weight: 700;
             }
 
-            td:nth-of-type(1):before { content: "그룹 ID"; }
-            td:nth-of-type(2):before { content: "그룹 이름"; }
-            td:nth-of-type(3):before { content: "현재 상태"; }
-            td:nth-of-type(4):before { content: "상태 변경"; }
+            td:nth-of-type(1):before {
+                content: "그룹 ID";
+            }
+
+            td:nth-of-type(2):before {
+                content: "그룹 이름";
+            }
+
+            td:nth-of-type(3):before {
+                content: "현재 상태";
+            }
+
+            td:nth-of-type(4):before {
+                content: "상태 변경";
+            }
         }
     </style>
 </head>
@@ -145,10 +156,10 @@
 
     <!-- 네비게이션 -->
     <div class="nav-container">
-        <a th:href="@{/admin/student-verifications}" class="nav-btn">학생증 인증 관리</a>
-        <a th:href="@{/admin/scores}" class="nav-btn">유저 점수 관리</a>
-        <a th:href="@{/admin/groups}" class="nav-btn">그룹 안전 상태 관리</a>
-        <a th:href="@{/admin/reports}" class="nav-btn">신고 관리 페이지</a>
+        <a class="nav-btn" th:href="@{/admin/student-verifications}">학생증 인증 관리</a>
+        <a class="nav-btn" th:href="@{/admin/scores}">유저 점수 관리</a>
+        <a class="nav-btn" th:href="@{/admin/groups}">그룹 안전 상태 관리</a>
+        <a class="nav-btn" th:href="@{/admin/reports}">신고 관리 페이지</a>
     </div>
 
     <!-- 테이블 -->
@@ -167,9 +178,9 @@
             <td th:text="${g.name}"></td>
             <td th:text="${g.safetyTag}"></td>
             <td>
-                <form th:action="@{/admin/groups/update}" method="post" style="display:inline-flex; gap:5px;">
-                    <input type="hidden" name="groupId" th:value="${g.id}" />
-                    <input type="number" name="newScore" th:value="${g.score}" min="0" max="100" step="0.01"/>
+                <form method="post" style="display:inline-flex; gap:5px;" th:action="@{/admin/groups/update}">
+                    <input name="groupId" th:value="${g.id}" type="hidden"/>
+                    <input max="100" min="0" name="newScore" step="0.01" th:value="${g.score}" type="number"/>
                     <button type="submit">변경</button>
                 </form>
             </td>

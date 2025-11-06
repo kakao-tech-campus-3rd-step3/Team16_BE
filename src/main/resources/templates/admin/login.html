@@ -58,9 +58,9 @@
 <body>
 <div class="login-box">
     <h2>관리자 로그인</h2>
-    <form th:action="@{/admin/login}" method="post">
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        <input type="password" name="password" placeholder="비밀번호 입력" required/>
+    <form method="post" th:action="@{/admin/login}">
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+        <input name="password" placeholder="비밀번호 입력" required type="password"/>
         <button type="submit">로그인</button>
     </form>
 </div>

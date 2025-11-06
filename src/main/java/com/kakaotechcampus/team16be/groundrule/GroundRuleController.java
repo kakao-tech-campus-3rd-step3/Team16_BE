@@ -24,48 +24,48 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "그라운드룰 API", description = "그라운드룰 관련 API")
 public class GroundRuleController {
 
-  private final GroundRuleService groundRuleService;
+    private final GroundRuleService groundRuleService;
 
-  @Operation(summary = "그라운드룰 등록", description = "특정 모임에 새로운 그라운드룰을 등록합니다.")
-  @PostMapping("/{groupId}/rule")
-  public ResponseEntity<GroundRuleResponseDto> addGroundRule(
-      @PathVariable Long groupId,
-      @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-                         .body(groundRuleService.saveGroundRule(groupId, groundRuleRequestDto));
-  }
+    @Operation(summary = "그라운드룰 등록", description = "특정 모임에 새로운 그라운드룰을 등록합니다.")
+    @PostMapping("/{groupId}/rule")
+    public ResponseEntity<GroundRuleResponseDto> addGroundRule(
+            @PathVariable Long groupId,
+            @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(groundRuleService.saveGroundRule(groupId, groundRuleRequestDto));
+    }
 
-  @Operation(summary = "그라운드룰 수정", description = "특정 모임의 기존 그라운드룰을 수정합니다.")
-  @PutMapping("/{groupId}/rule/{ruleId}")
-  public ResponseEntity<GroundRuleResponseDto> updateGroundRule(
-      @PathVariable Long groupId,
-      @PathVariable Long ruleId,
-      @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
-    return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, ruleId, groundRuleRequestDto));
-  }
+    @Operation(summary = "그라운드룰 수정", description = "특정 모임의 기존 그라운드룰을 수정합니다.")
+    @PutMapping("/{groupId}/rule/{ruleId}")
+    public ResponseEntity<GroundRuleResponseDto> updateGroundRule(
+            @PathVariable Long groupId,
+            @PathVariable Long ruleId,
+            @RequestBody GroundRuleRequestDto groundRuleRequestDto) {
+        return ResponseEntity.ok(groundRuleService.updateGroundRule(groupId, ruleId, groundRuleRequestDto));
+    }
 
-  @Operation(summary = "그라운드룰 조회", description = "특정 모임의 그라운드룰을 조회합니다.")
-  @GetMapping("/{groupId}/rule/{ruleId}")
-  public ResponseEntity<GroundRuleResponseDto> getGroundRule(
-      @PathVariable Long groupId,
-      @PathVariable Long ruleId
-  ) {
-    return ResponseEntity.ok(groundRuleService.getGroundRule(groupId, ruleId));
-  }
-
-  @Operation(summary = "그라운드룰 목록 조회", description = "특정 모임의 그라운드룰의 목록을 조회합니다.")
-  @GetMapping("/{groupId}/rule")
-  public ResponseEntity<List<GroundRuleResponseDto>> getAllGroundRules(@PathVariable Long groupId){
-    return ResponseEntity.ok(groundRuleService.getAllGroundRules(groupId));
-  }
-
-  @Operation(summary = "그라운드룰 삭제", description = "특정 모임의 그라운드룰을 삭제합니다.")
-  @DeleteMapping("/{groupId}/rule/{ruleId}")
-  public ResponseEntity<Void> deleteGroundRule(
-      @PathVariable Long groupId,
-      @PathVariable Long ruleId
+    @Operation(summary = "그라운드룰 조회", description = "특정 모임의 그라운드룰을 조회합니다.")
+    @GetMapping("/{groupId}/rule/{ruleId}")
+    public ResponseEntity<GroundRuleResponseDto> getGroundRule(
+            @PathVariable Long groupId,
+            @PathVariable Long ruleId
     ) {
-    groundRuleService.deleteGroundRule(groupId, ruleId);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-  }
+        return ResponseEntity.ok(groundRuleService.getGroundRule(groupId, ruleId));
+    }
+
+    @Operation(summary = "그라운드룰 목록 조회", description = "특정 모임의 그라운드룰의 목록을 조회합니다.")
+    @GetMapping("/{groupId}/rule")
+    public ResponseEntity<List<GroundRuleResponseDto>> getAllGroundRules(@PathVariable Long groupId) {
+        return ResponseEntity.ok(groundRuleService.getAllGroundRules(groupId));
+    }
+
+    @Operation(summary = "그라운드룰 삭제", description = "특정 모임의 그라운드룰을 삭제합니다.")
+    @DeleteMapping("/{groupId}/rule/{ruleId}")
+    public ResponseEntity<Void> deleteGroundRule(
+            @PathVariable Long groupId,
+            @PathVariable Long ruleId
+    ) {
+        groundRuleService.deleteGroundRule(groupId, ruleId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

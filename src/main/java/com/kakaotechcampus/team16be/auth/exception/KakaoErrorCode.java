@@ -18,8 +18,8 @@ public enum KakaoErrorCode implements ErrorCode {
     REDIRECT_URI_MISMATCH(HttpStatus.BAD_REQUEST, "AUTH-015", "redirect_uri가 애플리케이션 설정과 일치하지 않습니다."),
 
     // 500 INTERNAL_SERVER_ERROR
-    TOKEN_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"AUTH-003", "카카오 토큰 요청에 실패했습니다."),
-    USER_INFO_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"AUTH-004", "카카오 사용자 정보 요청에 실패했습니다."),
+    TOKEN_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-003", "카카오 토큰 요청에 실패했습니다."),
+    USER_INFO_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-004", "카카오 사용자 정보 요청에 실패했습니다."),
     CONNECTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-005", "카카오 서버와의 연결에 실패했습니다."),
     TOKEN_REQUEST_FAILED_HTTP_STATUS(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-006", "카카오 토큰 요청이 2xx 상태 코드가 아닙니다."),
     TOKEN_REQUEST_FAILED_NULL_BODY(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-007", "카카오 토큰 API 응답 body가 null입니다."),

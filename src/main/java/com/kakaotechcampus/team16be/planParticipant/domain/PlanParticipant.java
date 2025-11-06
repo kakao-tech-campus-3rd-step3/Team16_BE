@@ -23,38 +23,38 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PlanParticipant {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @JoinColumn(name = "plan_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Plan plan;
+    @JoinColumn(name = "plan_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Plan plan;
 
-  @JoinColumn(name = "user_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-  @Column(name = "participant_status", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private ParticipantStatus participantStatus;
+    @Column(name = "participant_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ParticipantStatus participantStatus;
 
-  @Builder
-  public PlanParticipant(Plan plan, Group group, User user, ParticipantStatus participantStatus) {
-    this.plan = plan;
-    this.user = user;
-    this.participantStatus = participantStatus;
-  }
+    @Builder
+    public PlanParticipant(Plan plan, Group group, User user, ParticipantStatus participantStatus) {
+        this.plan = plan;
+        this.user = user;
+        this.participantStatus = participantStatus;
+    }
 
-  public static PlanParticipant create(Plan plan, User user) {
-    return PlanParticipant.builder()
-                          .plan(plan)
-                          .user(user)
-                          .participantStatus(ParticipantStatus.ATTENDING)
-                          .build();
-  }
+    public static PlanParticipant create(Plan plan, User user) {
+        return PlanParticipant.builder()
+                .plan(plan)
+                .user(user)
+                .participantStatus(ParticipantStatus.ATTENDING)
+                .build();
+    }
 
-  public void withdraw() {
-    this.participantStatus = ParticipantStatus.WITHDRAWN;
-  }
+    public void withdraw() {
+        this.participantStatus = ParticipantStatus.WITHDRAWN;
+    }
 }

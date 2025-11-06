@@ -2,7 +2,6 @@ package com.kakaotechcampus.team16be.groupMember.dto;
 
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupRole;
-
 import java.util.List;
 
 public record GroupMemberDto(

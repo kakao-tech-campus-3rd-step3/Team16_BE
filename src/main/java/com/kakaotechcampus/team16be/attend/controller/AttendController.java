@@ -1,19 +1,26 @@
 package com.kakaotechcampus.team16be.attend.controller;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
-import com.kakaotechcampus.team16be.attend.dto.*;
+import com.kakaotechcampus.team16be.attend.dto.GetAttendeesResponse;
+import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
+import com.kakaotechcampus.team16be.attend.dto.ResponseAbsentAttendsDto;
+import com.kakaotechcampus.team16be.attend.dto.ResponseAttendDto;
+import com.kakaotechcampus.team16be.attend.dto.ResponseAttendsDto;
 import com.kakaotechcampus.team16be.attend.service.AttendService;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -25,21 +32,24 @@ public class AttendController {
 
     @Operation(summary = "그룹 일정 출석", description = "유저가 특정 그룹의 일정에 출석합니다.")
     @PostMapping("/{groupId}/attend")
-    public ResponseEntity<ResponseAttendDto> attendGroup(@LoginUser User user, @PathVariable Long groupId, @RequestBody RequestAttendDto requestAttendDto) {
+    public ResponseEntity<ResponseAttendDto> attendGroup(@LoginUser User user, @PathVariable Long groupId,
+                                                         @RequestBody RequestAttendDto requestAttendDto) {
 
         Attend attend = attendService.attendGroup(user, groupId, requestAttendDto);
 
-
-        return ResponseEntity.ok(ResponseAttendDto.success(HttpStatus.OK, "그룹 출석이 완료되었습니다. 출석 상태 : " + attend.getAttendStatus()));
+        return ResponseEntity.ok(
+                ResponseAttendDto.success(HttpStatus.OK, "그룹 출석이 완료되었습니다. 출석 상태 : " + attend.getAttendStatus()));
     }
 
 
     @Operation(summary = "그룹 일정 전체 출석 조회", description = "특정 그룹의 모든 일정 출석 정보를 조회합니다.")
     @GetMapping("/{groupId}/attends/{planId}")
-    public ResponseEntity<GetAttendeesResponse> getAllAttends(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long planId) {
+    public ResponseEntity<GetAttendeesResponse> getAllAttends(@LoginUser User user, @PathVariable Long groupId,
+                                                              @PathVariable Long planId) {
         List<Attend> allAttends = attendService.getAllAttends(user, groupId, planId);
         List<ResponseAttendsDto> attendsDtos = ResponseAttendsDto.from(allAttends);
-        boolean isUserAttended = allAttends.stream().anyMatch(attend -> attend.getGroupMember().getUser().getId().equals(user.getId()));
+        boolean isUserAttended = allAttends.stream()
+                .anyMatch(attend -> attend.getGroupMember().getUser().getId().equals(user.getId()));
 
         return ResponseEntity.ok(GetAttendeesResponse.from(attendsDtos, isUserAttended));
     }
@@ -52,9 +62,10 @@ public class AttendController {
         return ResponseEntity.ok(ResponseAttendsDto.from(userAttends));
     }
 
-    @Operation(summary = "일정별 개인 출석 조회",description = "특정 일정에 대한 개인 출석 정보를 조회합니다.")
+    @Operation(summary = "일정별 개인 출석 조회", description = "특정 일정에 대한 개인 출석 정보를 조회합니다.")
     @GetMapping("/{groupId}/attend/{planId}")
-    public ResponseEntity<ResponseAttendsDto> getUserAttendsByPlan(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long planId) {
+    public ResponseEntity<ResponseAttendsDto> getUserAttendsByPlan(@LoginUser User user, @PathVariable Long groupId,
+                                                                   @PathVariable Long planId) {
         Attend userAttends = attendService.getAttendByPlan(user, groupId, planId);
 
         return ResponseEntity.ok(ResponseAttendsDto.from(userAttends));
@@ -62,10 +73,11 @@ public class AttendController {
 
     @Operation(summary = "결석한 인원 조회", description = "특정 그룹의 일정에 결석한 인원들을 조회합니다.")
     @GetMapping("/{groupId}/attend/{planId}/absent")
-    public ResponseEntity<List<ResponseAbsentAttendsDto>> getAbsentMembers(@LoginUser User user, @PathVariable Long groupId, @PathVariable Long planId) {
+    public ResponseEntity<List<ResponseAbsentAttendsDto>> getAbsentMembers(@LoginUser User user,
+                                                                           @PathVariable Long groupId,
+                                                                           @PathVariable Long planId) {
         List<Attend> absentMembers = attendService.getAbsentMembers(user, groupId, planId);
 
         return ResponseEntity.ok(ResponseAbsentAttendsDto.from(absentMembers));
     }
 }
-

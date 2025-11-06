@@ -30,7 +30,6 @@ public class KakaoAuthService {
         KakaoUserInfoResponse kakaoUserInfo = kakaoAuthClient.requestKakaoUserInfo(kakaoAccessToken);
         String kakaoId = String.valueOf(kakaoUserInfo.kakaoId());
 
-
         // 3. kakaoId로 기존 회원 조회, 없으면 kakaoId 저장
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> {

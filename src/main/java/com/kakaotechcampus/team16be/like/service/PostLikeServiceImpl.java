@@ -1,11 +1,11 @@
 package com.kakaotechcampus.team16be.like.service;
 
 import com.kakaotechcampus.team16be.like.domain.Like;
+import com.kakaotechcampus.team16be.like.dto.PostLikeRequest;
 import com.kakaotechcampus.team16be.like.dto.PostLikeResponse;
 import com.kakaotechcampus.team16be.like.exception.LikeErrorCode;
 import com.kakaotechcampus.team16be.like.exception.LikeException;
 import com.kakaotechcampus.team16be.like.repository.PostLikeRepository;
-import com.kakaotechcampus.team16be.like.dto.PostLikeRequest;
 import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.post.service.PostService;
 import com.kakaotechcampus.team16be.user.domain.User;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PostLikeServiceImpl implements  PostLikeService {
+public class PostLikeServiceImpl implements PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
     private final PostService postService;

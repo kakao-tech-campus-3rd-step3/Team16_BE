@@ -5,20 +5,23 @@ import com.kakaotechcampus.team16be.auth.dto.KakaoTokenResponse;
 import com.kakaotechcampus.team16be.auth.dto.KakaoUserInfoResponse;
 import com.kakaotechcampus.team16be.auth.exception.KakaoErrorCode;
 import com.kakaotechcampus.team16be.auth.exception.KakaoException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class KakaoAuthClient {
 
     /**
      * 인가 코드(code)를 사용하여 카카오에서 Access Token 요청
+     *
      * @param code 카카오 서버로부터 받은 인가 코드
      * @return KaKaoTokenResponse 액세스 토큰 정보
      */
@@ -104,6 +108,7 @@ public class KakaoAuthClient {
 
     /**
      * Access Token을 사용하여 카카오에서 kakaoId 조회
+     *
      * @param accessToken 카카오에서 발급받은 Access Token
      * @return kakaoId
      */
