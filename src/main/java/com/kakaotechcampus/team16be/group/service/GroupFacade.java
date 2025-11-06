@@ -22,7 +22,7 @@ public class GroupFacade {
 
         return findGroups.stream()
                 .map(group -> {
-                    String fullUrl = s3UploadPresignedUrlService.getPublicUrl(group.getCoverImageUrl());
+                    String fullUrl = s3UploadPresignedUrlService.getGroupPublicUrl(group.getCoverImageUrl());
                     return ResponseGroupListDto.from(group, fullUrl);
                 }).toList();
     }
@@ -30,7 +30,7 @@ public class GroupFacade {
     @Transactional(readOnly = true)
     public ResponseSingleGroupDto getGroup(Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
-        String fullUrl = s3UploadPresignedUrlService.getPublicUrl(targetGroup.getCoverImageUrl());
+        String fullUrl = s3UploadPresignedUrlService.getGroupPublicUrl(targetGroup.getCoverImageUrl());
         return ResponseSingleGroupDto.from(targetGroup, fullUrl);
     }
 }

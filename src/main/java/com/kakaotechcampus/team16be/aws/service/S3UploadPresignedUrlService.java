@@ -27,6 +27,8 @@ public class S3UploadPresignedUrlService {
     private final GroupService groupService;
     @Value("${cloud.aws.s3.default-image-url}")
     private String defaultCoverImageUrl;
+    @Value("${DEFAULT_GROUP_IMAGE}")
+    private String defaultGroupImage;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -78,7 +80,7 @@ public class S3UploadPresignedUrlService {
         amazonS3Client.deleteObject(deleteObjectRequest);
     }
 
-    public String getPublicUrl(String fileName) {
+    public String getUserPublicUrl(String fileName) {
         if (fileName == null) {
             return null;
         } else if (fileName.isEmpty()) {
@@ -86,6 +88,18 @@ public class S3UploadPresignedUrlService {
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
+
+    public String getGroupPublicUrl(String fileName) {
+        if (fileName == null) {
+            return null;
+        } else if (fileName.isEmpty()) {
+            return amazonS3Client.getUrl(bucket, defaultGroupImage).toString();
+        }
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+
+
 
     public String getSecureUrl(String fileName) {
         if (fileName == null) {

@@ -105,7 +105,7 @@ public class UserService {
         if (profileImageUrl == null) {
             return null;
         }
-        return s3UploadPresignedUrlService.getPublicUrl(profileImageUrl);
+        return s3UploadPresignedUrlService.getUserPublicUrl(profileImageUrl);
     }
 
     private User getUser(Long userId) {
@@ -155,7 +155,7 @@ public class UserService {
                 "memberOf", memberGroupIds
         );
 
-        String profileImageUrl = s3UploadPresignedUrlService.getPublicUrl(user.getProfileImageUrl());
+        String profileImageUrl = s3UploadPresignedUrlService.getUserPublicUrl(user.getProfileImageUrl());
         return UserInfoResponse.of(user, groups, profileImageUrl);
     }
 

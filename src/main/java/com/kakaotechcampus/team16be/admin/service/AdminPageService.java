@@ -32,7 +32,7 @@ public class AdminPageService {
                 .map(user -> new AdminUserVerificationView(
                         user.getId(),
                         user.getNickname(),
-                        s3Service.getPublicUrl(user.getStudentIdImageUrl()),
+                        s3Service.getUserPublicUrl(user.getStudentIdImageUrl()),
                         user.getVerificationStatus().name()
                 ))
                 .toList();
