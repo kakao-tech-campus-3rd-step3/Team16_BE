@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
         groupMember.checkUserIsActive();
 
         Post post = Post.createPost(
-                user.getNickname(),
+                user,
                 targetGroup,
                 createPostRequest.title(),
                 createPostRequest.content(),
@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
         );
 
         LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
-        boolean hasAlreadyPostedToday = postRepository.existsByAuthorAndCreatedAtAfter(user.getNickname(), startOfToday);
+        boolean hasAlreadyPostedToday = postRepository.existsByAuthorAndCreatedAtAfter(user, startOfToday);
 
         Post savedPost = postRepository.save(post);
 
@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findByAuthorAndId(User user, Long postId) {
-        return postRepository.findByAuthorAndId(user.getNickname(), postId)
+        return postRepository.findByAuthorAndId(user, postId)
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
     }
 

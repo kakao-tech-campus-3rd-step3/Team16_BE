@@ -122,8 +122,7 @@ public class ReportServiceImpl implements ReportService {
                         .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
 
                 Group targetGroup = post.getGroup();
-                User targetUser = userRepository.findByNickname(post.getAuthor())
-                        .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+                User targetUser = post.getAuthor();
 
                 if (targetUser == null) {
                     throw new UserException(UserErrorCode.USER_NOT_FOUND);
