@@ -64,8 +64,8 @@ public class CommentFacadeService {
                 .map(comment -> {
                     String profileImageKey = comment.getUser().getProfileImageUrl();
                     String publicUrl = (profileImageKey != null && !profileImageKey.isEmpty())
-                            ? s3UploadPresignedUrlService.getPublicUrl(profileImageKey)
-                            : s3UploadPresignedUrlService.getPublicUrl("");
+                            ? s3UploadPresignedUrlService.getUserPublicUrl(profileImageKey)
+                            : s3UploadPresignedUrlService.getUserPublicUrl("");
                     Long parentId = (comment.getParentComment() != null) ? comment.getParentComment().getId() : null;
 
                     return new CommentResponse(

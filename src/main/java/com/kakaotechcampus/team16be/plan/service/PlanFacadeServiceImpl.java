@@ -1,12 +1,9 @@
 package com.kakaotechcampus.team16be.plan.service;
 
-import com.kakaotechcampus.team16be.attend.service.AttendService;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.common.eventListener.groupEvent.IncreaseScoreByPlanning;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
-import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
-import com.kakaotechcampus.team16be.notification.service.NotificationService;
 import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Location;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
@@ -14,7 +11,6 @@ import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
 import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
 import com.kakaotechcampus.team16be.plan.exception.PlanErrorCode;
 import com.kakaotechcampus.team16be.plan.exception.PlanException;
-import com.kakaotechcampus.team16be.planParticipant.dto.PlanParticipantResponseDto;
 import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import java.util.List;
@@ -70,8 +66,8 @@ public class PlanFacadeServiceImpl {
                 .map(plan -> {
                     Long headCount = planParticipantService.countByPlanId(plan.getId());
                     String fullUrl = (plan.getCoverImg() != null && !plan.getCoverImg().isEmpty())
-                            ? s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg())
-                            : s3UploadPresignedUrlService.getPublicUrl("");
+                            ? s3UploadPresignedUrlService.getUserPublicUrl(plan.getCoverImg())
+                            : s3UploadPresignedUrlService.getUserPublicUrl("");
                     return PlanResponseDto.from(plan, fullUrl, headCount);
                 })
                 .toList();
@@ -82,8 +78,8 @@ public class PlanFacadeServiceImpl {
                 .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
 
         String fullUrl = (plan.getCoverImg() != null && !plan.getCoverImg().isEmpty())
-                ? s3UploadPresignedUrlService.getPublicUrl(plan.getCoverImg())
-                : s3UploadPresignedUrlService.getPublicUrl("");
+                ? s3UploadPresignedUrlService.getUserPublicUrl(plan.getCoverImg())
+                : s3UploadPresignedUrlService.getUserPublicUrl("");
 
         Long headCount = planParticipantService.countByPlanId(plan.getId());
 

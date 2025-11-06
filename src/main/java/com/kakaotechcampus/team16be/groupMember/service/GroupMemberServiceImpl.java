@@ -108,7 +108,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                     User targetMember = member.getUser();
                     String fileName = targetMember.getProfileImageUrl();
 
-                    String publicUrl = s3UploadPresignedUrlService.getPublicUrl(fileName);
+                    String publicUrl = s3UploadPresignedUrlService.getGroupPublicUrl(fileName);
 
                     return new SignResponseDto(
                             targetMember.getId(),
@@ -132,9 +132,9 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                     String originalUrl = memberUser.getProfileImageUrl();
                     String publicUrl;
                     if (originalUrl == null || originalUrl.isEmpty()) {
-                        publicUrl = s3UploadPresignedUrlService.getPublicUrl("");
+                        publicUrl = s3UploadPresignedUrlService.getUserPublicUrl("");
                     } else {
-                        publicUrl = s3UploadPresignedUrlService.getPublicUrl(originalUrl);
+                        publicUrl = s3UploadPresignedUrlService.getUserPublicUrl(originalUrl);
                     }
 
                     return new GroupMemberDto(
