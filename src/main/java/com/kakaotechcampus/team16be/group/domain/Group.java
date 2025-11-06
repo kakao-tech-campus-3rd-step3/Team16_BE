@@ -16,7 +16,6 @@ import java.math.RoundingMode;
 import lombok.Builder;
 import lombok.Getter;
 
-
 @Entity
 @Getter
 @Table(name = "groups")
@@ -27,7 +26,6 @@ public class Group extends BaseEntity {
     private final static Double POSTING = 0.05;
     private final static Double CAUTION_GROUP = 72.0;
     private final static Double DANGER_GROUP = 45.0;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +38,6 @@ public class Group extends BaseEntity {
     private String intro;
 
     private String coverImageUrl;
-
-    private String category;
 
     @Min(1)
     private Integer capacity;

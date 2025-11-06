@@ -6,6 +6,7 @@ import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.exception.AttendErrorCode;
 import com.kakaotechcampus.team16be.attend.exception.AttendException;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
+import com.kakaotechcampus.team16be.common.eventListener.userEvent.DecreaseScoreByAbsent;
 import com.kakaotechcampus.team16be.common.eventListener.userEvent.IncreaseScoreByAttendance;
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
@@ -13,6 +14,8 @@ import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
+import com.kakaotechcampus.team16be.planParticipant.dto.PlanParticipantResponseDto;
+import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantService;
 import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,6 +35,7 @@ public class AttendServiceImpl implements AttendService{
     private final PlanService planService;
     private final GroupMemberService groupMemberService;
     private final GroupService groupService;
+    private final PlanParticipantService planParticipantService;
     private final ApplicationEventPublisher eventPublisher;
 
     private static final ZoneId SEOUL_ZONE_ID = ZoneId.of("Asia/Seoul");
@@ -46,12 +50,17 @@ public class AttendServiceImpl implements AttendService{
 
         Plan plan = planService.findByGroupIdAndPlanId(groupId, requestAttendDto.planId());
 
+        List<PlanParticipantResponseDto> allParticipants = planParticipantService.getAllParticipants(plan.getId());
+        if (allParticipants.isEmpty()) {
+            throw new AttendException(AttendErrorCode.ATTEND_NOT_FOUND);
+        }
+
         Optional<Attend> existingAttend = attendRepository.findByPlanAndGroupMember(plan, groupMember);
 
         Attend attend;
         if (existingAttend.isPresent()) {
             attend = existingAttend.get();
-            if (attend.getAttendStatus() == AttendStatus.PENDING) {
+            if (attend.getAttendStatus() == AttendStatus.HOLDING) {
                 attend.updateStatus(AttendStatus.PRESENT);
             } else {
                 throw new AttendException(AttendErrorCode.ATTEND_ALREADY_EXIST);
@@ -63,10 +72,18 @@ public class AttendServiceImpl implements AttendService{
         LocalDateTime startOfToday = LocalDate.now(SEOUL_ZONE_ID).atStartOfDay();
         boolean hasAlreadyAttendedToday = attendRepository.existsByGroupMember_UserAndCreatedAtAfter(user, startOfToday);
 
+
         Attend savedAttend = attendRepository.save(attend);
 
-        if (!hasAlreadyAttendedToday) {
-            eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
+
+        if (hasAlreadyAttendedToday) {
+            if (savedAttend.getAttendStatus().equals(AttendStatus.PRESENT)) {
+                eventPublisher.publishEvent(new IncreaseScoreByAttendance(user));
+            }
+            if (savedAttend.getAttendStatus().equals(AttendStatus.ABSENT)) {
+                eventPublisher.publishEvent(new DecreaseScoreByAbsent(user));
+            }
+
         }
 
         return savedAttend;
@@ -123,23 +140,5 @@ public class AttendServiceImpl implements AttendService{
         attendRepository.saveAll(absentAttendees);
     }
 
-    @Override
-    public void attendPending(GroupMember targetGroupMember, Plan plan) {
-
-        Attend attend = Attend.pendingAttendPlan(targetGroupMember, plan);
-
-        attendRepository.save(attend);
-    }
-
-    @Override
-    public List<Attend> findAllByPlanAndStatus(Plan plan, AttendStatus attendStatus) {
-        return attendRepository.findAllByPlanAndAttendStatus(plan, attendStatus);
-    }
-
-    @Transactional
-    @Override
-    public List<Object[]> findMissingAttendEntriesForActiveMembers(LocalDateTime now) {
-        return attendRepository.findMissingAttendEntriesForActiveMembers(now);
-    }
 
 }

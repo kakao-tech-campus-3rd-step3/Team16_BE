@@ -1,7 +1,7 @@
 package com.kakaotechcampus.team16be.planParticipant;
 
+import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.planParticipant.domain.PlanParticipant;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +19,6 @@ public interface PlanParticipantRepository extends JpaRepository<PlanParticipant
     List<PlanParticipant> findAllByPlanId(@Param("planId") Long planId);
 
     void deleteAllByUserId(Long userId);
+
+    List<PlanParticipant> findAllByPlan(Plan plan);
 }

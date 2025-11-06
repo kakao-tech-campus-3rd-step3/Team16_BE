@@ -16,6 +16,7 @@ import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {
 
-        List<Group> findGroups = groupRepository.findAll();
+      List<Group> findGroups = groupRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
         if (findGroups.isEmpty()) {
             throw new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND);
@@ -72,7 +73,8 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void deleteGroup(User user, Long groupId) {
-        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+        User leader = userRepository.findById(user.getId())
+                                    .orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
 
         Group targetGroup = findGroupById(groupId);
         targetGroup.checkLeader(leader);
@@ -85,7 +87,8 @@ public class GroupServiceImpl implements GroupService {
     public Group updateGroup(User user, Long groupId, UpdateGroupDto updateGroupDto) {
         Group targetGroup = findGroupById(groupId);
 
-        User leader = userRepository.findById(user.getId()).orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
+        User leader = userRepository.findById(user.getId())
+                                    .orElseThrow(()->new UserException(UserErrorCode.USER_NOT_FOUND));
 
         targetGroup.checkLeader(leader);
 
@@ -94,12 +97,12 @@ public class GroupServiceImpl implements GroupService {
         Integer updatedCapacity = updateGroupDto.capacity();
         targetGroup.update(updatedName, updatedIntro, updatedCapacity);
         return targetGroup;
-
     }
 
     @Override
     public Group findGroupById(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
+        return groupRepository.findById(groupId)
+                              .orElseThrow(() -> new GroupException(GroupErrorCode.GROUP_CANNOT_FOUND));
     }
 
 
@@ -107,7 +110,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group updateGroupImage(User user, Long groupId, UpdateGroupDto UpdateGroupDto) {
         Group targetGroup = findGroupById(groupId);
-        User leader = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        User leader = userRepository.findById(user.getId())
+                                    .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
         targetGroup.checkLeader(leader);
 
         String oldImgUrl = targetGroup.getCoverImageUrl();
@@ -116,7 +121,8 @@ public class GroupServiceImpl implements GroupService {
         targetGroup.changeCoverImage(updatedImgUrl);
 
         boolean isImageChanged = !Objects.equals(updatedImgUrl, oldImgUrl);
-        if (isImageChanged && oldImgUrl != null && !oldImgUrl.isEmpty()) {
+        if (isImageChanged && oldImgUrl != null && !oldImgUrl.isEmpty())
+        {
             eventPublisher.publishEvent(new ImageDeletedEvent(oldImgUrl));
         }
 
@@ -152,7 +158,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void updateGroupScoreAndTag(Group group, Double newScore) {
-        group.groupScoreUpdate(newScore);   // 점수 갱신
-        group.updateSafetyTagByScore();     // 태그 갱신
+        group.groupScoreUpdate(newScore);
+        group.updateSafetyTagByScore();
     }
 }

@@ -25,9 +25,4 @@ public interface AttendService {
 
     void saveAll(List<Attend> absentAttendees);
 
-    void attendPending(GroupMember targetGroupMember, Plan plan);
-
-    List<Attend> findAllByPlanAndStatus(Plan plan, AttendStatus attendStatus);
-
-    List<Object[]> findMissingAttendEntriesForActiveMembers(LocalDateTime now);
 }
