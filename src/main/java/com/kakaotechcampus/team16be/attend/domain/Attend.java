@@ -102,6 +102,7 @@ public class Attend extends BaseEntity {
     }
 
     public void updateStatus(AttendStatus attendStatus) {
+        this.attendTime = LocalDateTime.now();
         this.attendStatus = attendStatus;
     }
 }
