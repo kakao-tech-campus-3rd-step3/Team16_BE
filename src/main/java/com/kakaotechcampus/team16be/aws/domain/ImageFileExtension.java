@@ -11,8 +11,15 @@ import lombok.RequiredArgsConstructor;
 public enum ImageFileExtension {
 
     JPG("jpg"),
+    JPEG("jpeg"),
     PNG("png"),
-    HEIC("heic");
+    HEIC("heic"),
+    HEIF("heif"),
+    GIF("gif"),
+    BMP("bmp"),
+    TIFF("tiff"),
+    TIF("tif"),
+    WEBP("webp");
 
     private final String uploadExtension;
 }
