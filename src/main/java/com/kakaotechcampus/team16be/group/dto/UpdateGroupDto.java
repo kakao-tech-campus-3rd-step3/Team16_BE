@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UpdateGroupDto(
-        @Size(min = 2, max = 8, message = "모임 이름은 2자 이상 8자 이하입니다.")
+        @Size(min = 2, max = 10, message = "모임 이름은 2자 이상 10자 이하입니다.")
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$", message = "특수문자를 사용할 수 없습니다.")
         String name,
 
