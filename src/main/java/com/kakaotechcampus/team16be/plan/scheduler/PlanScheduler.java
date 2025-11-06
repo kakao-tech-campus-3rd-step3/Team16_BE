@@ -2,17 +2,18 @@ package com.kakaotechcampus.team16be.plan.scheduler;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
 import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
-import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.attend.service.AttendService;
-import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
-import com.kakaotechcampus.team16be.groupMember.service.GroupMemberService;
-import com.kakaotechcampus.team16be.plan.PlanRepository;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.plan.service.PlanService;
+import com.kakaotechcampus.team16be.planParticipant.domain.ParticipantStatus;
+import com.kakaotechcampus.team16be.planParticipant.service.PlanParticipantService;
+import com.kakaotechcampus.team16be.user.domain.User;
 import com.kakaotechcampus.team16be.user.service.UserService;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,69 +28,50 @@ public class PlanScheduler {
 
     private final PlanService planService;
     private final AttendService attendService;
-    private final GroupMemberService groupMemberService;
     private final UserService userService;
+    private final PlanParticipantService planParticipantService;
 
 
-    @Scheduled(cron = "15 * * * * *")
+    private static final int SCHEDULE_RATE_SECONDS = 60;
+    private static final int SCHEDULE_RATE_MILLISECONDS = SCHEDULE_RATE_SECONDS * 1000;
+
+    @Scheduled(fixedRate = SCHEDULE_RATE_MILLISECONDS)
     @Transactional
     public void ReflectAbsentAttendees() {
 
         LocalDateTime now = LocalDateTime.now();
 
-        List<Plan> endedPlans = planService.findAllByEndTimeBetween(now.minusMinutes(5), now);
+        List<Plan> endedPlans = planService.findAllByEndTimeBetween(now.minusHours(4), now);
 
         for (Plan plan : endedPlans) {
-
-            List<Attend> pendingAttendees = attendService.findAllByPlanAndStatus(plan, AttendStatus.PENDING);
-
-            for (Attend pendingAttend : pendingAttendees) {
-
-                pendingAttend.updateStatus(AttendStatus.ABSENT);
-                userService.decreaseScoreByAbsent(pendingAttend.getGroupMember().getUser());
-            }
-            List<GroupMember> allMembers = groupMemberService.getActiveMember(plan.getGroup());
-
-            Set<Long> attendedMemberIds = attendService.findAllByPlan(plan).stream()
-                    .map(attend -> attend.getGroupMember().getId())
+            Set<Long> attendingParticipantUserIds = planParticipantService.findAllByPlan(plan).stream()
+                    .filter(p -> p.getParticipantStatus() == ParticipantStatus.ATTENDING)
+                    .map(participant -> participant.getUser().getId())
                     .collect(Collectors.toSet());
 
-            List<Attend> absentAttendeesToCreate = allMembers.stream()
-                    .filter(member -> !attendedMemberIds.contains(member.getId()))
-                    .map(absentMember -> Attend.absentPlan(absentMember, plan))
-                    .toList();
+            Map<Long, Attend> attendMap = attendService.findAllByPlan(plan).stream()
+                    .collect(Collectors.toMap(attend -> attend.getGroupMember().getId(), Function.identity()));
 
-            if (!absentAttendeesToCreate.isEmpty()) {
-                for (Attend absentAttendee : absentAttendeesToCreate) {
-                    userService.decreaseScoreByAbsent(absentAttendee.getGroupMember().getUser());
+            List<Attend> attendsToSaveOrUpdate = new ArrayList<>();
+            List<User> usersToPenalize = new ArrayList<>();
+
+            for (Attend existingAttend : attendMap.values()) {
+                if (existingAttend.getAttendStatus() == AttendStatus.HOLDING) {
+                    User memberUser = existingAttend.getGroupMember().getUser();
+                    if (attendingParticipantUserIds.contains(memberUser.getId())) {
+                        existingAttend.updateStatus(AttendStatus.ABSENT);
+                        attendsToSaveOrUpdate.add(existingAttend);
+                        usersToPenalize.add(memberUser);
+                    }
                 }
-                attendService.saveAll(absentAttendeesToCreate);
             }
-        }
-    }
 
-    @Scheduled(cron = "15 * * * * *")
-    @Transactional
-    public void createPendingAttendsForNewMembers() {
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Object[]> missingEntries = attendService.findMissingAttendEntriesForActiveMembers(now);
-
-        if (missingEntries.isEmpty()) {
-            return;
-        }
-
-        List<Attend> newAttends = missingEntries.stream()
-                .map(entry -> {
-                    GroupMember member = (GroupMember) entry[0];
-                    Plan plan = (Plan) entry[1];
-
-                    return Attend.pendingAttendPlan(member, plan);
-                })
-                .toList();
-
-        if (!newAttends.isEmpty()) {
-            attendService.saveAll(newAttends);
+            if (!attendsToSaveOrUpdate.isEmpty()) {
+                for (User user : usersToPenalize) {
+                    userService.decreaseScoreByAbsent(user);
+                }
+                attendService.saveAll(attendsToSaveOrUpdate);
+            }
         }
     }
 }

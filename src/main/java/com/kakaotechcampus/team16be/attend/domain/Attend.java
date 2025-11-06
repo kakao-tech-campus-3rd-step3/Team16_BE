@@ -84,22 +84,14 @@ public class Attend extends BaseEntity {
         }
     }
 
-
-    public static Attend absentPlan(GroupMember groupMember, Plan plan) {
+    public static Attend attendPlanHolding(GroupMember groupMember, Plan plan) {
         return Attend.absentBuilder()
                 .groupMember(groupMember)
                 .plan(plan)
-                .attendStatus(AttendStatus.ABSENT)
+                .attendStatus(AttendStatus.HOLDING)
                 .build();
     }
 
-    public static Attend pendingAttendPlan(GroupMember targetGroupMember, Plan plan) {
-        return Attend.absentBuilder()
-                .groupMember(targetGroupMember)
-                .plan(plan)
-                .attendStatus(AttendStatus.PENDING)
-                .build();
-    }
 
     public void updateStatus(AttendStatus attendStatus) {
         this.attendTime = LocalDateTime.now();

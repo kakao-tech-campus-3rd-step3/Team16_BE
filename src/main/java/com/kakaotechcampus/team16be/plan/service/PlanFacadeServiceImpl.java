@@ -51,13 +51,8 @@ public class PlanFacadeServiceImpl {
                 .location(location)
                 .build();
 
-        List<GroupMember> targetGroupMembers = groupMemberService.findByGroup(group);
 
         Plan savedPlan = planRepository.save(plan);
-
-        for (GroupMember targetGroupMember : targetGroupMembers) {
-            attendService.attendPending(targetGroupMember, plan);
-        }
 
         eventPublisher.publishEvent(new IncreaseScoreByPlanning(group));
         return savedPlan.getId();
