@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface AttendRepository extends JpaRepository<Attend, Long> {
 
@@ -27,4 +29,10 @@ public interface AttendRepository extends JpaRepository<Attend, Long> {
     List<Attend> findAllByPlanAndAttendStatus(Plan plan, AttendStatus attendStatus);
 
     boolean existsByGroupMember_UserAndCreatedAtAfter(User groupMemberUser, LocalDateTime createdAtAfter);
+
+    @Query("SELECT gm, p FROM GroupMember gm JOIN Plan p ON gm.group = p.group " +
+            "WHERE p.endTime > :now AND gm.status = 'ACTIVE' " +
+            "AND NOT EXISTS (SELECT 1 FROM Attend a WHERE a.groupMember = gm AND a.plan = p)")
+    List<Object[]> findMissingAttendEntriesForActiveMembers(@Param("now") LocalDateTime now);
+
 }

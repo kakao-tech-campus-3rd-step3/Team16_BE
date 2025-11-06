@@ -1,5 +1,6 @@
 package com.kakaotechcampus.team16be.plan;
 
+import com.kakaotechcampus.team16be.plan.service.PlanFacadeServiceImpl;
 import com.kakaotechcampus.team16be.common.annotation.LoginUser;
 import com.kakaotechcampus.team16be.plan.dto.PlanRequestDto;
 import com.kakaotechcampus.team16be.plan.dto.PlanResponseDto;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlanController {
 
   private final PlanService planService;
+  private final PlanFacadeServiceImpl attendFacadeService;
 
   @Operation(summary = "일정 생성", description = "그룹 내에서 새로운 일정을 생성합니다.")
   @PostMapping("/groups/{groupId}/plans")
@@ -36,7 +38,7 @@ public class PlanController {
       @LoginUser User user,
       @PathVariable Long groupId,
       @RequestBody PlanRequestDto planRequestDto){
-    Long planId = planService.createPlan(user, groupId, planRequestDto);
+    Long planId = attendFacadeService.createPlan(user, groupId, planRequestDto);
     URI location = URI.create(String.format("/api/groups/%d/plans/%d", groupId, planId));
     return ResponseEntity.created(location).build();
   }

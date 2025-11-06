@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.plan.scheduler;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.attend.service.AttendService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
@@ -28,33 +29,65 @@ public class PlanScheduler {
     private final GroupMemberService groupMemberService;
     private final UserService userService;
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "15 * * * * *")
     @Transactional
     public void ReflectAbsentAttendees() {
 
         LocalDateTime now = LocalDateTime.now();
-        List<Plan> endedPlans = planService.findAllByEndTimeBetween(now.minusMinutes(5), now);
 
+        List<Plan> endedPlans = planService.findAllByEndTimeBetween(now.minusMinutes(5), now);
 
         for (Plan plan : endedPlans) {
 
-            List<GroupMember> allMembers= groupMemberService.getActiveMember(plan.getGroup());
+            List<Attend> pendingAttendees = attendService.findAllByPlanAndStatus(plan, AttendStatus.PENDING);
+
+            for (Attend pendingAttend : pendingAttendees) {
+
+                pendingAttend.updateStatus(AttendStatus.ABSENT);
+                userService.decreaseScoreByAbsent(pendingAttend.getGroupMember().getUser());
+            }
+            List<GroupMember> allMembers = groupMemberService.getActiveMember(plan.getGroup());
 
             Set<Long> attendedMemberIds = attendService.findAllByPlan(plan).stream()
                     .map(attend -> attend.getGroupMember().getId())
                     .collect(Collectors.toSet());
 
-            List<Attend> absentAttendees = allMembers.stream()
+            List<Attend> absentAttendeesToCreate = allMembers.stream()
                     .filter(member -> !attendedMemberIds.contains(member.getId()))
                     .map(absentMember -> Attend.absentPlan(absentMember, plan))
                     .toList();
 
-            if (!absentAttendees.isEmpty()) {
-                for (Attend absentAttendee : absentAttendees) {
+            if (!absentAttendeesToCreate.isEmpty()) {
+                for (Attend absentAttendee : absentAttendeesToCreate) {
                     userService.decreaseScoreByAbsent(absentAttendee.getGroupMember().getUser());
                 }
-                attendService.saveAll(absentAttendees);
+                attendService.saveAll(absentAttendeesToCreate);
             }
+        }
+    }
+
+    @Scheduled(cron = "15 * * * * *")
+    @Transactional
+    public void createPendingAttendsForNewMembers() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Object[]> missingEntries = attendService.findMissingAttendEntriesForActiveMembers(now);
+
+        if (missingEntries.isEmpty()) {
+            return;
+        }
+
+        List<Attend> newAttends = missingEntries.stream()
+                .map(entry -> {
+                    GroupMember member = (GroupMember) entry[0];
+                    Plan plan = (Plan) entry[1];
+
+                    return Attend.pendingAttendPlan(member, plan);
+                })
+                .toList();
+
+        if (!newAttends.isEmpty()) {
+            attendService.saveAll(newAttends);
         }
     }
 }

@@ -11,14 +11,12 @@ import java.util.List;
 
 public interface PlanService {
 
-  Long createPlan(User user, Long groupId, PlanRequestDto planRequestDto);
-  PlanResponseDto getPlan(Long groupId, Long planId);
-  List<PlanResponseDto> getAllPlans(Long groupId);
-  void updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto);
-  void deletePlan(User user, Long groupId, Long planId);
-  Plan findByGroupIdAndPlanId(Long groupId, Long planId);
-  Plan findById(Long planId);
-
+    PlanResponseDto getPlan(Long groupId, Long planId);
+    List<PlanResponseDto> getAllPlans(Long groupId);
+    void updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto);
+    void deletePlan(User user, Long groupId, Long planId);
+    Plan findByGroupIdAndPlanId(Long groupId, Long planId);
+    Plan findById(Long planId);
     List<Plan> findAllByEndTimeBetween(LocalDateTime fiveMinutesAgo, LocalDateTime now);
 
 }
