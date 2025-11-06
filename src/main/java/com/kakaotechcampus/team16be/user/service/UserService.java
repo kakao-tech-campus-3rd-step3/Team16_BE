@@ -1,8 +1,12 @@
 package com.kakaotechcampus.team16be.user.service;
 
+import com.kakaotechcampus.team16be.attend.repository.AttendRepository;
 import com.kakaotechcampus.team16be.auth.dto.StudentVerificationStatusResponse;
 import com.kakaotechcampus.team16be.auth.dto.UpdateStudentIdImageRequest;
 import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
+import com.kakaotechcampus.team16be.comment.repository.CommentRepository;
+import com.kakaotechcampus.team16be.groundrule.GroundRuleRepository;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
@@ -38,6 +42,17 @@ public class UserService {
     private final S3UploadPresignedUrlService s3UploadPresignedUrlService;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final CommentRepository commentRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final AttendRepository attendRepository;
+    private final PlanParticipantRepository planParticipantRepository;
+    private final PlanRepository planRepository;
+    private final GroupReviewRepository groupReviewRepository;
+    private final MemberReviewRepository memberReviewRepository;
+    private final NotificationRepository notificationRepository;
+    private final ReportRepository reportRepository;
+    private final GroundRuleRepository groundRuleRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public void updateStudentIdImage(Long userId, UpdateStudentIdImageRequest request) {
@@ -215,3 +230,4 @@ public class UserService {
         userRepository.delete(user);
     }
 }
+

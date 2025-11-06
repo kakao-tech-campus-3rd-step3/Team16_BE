@@ -23,4 +23,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "LEFT JOIN FETCH c.parentComment " +
             "WHERE c.post = :post")
     List<Comment> findAllByPostWithUserAndParent(@Param("post") Post post);
+
+    void deleteAllByUserId(Long userId);
 }
