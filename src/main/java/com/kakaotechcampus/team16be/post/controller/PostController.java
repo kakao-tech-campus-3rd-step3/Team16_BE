@@ -31,15 +31,17 @@ public class PostController {
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
     @PostMapping("/posts")
-    public ResponseEntity<PostIdResponse> createPost(@LoginUser User user, @Valid @RequestBody CreatePostRequest createPostRequest) {
+    public ResponseEntity<PostIdResponse> createPost(@LoginUser User user,
+                                                     @Valid @RequestBody CreatePostRequest createPostRequest) {
         Post post = postService.createPost(user, createPostRequest);
         return ResponseEntity.ok(PostIdResponse.from(post.getId()));
     }
 
     @Operation(summary = "게시글 조회", description = "특정 게시글을 조회합니다.")
     @GetMapping("/{groupId}/posts/{postId}")
-    public ResponseEntity<GetPostResponse> getPost(@LoginUser User user,@PathVariable Long groupId, @PathVariable Long postId) {
-        GetPostResponse PostResponse = postFacadeService.getPost(user,groupId, postId);
+    public ResponseEntity<GetPostResponse> getPost(@LoginUser User user, @PathVariable Long groupId,
+                                                   @PathVariable Long postId) {
+        GetPostResponse PostResponse = postFacadeService.getPost(user, groupId, postId);
         return ResponseEntity.ok(PostResponse);
     }
 
@@ -60,18 +62,27 @@ public class PostController {
     @Operation(summary = "게시글 수정", description = "특정 게시글을 수정합니다.")
     @PutMapping("/posts/{postId}")
     public ResponseEntity<PostIdResponse> updatePost(@LoginUser User user,
-                                           @PathVariable Long postId,
-                                           @Valid @RequestBody UpdatePostRequest updatePostRequest
+                                                     @PathVariable Long postId,
+                                                     @Valid @RequestBody UpdatePostRequest updatePostRequest
     ) {
         Post post = postService.updatePost(user, postId, updatePostRequest);
         return ResponseEntity.ok(PostIdResponse.from(post.getId()));
     }
 
-  @Operation(summary = "피드 게시글 반환", description = "모든 게시글을 시간순으로 조회합니다.")
-  @GetMapping("/posts/feeds")
-  public ResponseEntity<List<GetPostResponse>> getFeeds(@LoginUser User user) {
-      List<GetPostResponse> posts = postFacadeService.getFeeds(user);
+    @Operation(summary = "피드 게시글 반환", description = "모든 게시글을 시간순으로 조회합니다.")
+    @GetMapping("/posts/feeds")
+    public ResponseEntity<List<GetPostResponse>> getFeeds(@LoginUser User user) {
+        List<GetPostResponse> posts = postFacadeService.getFeeds(user);
 
-      return ResponseEntity.ok(posts);
-  }
+        return ResponseEntity.ok(posts);
+    }
+
+    @Operation(summary = "게시글 운영자 삭제", description = "운영자가 특정 게시글을 삭제합니다.")
+    @DeleteMapping("/{groupId}/posts/{postId}/admin")
+    public ResponseEntity<Void> adminDeletePost(@LoginUser User user, @PathVariable Long groupId,
+                                                @PathVariable Long postId) {
+        postFacadeService.adminDeletePost(user, groupId, postId);
+        return ResponseEntity.noContent().build();
+    }
 }
+

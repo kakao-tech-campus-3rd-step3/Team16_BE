@@ -105,4 +105,14 @@ public class PostFacadeService {
                 })
                 .toList();
     }
+
+    public void adminDeletePost(User user, Long groupId, Long postId) {
+        Group targetGroup = groupService.findGroupById(groupId);
+        groupService.checkGroupLeader(user, targetGroup);
+
+        Post post = postRepository.findByIdAndGroup(postId, targetGroup)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        postRepository.delete(post);
+    }
 }
