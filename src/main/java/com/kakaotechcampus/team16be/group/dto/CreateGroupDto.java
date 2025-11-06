@@ -9,7 +9,6 @@ public record CreateGroupDto(
         @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$", message = "특수문자를 사용할 수 없습니다.")
         String name,
 
-
         @NotBlank
         @Size(max = 200, message = "소개는 200자 이하로 작성해야 합니다.")
         String intro,
