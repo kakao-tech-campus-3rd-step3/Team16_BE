@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     @Column(name = "kakao_id", unique = true, nullable = false, length = 64)
     private String kakaoId;
 
-    @Column(name = "nickname", unique = true, length = 40)
+    @Column(name = "nickname", length = 40)
     private String nickname;
 
     @Column(name = "profile_image_url", length = 512)
