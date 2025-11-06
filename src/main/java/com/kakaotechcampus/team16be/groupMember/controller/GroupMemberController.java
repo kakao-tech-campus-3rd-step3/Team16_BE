@@ -59,10 +59,20 @@ public class GroupMemberController {
 
     @Operation(summary = "그룹 가입 신청", description = "로그인한 유저가 그룹 가입 신청을 합니다.")
     @PostMapping("/sign")
-    public ResponseEntity<ResponseGroupMemberDto> signGroup(@LoginUser User user, @RequestBody SignGroupRequestDto signGroupRequestDto) {
-        GroupMember groupMember = groupMemberFacade.signGroup(user, signGroupRequestDto.groupId(), signGroupRequestDto.intro());
+    public ResponseEntity<ResponseGroupMemberDto> signGroup(
+            @LoginUser User user,
+            @RequestBody SignGroupRequestDto signGroupRequestDto
+    ) {
+        GroupMember groupMember = groupMemberFacade.signGroup(
+                user,
+                signGroupRequestDto.groupId(),
+                signGroupRequestDto.intro()
+        );
 
-        return ResponseEntity.ok(ResponseGroupMemberDto.success(HttpStatus.CREATED, "가입신청을 완료했습니다."));
+        return ResponseEntity.ok(ResponseGroupMemberDto.success(
+                HttpStatus.CREATED,
+                "가입신청을 완료했습니다.")
+        );
     }
 
     @Operation(summary = "그룹장 위임", description = "특정 유저에게 그룹장 권한을 위임합니다.")

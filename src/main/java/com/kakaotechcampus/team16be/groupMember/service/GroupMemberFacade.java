@@ -4,6 +4,7 @@ import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.group.service.GroupService;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
+import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberErrorCode;
 import com.kakaotechcampus.team16be.groupMember.exception.GroupMemberException;
 import com.kakaotechcampus.team16be.groupMember.repository.GroupMemberRepository;
 import com.kakaotechcampus.team16be.notification.service.NotificationService;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,9 +56,28 @@ public class GroupMemberFacade {
         User signedUser = userService.findById(user.getId());
         Group targetGroup = groupService.findGroupById(groupId);
 
+        Optional<GroupMember> existingMemberOpt = groupMemberRepository.findByUserAndGroup(signedUser, targetGroup);
+
+        if (existingMemberOpt.isPresent()) {
+            GroupMember existingMember = existingMemberOpt.get();
+
+            GroupMemberStatus status = existingMember.getStatus();
+            if (status.isBanned()) {
+                throw new GroupMemberException(GroupMemberErrorCode.MEMBER_HAS_BANNED);
+            } else if (status.isActive()) {
+                throw new GroupMemberException(GroupMemberErrorCode.GROUP_MEMBER_ALREADY_EXIST);
+            } else if (status.isPending()) {
+                throw new GroupMemberException(GroupMemberErrorCode.ALREADY_JOIN_REQUESTED);
+            } else if (status.isCanceled() || status.isLeft()) {
+                existingMember.updateIntroAndStatus(intro, GroupMemberStatus.PENDING);
+                notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
+                return groupMemberRepository.save(existingMember);
+            }
+        }
+
+        // 기존 레코드가 없으면 새로 생성
         GroupMember signMember = GroupMember.sign(signedUser, targetGroup, intro);
         notificationService.createGroupSignNotification(targetGroup.getLeader(), targetGroup);
-
         return groupMemberRepository.save(signMember);
     }
 
@@ -108,7 +127,7 @@ public class GroupMemberFacade {
 
         return targetMember;
     }
-  
+
     @Transactional
     public void allJoinGroup(User user, Long groupId) {
         Group targetGroup = groupService.findGroupById(groupId);
@@ -117,7 +136,7 @@ public class GroupMemberFacade {
         groupMemberRepository.findAllByGroupAndStatus(targetGroup, GroupMemberStatus.PENDING).forEach(member -> {
             member.acceptJoin();
             notificationService.createGroupJoinNotification(member.getUser(), targetGroup);
-    });
+        });
 
     }
 }
