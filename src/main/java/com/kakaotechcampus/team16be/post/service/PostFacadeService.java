@@ -48,8 +48,7 @@ public class PostFacadeService {
         String authorProfilePublicUrl = (authorProfileImageUrl != null && !authorProfileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(authorProfileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
 
 
-
-        return GetPostResponse.from(post, author,authorProfilePublicUrl,fullURLs, commentCount, postLikeResponse.isLiked());
+        return GetPostResponse.from(post, author, authorProfilePublicUrl, fullURLs, commentCount, postLikeResponse.isLiked());
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +93,15 @@ public class PostFacadeService {
                     User author = post.getAuthor();
                     String profileImageUrl = author.getProfileImageUrl();
                     String authorProfilePublicUrl = (profileImageUrl != null && !profileImageUrl.isEmpty()) ? s3UploadPresignedUrlService.getPublicUrl(profileImageUrl) : s3UploadPresignedUrlService.getPublicUrl("");
-                    return GetPostResponse.from(post,author, authorProfilePublicUrl,fullURLs, commentCount,postLikeResponse.isLiked());
+
+                    return GetPostResponse.from(
+                            post,
+                            author,
+                            authorProfilePublicUrl,
+                            fullURLs,
+                            commentCount,
+                            postLikeResponse.isLiked()
+                    );
                 })
                 .toList();
     }

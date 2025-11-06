@@ -4,6 +4,7 @@ import com.kakaotechcampus.team16be.post.domain.Post;
 import com.kakaotechcampus.team16be.user.domain.User;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public record GetPostResponse(
@@ -21,6 +22,11 @@ public record GetPostResponse(
         boolean isLike
 ) {
     public static GetPostResponse from(Post post, User author, String authorProfileImageUrl, List<String> fullURLs, Integer commentCount, boolean isLike) {
+        LocalDateTime createdAtKst = post.getCreatedAt()
+                .atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+                .toLocalDateTime();
+
         return new GetPostResponse(
                 post.getId(),
                 post.getGroup().getId(),
@@ -32,7 +38,7 @@ public record GetPostResponse(
                 fullURLs,
                 post.getLikeCount(),
                 commentCount,
-                post.getCreatedAt(),
+                createdAtKst,
                 isLike
         );
     }
