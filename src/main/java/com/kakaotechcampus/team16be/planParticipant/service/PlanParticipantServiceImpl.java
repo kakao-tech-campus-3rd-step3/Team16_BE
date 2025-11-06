@@ -33,11 +33,17 @@ public class PlanParticipantServiceImpl implements PlanParticipantService {
     @Override
     public Long attendPlan(Long userId, Long planId) {
         planParticipantRepository.findByUserIdAndPlanId(userId, planId).ifPresent(planParticipant -> {
-            throw new ParticipantException(ParticipantErrorCode.PARTICIPANT_NOT_FOUND);
+            throw new ParticipantException(ParticipantErrorCode.ALREADY_PARTICIPATING);
         });
 
         User user = userService.findById(userId);
         Plan plan = planService.findById(planId);
+
+        Long headCount = planParticipantRepository.countByPlanId(plan.getId());
+        
+        if (headCount >= plan.getCapacity()) {
+            throw new ParticipantException(ParticipantErrorCode.PLAN_CAPACITY_EXCEEDED);
+        }
 
         PlanParticipant newParticipant = PlanParticipant.create(plan, user);
         planParticipantRepository.save(newParticipant);

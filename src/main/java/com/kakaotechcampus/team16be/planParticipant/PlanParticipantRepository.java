@@ -18,6 +18,9 @@ public interface PlanParticipantRepository extends JpaRepository<PlanParticipant
     @Query("SELECT pp FROM PlanParticipant pp WHERE pp.plan.id = :planId AND pp.participantStatus = 'ATTENDING'")
     List<PlanParticipant> findAllByPlanId(@Param("planId") Long planId);
 
+    @Query("SELECT COUNT(pp) FROM PlanParticipant pp WHERE pp.plan.id = :planId AND pp.participantStatus = 'ATTENDING'")
+    Long countByPlanId(@Param("planId") Long planId);
+
     void deleteAllByUserId(Long userId);
 
     List<PlanParticipant> findAllByPlan(Plan plan);

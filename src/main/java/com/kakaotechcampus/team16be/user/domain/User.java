@@ -48,7 +48,7 @@ public class User extends BaseEntity {
     private String studentIdImageUrl;
 
     @Column(name = "score", nullable = false)
-    private Double score = 40.0;
+    private Double score = 80.0;
 
     protected User() {
     }
@@ -58,7 +58,7 @@ public class User extends BaseEntity {
         this.nickname = "익명";
         this.role = Role.USER;
         this.verificationStatus = VerificationStatus.UNVERIFIED;
-        this.score = 40.0;
+        this.score = 80.0;
     }
 
     @Builder
@@ -71,7 +71,7 @@ public class User extends BaseEntity {
         this.role = role;
         this.verificationStatus = verificationStatus;
         this.studentIdImageUrl = studentIdImageUrl;
-        this.score = 40.0;
+        this.score = 80.0;
     }
 
     public void updateStudentIdImageUrl(String fileName) {
