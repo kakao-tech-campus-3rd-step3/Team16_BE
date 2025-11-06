@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.attend.controller;
 
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.GetAttendeesResponse;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.dto.ResponseAbsentAttendsDto;
@@ -49,7 +50,10 @@ public class AttendController {
         List<Attend> allAttends = attendService.getAllAttends(user, groupId, planId);
         List<ResponseAttendsDto> attendsDtos = ResponseAttendsDto.from(allAttends);
         boolean isUserAttended = allAttends.stream()
-                .anyMatch(attend -> attend.getGroupMember().getUser().getId().equals(user.getId()));
+                .anyMatch(attend ->
+                        attend.getGroupMember().getUser().getId().equals(user.getId()) &&
+                                attend.getAttendStatus() == AttendStatus.PRESENT
+                );
 
         return ResponseEntity.ok(GetAttendeesResponse.from(attendsDtos, isUserAttended));
     }
