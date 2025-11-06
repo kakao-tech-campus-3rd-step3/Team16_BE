@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.post.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,7 +22,9 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -44,7 +47,7 @@ public class Post extends BaseEntity {
     private Long likeCount = 0L;
 
     @Builder
-    public Post(String author, Group group, String title, String content, List<String> imageUrls) {
+    public Post(User author, Group group, String title, String content, List<String> imageUrls) {
         this.author = author;
         this.group = group;
         this.title = title;
@@ -52,9 +55,9 @@ public class Post extends BaseEntity {
         this.imageUrls = imageUrls;
     }
 
-    public static Post createPost(String userNickname, Group group, String title, String content, List<String> imageUrls) {
+    public static Post createPost(User author, Group group, String title, String content, List<String> imageUrls) {
         return com.kakaotechcampus.team16be.post.domain.Post.builder()
-                .author(userNickname)
+                .author(author)
                 .group(group)
                 .title(title)
                 .content(content)

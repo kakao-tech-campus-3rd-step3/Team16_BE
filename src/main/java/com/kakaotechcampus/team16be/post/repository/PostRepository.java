@@ -2,6 +2,7 @@ package com.kakaotechcampus.team16be.post.repository;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.post.domain.Post;
+import com.kakaotechcampus.team16be.user.domain.User;
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,9 +16,9 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     List<Post> findByGroup(Group group);
 
-    Optional<Post> findByAuthorAndId(String author, Long id);
+    Optional<Post> findByAuthorAndId(User author, Long id);
 
-    boolean existsByAuthorAndCreatedAtAfter(String author, LocalDateTime startOfDay);
+    boolean existsByAuthorAndCreatedAtAfter(User author, LocalDateTime startOfDay);
 
     List<Post> findAllByOrderByCreatedAtDesc();
 
