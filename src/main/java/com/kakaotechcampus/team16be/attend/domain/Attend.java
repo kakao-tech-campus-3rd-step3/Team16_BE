@@ -1,6 +1,7 @@
 package com.kakaotechcampus.team16be.attend.domain;
 
 import com.kakaotechcampus.team16be.common.BaseEntity;
+import com.kakaotechcampus.team16be.group.domain.Group;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import jakarta.persistence.*;
@@ -38,6 +39,9 @@ public class Attend extends BaseEntity {
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;
 
+    @Column(name = "attend_time")
+    private LocalDateTime attendTime;
+
     protected Attend() {
     }
 
@@ -46,6 +50,7 @@ public class Attend extends BaseEntity {
         this.groupMember = groupMember;
         this.plan = plan;
         this.attendStatus = attendStatus;
+        this.attendTime = LocalDateTime.now();
     }
 
 
@@ -54,6 +59,7 @@ public class Attend extends BaseEntity {
         this.groupMember = groupMember;
         this.plan = plan;
         this.attendStatus = checkAttendStatus(plan);
+        this.attendTime = LocalDateTime.now();
     }
 
     public static Attend attendPlan(GroupMember groupMember,Plan plan) {
@@ -85,5 +91,17 @@ public class Attend extends BaseEntity {
                 .plan(plan)
                 .attendStatus(AttendStatus.ABSENT)
                 .build();
+    }
+
+    public static Attend pendingAttendPlan(GroupMember targetGroupMember, Plan plan) {
+        return Attend.absentBuilder()
+                .groupMember(targetGroupMember)
+                .plan(plan)
+                .attendStatus(AttendStatus.PENDING)
+                .build();
+    }
+
+    public void updateStatus(AttendStatus attendStatus) {
+        this.attendStatus = attendStatus;
     }
 }

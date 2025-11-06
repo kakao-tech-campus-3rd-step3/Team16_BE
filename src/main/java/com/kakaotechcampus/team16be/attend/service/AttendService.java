@@ -1,9 +1,13 @@
 package com.kakaotechcampus.team16be.attend.service;
 
+import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.attend.dto.RequestAttendDto;
 import com.kakaotechcampus.team16be.attend.domain.Attend;
+import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.user.domain.User;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AttendService {
@@ -21,6 +25,9 @@ public interface AttendService {
 
     void saveAll(List<Attend> absentAttendees);
 
+    void attendPending(GroupMember targetGroupMember, Plan plan);
 
+    List<Attend> findAllByPlanAndStatus(Plan plan, AttendStatus attendStatus);
 
+    List<Object[]> findMissingAttendEntriesForActiveMembers(LocalDateTime now);
 }

@@ -26,7 +26,9 @@ public class AttendController {
     @Operation(summary = "그룹 일정 출석", description = "유저가 특정 그룹의 일정에 출석합니다.")
     @PostMapping("/{groupId}/attend")
     public ResponseEntity<ResponseAttendDto> attendGroup(@LoginUser User user, @PathVariable Long groupId, @RequestBody RequestAttendDto requestAttendDto) {
+
         Attend attend = attendService.attendGroup(user, groupId, requestAttendDto);
+
 
         return ResponseEntity.ok(ResponseAttendDto.success(HttpStatus.OK, "그룹 출석이 완료되었습니다. 출석 상태 : " + attend.getAttendStatus()));
     }
