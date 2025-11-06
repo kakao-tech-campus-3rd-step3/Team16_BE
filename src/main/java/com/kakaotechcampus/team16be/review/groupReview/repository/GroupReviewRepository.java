@@ -13,4 +13,6 @@ public interface GroupReviewRepository extends JpaRepository<GroupReview, Intege
     List<GroupReview> findAllByUser(User user);
 
     List<GroupReview> findAllByGroup(Group group);
+
+    void deleteAllByUserId(Long userId);
 }

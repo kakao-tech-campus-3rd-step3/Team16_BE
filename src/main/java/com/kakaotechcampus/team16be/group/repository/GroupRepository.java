@@ -1,7 +1,7 @@
 package com.kakaotechcampus.team16be.group.repository;
 
 import com.kakaotechcampus.team16be.group.domain.Group;
-import java.util.List;
+import com.kakaotechcampus.team16be.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +16,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Query("SELECT g.id FROM Group g WHERE g.leader.id = :userId")
     List<String> findLeaderGroupIdsByUserId(@Param("userId") Long userId);
+
+    List<Group> findAllByLeader(User leader);
 }

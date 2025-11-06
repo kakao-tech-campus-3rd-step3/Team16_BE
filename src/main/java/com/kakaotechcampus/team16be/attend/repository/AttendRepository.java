@@ -5,11 +5,16 @@ import com.kakaotechcampus.team16be.attend.domain.AttendStatus;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.plan.domain.Plan;
 import com.kakaotechcampus.team16be.user.domain.User;
+
 import java.time.LocalDateTime;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,4 +39,7 @@ public interface AttendRepository extends JpaRepository<Attend, Long> {
             "AND NOT EXISTS (SELECT 1 FROM Attend a WHERE a.groupMember = gm AND a.plan = p)")
     List<Object[]> findMissingAttendEntriesForActiveMembers(@Param("now") LocalDateTime now);
 
+    @Modifying
+    @Query("DELETE FROM Attend a WHERE a.groupMember.user = :user")
+    void deleteAllByUser(User user);
 }

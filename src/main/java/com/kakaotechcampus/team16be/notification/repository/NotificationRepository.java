@@ -7,4 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findAllByReceiverOrderByCreatedAtDesc(User receiver);
+
+    void deleteAllByReceiverId(Long receiverId);
+
+    void deleteAllByRelatedUserId(Long relatedUserId);
 }

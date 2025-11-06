@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
+    void deleteAllByTargetId(Long targetId);
+
+    void deleteAllByReporterId(Long reporterId);
 }

@@ -32,24 +32,31 @@ public class Group extends BaseEntity {
     private final static Double REPORT = 3.00;
     private final static Double PLANNING = 0.1;
     private final static Double POSTING = 0.05;
-    private final static Double CAUTION_GROUP = 74.0;
-    private final static Double DANGER_GROUP = 62.0;
-    private final SafetyTag safetyTagFinal = SafetyTag.SAFE;
+    private final static Double CAUTION_GROUP = 72.0;
+    private final static Double DANGER_GROUP = 45.0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
     @NotBlank
     private String name;
+  
     @NotBlank
     private String intro;
+  
     private String coverImageUrl;
+  
     @Min(1)
     private Integer capacity;
+  
     @Min(1)
     private Integer currentCapacity = 1;
+  
     @NotNull
     @Enumerated(EnumType.STRING)
     private SafetyTag safetyTag = SafetyTag.SAFE;
+  
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaderUserId", nullable = false)
     private User leader;
@@ -69,9 +76,8 @@ public class Group extends BaseEntity {
         this.capacity = capacity;
         if (StringUtil.isNullOrEmpty(fileName)) {
             this.coverImageUrl = "";
-        } else {
+        } else
             this.coverImageUrl = fileName;
-        }
         this.score = 80.0;
     }
 
