@@ -14,4 +14,6 @@ public interface PlanParticipantService {
     void withdrawAttendance(Long userId, Long planId);
 
     List<PlanParticipant> findAllByPlan(Plan plan);
+
+    Long countByPlanId(Long id);
 }

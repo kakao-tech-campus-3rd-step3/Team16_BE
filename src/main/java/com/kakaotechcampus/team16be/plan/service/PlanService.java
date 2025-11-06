@@ -10,9 +10,6 @@ import java.util.List;
 
 public interface PlanService {
 
-    PlanResponseDto getPlan(Long groupId, Long planId);
-
-    List<PlanResponseDto> getAllPlans(Long groupId);
 
     void updatePlan(User user, Long groupId, Long planId, PlanRequestDto planRequestDto);
 

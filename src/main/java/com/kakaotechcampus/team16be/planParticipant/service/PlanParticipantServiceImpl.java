@@ -70,4 +70,9 @@ public class PlanParticipantServiceImpl implements PlanParticipantService {
 
         return planParticipantRepository.findAllByPlan(plan);
     }
+
+    @Override
+    public Long countByPlanId(Long id) {
+        return planParticipantRepository.countByPlanId(id);
+    }
 }
