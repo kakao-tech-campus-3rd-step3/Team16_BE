@@ -20,7 +20,7 @@ public class GroupScheduler {
     private final GroupService groupService;
     private final GroupMemberService groupMemberService;
 
-    @Scheduled(cron = "* 30 * * * *")
+    @Scheduled(cron = "* */5 * * * *")
     @Transactional
     public void reflectGroupScore() {
         List<Group> allGroups = groupService.findAll();
@@ -44,7 +44,7 @@ public class GroupScheduler {
                 .average()
                 .orElse(BASE_USER_SCORE);
 
-        double scoreDifference = avgMemberScore - (BASE_USER_SCORE+35);
+        double scoreDifference = avgMemberScore - (BASE_GROUP_SCORE);
 
         double calculatedScore = BASE_GROUP_SCORE + (scoreDifference * MEMBER_SCORE_WEIGHT);
 
