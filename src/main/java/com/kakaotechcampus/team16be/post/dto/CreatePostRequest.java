@@ -10,7 +10,7 @@ public record CreatePostRequest(
         Long groupId,
 
         @NotNull(message = "Title은 필수 값입니다.")
-        @Size(min = 3, max = 15, message = "Title은 3자 이상 15자 이하로 작성해주세요.")
+        @Size(min = 3, max = 50, message = "Title은 3자 이상 50자 이하로 작성해주세요.")
         String title,
 
         @NotNull(message = "Content는 필수 값입니다.")
