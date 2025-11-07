@@ -14,7 +14,7 @@ public record ResponseSingleGroupDto(
         Double score
 ) {
 
-    public static ResponseSingleGroupDto from(Group group, String coverImageUrl) {
+    public static ResponseSingleGroupDto from(Group group, String coverImageUrl,Integer capacity) {
         return new ResponseSingleGroupDto(
                 group.getId(),
                 group.getName(),
@@ -22,7 +22,7 @@ public record ResponseSingleGroupDto(
                 group.getSafetyTag().name(),
                 coverImageUrl,
                 group.getCreatedAt(),
-                group.getCapacity(),
+                capacity,
                 group.getScore()
         );
     }
