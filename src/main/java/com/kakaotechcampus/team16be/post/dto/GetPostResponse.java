@@ -9,6 +9,7 @@ import java.util.List;
 public record GetPostResponse(
         Long postId,
         Long groupId,
+        String groupName,
         Long authorId,
         String authorNickname,
         String authorProfileImageUrl,
@@ -30,6 +31,7 @@ public record GetPostResponse(
         return new GetPostResponse(
                 post.getId(),
                 post.getGroup().getId(),
+                post.getGroup().getName(),
                 author.getId(),
                 author.getNickname(),
                 authorProfileImageUrl,
