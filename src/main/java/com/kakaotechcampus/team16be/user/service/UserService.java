@@ -7,6 +7,7 @@ import com.kakaotechcampus.team16be.aws.service.S3UploadPresignedUrlService;
 import com.kakaotechcampus.team16be.comment.repository.CommentRepository;
 import com.kakaotechcampus.team16be.groundrule.GroundRuleRepository;
 import com.kakaotechcampus.team16be.group.domain.Group;
+import com.kakaotechcampus.team16be.group.dto.GroupMembership;
 import com.kakaotechcampus.team16be.group.repository.GroupRepository;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMember;
 import com.kakaotechcampus.team16be.groupMember.domain.GroupMemberStatus;
@@ -27,8 +28,9 @@ import com.kakaotechcampus.team16be.user.dto.UserNicknameResponse;
 import com.kakaotechcampus.team16be.user.exception.UserErrorCode;
 import com.kakaotechcampus.team16be.user.exception.UserException;
 import com.kakaotechcampus.team16be.user.repository.UserRepository;
+
 import java.util.List;
-import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,13 +149,11 @@ public class UserService {
     public UserInfoResponse getUserInfo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+
         List<String> leaderGroupIds = groupRepository.findLeaderGroupIdsByUserId(userId);
         List<String> memberGroupIds = groupRepository.findMemberGroupIdsByUserId(userId);
 
-        Map<String, List<String>> groups = Map.of(
-                "leaderOf", leaderGroupIds,
-                "memberOf", memberGroupIds
-        );
+        GroupMembership groups = new GroupMembership(leaderGroupIds, memberGroupIds);
 
         String profileImageUrl = s3UploadPresignedUrlService.getUserPublicUrl(user.getProfileImageUrl());
         return UserInfoResponse.of(user, groups, profileImageUrl);
